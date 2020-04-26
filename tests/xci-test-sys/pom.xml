@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.6.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.xci</groupId>
+    <artifactId>xci-test-sys</artifactId>
+    <version>1.0.1</version>
+    <description>西交投Web框架系统权限服务测试程序</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>11</java.version>
+        <xci.version>2.0.1</xci.version>
+    </properties>
+
+    <dependencies>
+        <!--lombok-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!--region 数据库-->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!--<dependency>-->
+        <!--    <groupId>mysql</groupId>-->
+        <!--    <artifactId>mysql-connector-java</artifactId>-->
+        <!--    <scope>runtime</scope>-->
+        <!--</dependency>-->
+        <!--endregion-->
+
+        <dependency>
+            <groupId>com.xci</groupId>
+            <artifactId>xci-web-spring-boot-starter</artifactId>
+            <version>${xci.version}</version>
+        </dependency>
+        <!--<dependency>-->
+        <!--    <groupId>com.xci</groupId>-->
+        <!--    <artifactId>xci-upload-spring-boot-starter</artifactId>-->
+        <!--    <version>${xci.version}</version>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>com.xci</groupId>
+            <artifactId>xci-sys-spring-boot-starter</artifactId>
+            <version>${xci.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <!--通过此配置，可以在生成jar包时，不包含resources中的配置文件以及可能存在的网页模板等信息-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin.version}</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <!--<mainClass>com.xxx.Start</mainClass>-->
+                        </manifest>
+                    </archive>
+                    <excludes>
+                        <exclude>**/*.properties</exclude>
+                        <exclude>**/*.xml</exclude>
+                        <exclude>**/*.yml</exclude>
+                        <exclude>static/**</exclude>
+                        <exclude>templates/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+
+            <!--这个assembly插件，可以根据需要生成相关的发布目录，并进行压缩打包处理。使用此插件后，-->
+            <!--可以在命令行运行mvn package就会自动进行打包处理-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven-assembly-plugin.version}</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>assembly.xml</descriptor>
+                    </descriptors>
+                    <finalName>${project.artifactId}</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
+
+<!--这个是spring boot使用的插件，通过相关的配置可以不生成fat jar包，即在jar包中不包含关联的jar包，-->
+<!--其中的executions配置是可以将springboot启动相关的类单独打在一个包中，不需要的话，就注释掉即可-->
+<!--<plugin>-->
+<!--    <groupId>org.springframework.boot</groupId>-->
+<!--    <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--    <version>${project.parent.version}</version>-->
+<!--    <configuration>-->
+<!--        <layout>ZIP</layout>-->
+<!--        <includes>-->
+<!--            <include>-->
+<!--                <groupId>non-exists</groupId>-->
+<!--                <artifactId>non-exists</artifactId>-->
+<!--            </include>-->
+<!--        </includes>-->
+<!--    </configuration>-->
+<!--    <executions>-->
+<!--        <execution>-->
+<!--            <goals>-->
+<!--                <goal>repackage</goal>-->
+<!--            </goals>-->
+<!--            &lt;!&ndash;<configuration>&ndash;&gt;-->
+<!--            &lt;!&ndash;<classifier>classes</classifier>&ndash;&gt;-->
+<!--            &lt;!&ndash;<attach>false</attach>&ndash;&gt;-->
+<!--            &lt;!&ndash;</configuration>&ndash;&gt;-->
+<!--        </execution>-->
+<!--    </executions>-->
+<!--</plugin>-->

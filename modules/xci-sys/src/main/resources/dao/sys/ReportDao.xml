@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xci.sys.dao.ReportDao">
+    <!--region 公共代码段-->
+
+    <!--公共查询列-->
+    <sql id="columns">
+        id,code,name,spell,url,path,md5,status,category,remark
+    </sql>
+
+    <!--公共Where查询条件-->
+    <sql id="where">
+        <where>
+            <if test="filter.status != null">and status = #{filter.status}</if>
+            <if test="filter.category != null">and category = #{filter.category}</if>
+            <if test="filter.name != null and filter.name != ''">
+                <bind name="sname" value="'%' + filter.name + '%'"/>
+                and ( code like #{sname} or name like #{sname} or spell like #{sname})
+            </if>
+        </where>
+    </sql>
+
+    <!--查询List-->
+    <sql id="list">
+        select
+        <include refid="columns"/>
+        from sys_report
+        <include refid="where"/>
+        order by id desc
+    </sql>
+
+    <!--endregion-->
+
+    <!--region 是否存在指定主键的报表-->
+    <select id="existById" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_report"/>
+            <property name="where" value="existByIdWhere"/>
+        </include>
+    </select>
+    <!--existById Where-->
+    <sql id="existByIdWhere">
+        where id = #{id}
+    </sql>
+    <!--endregion-->
+
+    <!--region 是否存在指定编码的报表-->
+    <select id="existByCode" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_report"/>
+            <property name="where" value="existByCodeWhere"/>
+        </include>
+    </select>
+    <!--existByCode Where-->
+    <sql id="existByCodeWhere">
+        where code = #{code}
+        <if test="excludeId != null">and id != #{excludeId}</if>
+    </sql>
+    <!--endregion-->
+
+    <!--region 新建报表-->
+    <insert id="insert">
+        insert into sys_report (id,code,name,spell,url,path,md5,status,category,remark) values
+        (
+        #{entity.id},
+        #{entity.code},
+        #{entity.name},
+        #{entity.spell},
+        #{entity.url},
+        #{entity.path},
+        #{entity.md5},
+        #{entity.status},
+        #{entity.category},
+        #{entity.remark}
+        )
+    </insert>
+    <!--endregion-->
+
+    <!--region 修改报表-->
+    <update id="update">
+        update sys_report
+        set
+            code = #{entity.code},
+            name = #{entity.name},
+            spell = #{entity.spell},
+            url = #{entity.url},
+            path = #{entity.path},
+            md5 = #{entity.md5},
+            status = #{entity.status},
+            category = #{entity.category},
+            remark = #{entity.remark}
+        where id = #{entity.id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键修改报表状态-->
+    <update id="updateStatus">
+        update sys_report
+        set status = #{status}
+        where id = #{id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键删除报表-->
+    <delete id="deleteById">
+        delete from sys_report
+        where id = #{id}
+    </delete>
+    <!--endregion-->
+
+    <!--region 根据主键查询单个报表-->
+    <select id="selectById" resultType="com.xci.sys.entity.SysReport">
+        select
+        <include refid="columns"/>
+        from sys_report
+        where id = #{id}
+    </select>
+    <!--endregion-->
+
+    <!--region 根据编码查询单个报表-->
+    <select id="selectByCode" resultType="com.xci.sys.entity.SysReport">
+        select
+        <include refid="columns"/>
+        from sys_report
+        where code = #{code}
+    </select>
+    <!--endregion-->
+
+    <!--region 查询报表列表-->
+    <select id="selectList" resultType="com.xci.sys.entity.SysReport">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+
+    <!--region 查询报表分页列表-->
+    <select id="selectPageList" resultType="com.xci.sys.entity.SysReport">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.6.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.xci</groupId>
+    <artifactId>xci-test-upload</artifactId>
+    <version>1.0.1</version>
+    <description>文件上传模块测试程序</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>11</java.version>
+        <xci.version>2.0.1</xci.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.xci</groupId>
+            <artifactId>xci-web-spring-boot-starter</artifactId>
+            <version>${xci.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.xci</groupId>
+            <artifactId>xci-upload-spring-boot-starter</artifactId>
+            <version>${xci.version}</version>
+        </dependency>
+    </dependencies>
+</project>

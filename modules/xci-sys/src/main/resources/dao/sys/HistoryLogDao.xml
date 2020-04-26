@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xci.sys.dao.HistoryLogDao">
+    <!--region 公共代码段-->
+
+    <!--公共查询列-->
+    <sql id="columns">
+        id,category,table_name,primary_key,operate_user_id,operate_user_name,operate_date_time
+    </sql>
+
+    <!--公共Where查询条件-->
+    <sql id="where">
+        <where>
+            <if test="filter.categorys != null and filter.categorys.length > 0">
+                and category in
+                <foreach collection="filter.categorys" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="filter.primaryKey != null and filter.primaryKey != ''">and primary_key = #{filter.primaryKey}</if>
+            <if test="filter.tableName != null and filter.tableName != ''">and table_name = #{filter.tableName}</if>
+            <if test="filter.operateUserName != null and filter.operateUserName != ''">
+                <bind name="soperateUserName" value="'%' + filter.operateUserName + '%'"/>
+                and operate_user_name like #{soperateUserName}
+            </if>
+            <if test="filter.operateStartDateTime != null">
+                <![CDATA[ and operate_date_time >= #{filter.operateStartDateTime} ]]>
+            </if>
+            <if test="filter.operateEndDateTime != null">
+                <![CDATA[ and operate_date_time <= #{filter.operateEndDateTime} ]]>
+            </if>
+        </where>
+    </sql>
+
+    <!--查询List-->
+    <sql id="list">
+        select
+        <include refid="columns"/>
+        from sys_history_log
+        <include refid="where"/>
+        order by id desc
+    </sql>
+
+    <!--endregion-->
+
+    <!--region 新建历史日志-->
+    <insert id="insert">
+        insert into sys_history_log (<include refid="columns"/>,before_data,after_data,diff) values
+        (
+        #{entity.id},
+        #{entity.category},
+        #{entity.tableName},
+        #{entity.primaryKey},
+        #{entity.operateUserId},
+        #{entity.operateUserName},
+        #{entity.operateDateTime},
+        <choose>
+            <when test='_databaseId == "oracle"'>
+                #{entity.beforeData,jdbcType=NCLOB},
+                #{entity.afterData,jdbcType=NCLOB},
+                #{entity.diff,jdbcType=NCLOB}
+            </when>
+            <otherwise>
+                #{entity.beforeData},
+                #{entity.afterData},
+                #{entity.diff}
+            </otherwise>
+        </choose>
+        )
+    </insert>
+    <!--endregion-->
+
+    <!--region 根据主键查询单个历史日志-->
+    <select id="selectById" resultType="com.xci.sys.entity.SysHistoryLog">
+        select
+        <include refid="columns"/>,before_data,after_data,diff
+        from sys_history_log
+        where id = #{id}
+    </select>
+    <!--endregion-->
+
+    <!--region 查询历史日志分页列表-->
+    <select id="selectPageList" resultType="com.xci.sys.entity.SysHistoryLog">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+</mapper>

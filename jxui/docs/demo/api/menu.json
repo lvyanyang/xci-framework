@@ -1,0 +1,118 @@
+[
+  {
+    "id": "1",
+    "pid": "0",
+    "text": "系统演示"
+  },
+  {
+    "id": "11ss",
+    "pid": "1",
+    "iconCls": "fa fa-snowflake-o",
+    "text": "表格示例",
+    "url": "data/grid.html"
+  },{
+  "id": "2222",
+  "pid": "1",
+  "iconCls": "fa fa-snowflake-o",
+  "text": "combo",
+  "url": "page/combo.html"
+},
+  {
+    "id": "12",
+    "pid": "1",
+    "iconCls": "fa fa-snowflake-o",
+    "text": "复选框示例",
+    "url": "form/check.html"
+  },
+  {
+    "id": "13",
+    "pid": "1",
+    "iconCls": "fa fa-snowflake-o",
+    "text": "颜色控件示例",
+    "url": "form/color.html"
+  },
+  {
+    "id": "14",
+    "pid": "1",
+    "iconCls": "fa fa-snowflake-o",
+    "text": "日期控件示例",
+    "url": "form/date.html"
+  },
+  {
+    "id": "15",
+    "pid": "1",
+    "iconCls": "fa fa-snowflake-o",
+    "text": "对话框示例",
+    "url": "basic/dialog.html"
+  },
+  {
+    "id": "16",
+    "pid": "1",
+    "iconCls": "fa fa-snowflake-o",
+    "text": "编辑器示例",
+    "url": "form/editor.html"
+  },
+  {
+    "id": "17",
+    "pid": "1",
+    "iconCls": "fa fa-snowflake-o",
+    "text": "表单示例",
+    "url": "form/form.html"
+  },
+  {
+    "id": "18",
+    "pid": "1",
+    "iconCls": "fa fa-snowflake-o",
+    "text": "group(分组示例)",
+    "url": "form/group.html"
+  },
+  {
+    "id": "19",
+    "pid": "1",
+    "iconCls": "fa fa-snowflake-o",
+    "text": "select(下拉列表)",
+    "url": "form/select.html"
+  },
+  {
+    "id": "20",
+    "pid": "1",
+    "iconCls": "fa fa-snowflake-o",
+    "text": "标签页控件示例",
+    "url": "basic/tabs.html"
+  },
+  {
+    "id": "21",
+    "pid": "1",
+    "iconCls": "fa fa-snowflake-o",
+    "text": "时间控件示例",
+    "url": "form/time.html"
+  },
+  {
+    "id": "22",
+    "pid": "1",
+    "iconCls": "fa fa-snowflake-o",
+    "text": "Tree控件示例",
+    "url": "data/tree.html"
+  },
+  {
+    "id": "23",
+    "pid": "1",
+    "iconCls": "fa fa-snowflake-o",
+    "text": "TreeGrid示例",
+    "url": "data/treegrid.html"
+  },
+  {
+    "id": "24",
+    "pid": "1",
+    "iconCls": "fa fa-snowflake-o",
+    "text": "ECharts示例",
+    "url": "basic/chart.html"
+  },
+  {
+    "id": "25",
+    "pid": "1",
+    "iconCls": "fa fa-snowflake-o",
+    "text": "Panel示例",
+    "url": "basic/panel.html"
+  }
+]

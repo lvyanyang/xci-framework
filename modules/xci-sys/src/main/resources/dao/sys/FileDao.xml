@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xci.sys.dao.FileDao">
+    <!--region 公共代码段-->
+
+    <!--公共查询列-->
+    <sql id="columns">
+         id,record_id,file_name,file_path,file_size,content_type,category
+    </sql>
+
+    <!--公共Where查询条件-->
+    <sql id="where">
+        <where>
+            <if test="filter.recordId != null">and record_id = #{filter.recordId}</if>
+            <if test="filter.category != null and filter.category != ''">and category = #{filter.category}</if>
+        </where>
+    </sql>
+
+    <!--查询List-->
+    <sql id="list">
+        select <include refid="columns"/>
+        from sys_file
+        <include refid="where"/>
+        order by id desc
+    </sql>
+
+    <!--endregion-->
+
+    <!--region 检查记录主键是否存在-->
+    <select id="existByRecordId" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_file"/>
+            <property name="where" value="existByRecordIdWhere"/>
+        </include>
+    </select>
+    <!--existByRecordId Where-->
+    <sql id="existByRecordIdWhere">
+        where record_id = #{recordId}
+    </sql>
+    <!--endregion-->
+
+    <!--region 新建文件-->
+    <insert id="insert">
+        insert into sys_file (id,record_id,file_name,file_path,file_size,content_type,category) values
+        (
+        #{entity.id},
+        #{entity.recordId},
+        #{entity.fileName},
+        #{entity.fileUrl},
+        #{entity.fileSize},
+        #{entity.contentType},
+        #{entity.category}
+        )
+    </insert>
+    <!--endregion-->
+
+    <!--region 根据主键删除文件-->
+    <update id="deleteById">
+        delete from sys_file
+        where id = #{id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据记录主键删除文件-->
+    <update id="deleteByRecordId">
+        delete from sys_file
+        where record_id = #{recordId}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键查询单个文件-->
+    <select id="selectById" resultType="com.xci.sys.entity.SysFile">
+        select
+        <include refid="columns"/>
+        from sys_file
+        where id = #{id}
+    </select>
+    <!--endregion-->
+
+    <!--region 根据主键查询单个文件-->
+    <select id="selectByRecordId" resultType="com.xci.sys.entity.SysFile">
+        select
+        <include refid="columns"/>
+        from sys_file
+        where record_id = #{recordId}
+    </select>
+    <!--endregion-->
+
+    <!--region 查询文件列表-->
+    <select id="selectList" resultType="com.xci.sys.entity.SysFile">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+
+    <!--region 查询文件分页列表-->
+    <select id="selectPageList" resultType="com.xci.sys.entity.SysFile">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+</mapper>

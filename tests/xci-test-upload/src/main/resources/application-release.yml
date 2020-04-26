@@ -1,0 +1,59 @@
+server:
+    # 服务器端口
+    port: 7001
+spring:
+    jackson:
+        # JSON序列化时区
+        time-zone: GMT+8
+        # JSON序列化日期默认格式
+        date-format: yyyy-MM-dd HH:mm:ss
+    servlet:
+        multipart:
+            # 是否启用文件上传
+            enabled: true
+            # 文件上传单个文件大小
+            max-file-size: 100MB
+            # 文件上传单次请求大小
+            max-request-size: 100MB
+logging:
+    # 日志配置文件路径
+    config: file:config/logback-spring-release.xml
+xci:
+    api:
+        # 是否启用404错误统一处理
+        enabled-error404-handle: true
+        # 是否验证时间戳
+        valid-timestamp: false
+    web:
+        # 是否启用Web模块
+        enabled: false
+    swagger:
+        # 文档标题
+        title: 西安交通信息开发框架
+        # 文档版本
+        version: v2
+        # 是否启用文档
+        enabled: true
+        # 文档联系人姓名
+        contact-name: 吕艳阳
+        # 文档描述
+        description: XCI文件服务器
+        # 是否开启swagger-ui权限认证
+        auth: true
+        # 文档登录账号
+        username: xci
+        # 文档登录密码
+        password: xci
+    upload:
+        # 上传根目录
+        root: /{webroot}/uploads
+        # 文件访问根路径
+        url: /uploads
+        # 允许上传的扩展名,不含点
+        extensions: gif, jpg, jpeg, png, bmp, zip, rar, doc, docx, xls, xlsx, ppt, pptx, txt, pdf, repx, json, xml
+        # 允许上传的最大文件大小,单位KB(单个文件大小)
+        max-size: 102400
+        # 是否验证文件Token
+        valid-file-token: false
+        # 上传更新包密码
+        upgrade-password: www.xci96716.com

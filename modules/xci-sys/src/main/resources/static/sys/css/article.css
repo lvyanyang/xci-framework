@@ -1,0 +1,191 @@
+
+.article-detail .content,.article-detail .header {
+    -ms-word-break: break-all;
+    word-break: break-all;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+    word-wrap: break-word
+}
+
+.article-detail .meta-wrap .comment-count .comment.icon {
+    margin-top: -4px!important
+}
+
+.article-detail .meta-wrap a.normal,.article-detail .meta-wrap a.normal:hover {
+    color: rgba(0,0,0,.87)
+}
+
+.article-detail .meta-wrap .collect-btn.item {
+    cursor: pointer
+}
+
+.article-detail .content {
+    font-size: 16px;
+    font-family: "Pingfang SC",STHeiti,"Lantinghei SC","Open Sans",Arial,"Hiragino Sans GB","Microsoft YaHei","WenQuanYi Micro Hei",SimSun,sans-serif;
+    color: #3d464d;
+    line-height: 28px;
+    margin-top: 2rem
+}
+
+.blog-detail .article-detail .content {
+    color: #3d464d
+}
+
+.news-detail .article-detail .content {
+    color: #333
+}
+
+.article-detail .content pre,.article-detail .content pre code {
+    overflow-x: auto;
+    border-radius: 3px;
+    padding: 10px;
+    line-height: 1.4;
+    word-wrap: normal;
+    display: block;
+    font-size: 13px;
+    /*background: #3f3f3f;*/
+    /*color: #dcdcdc;*/
+    font-family: Menlo,Monaco,Consolas,"Courier New",monospace
+}
+
+.article-detail .content pre code::-webkit-scrollbar,.article-detail .content pre::-webkit-scrollbar {
+    width: 5px!important;
+    height: 5px!important;
+    -webkit-appearance: none
+}
+
+.article-detail .content pre code::-webkit-scrollbar-thumb,.article-detail .content pre::-webkit-scrollbar-thumb {
+    background: rgba(153,153,153,.9)
+}
+
+.article-detail .content code,.article-detail .content pre {
+    border-radius: 3px;
+    padding: 2px;
+    font-size: 13px;
+    color: #000;
+    background-color: #f5f5f5;
+}
+
+.article-detail .content p {
+    margin-top: 16px;
+    margin-bottom: 14px;
+    line-height: 28px
+}
+
+.article-detail .content ol,.article-detail .content ul {
+    margin: 0;
+    padding: 0 0 0 2.5em
+}
+
+.article-detail .content ol p,.article-detail .content ul p {
+    margin: 0
+}
+
+.article-detail .content ol>li+li,.article-detail .content ul>li+li {
+    margin-top: .25em
+}
+
+.article-detail .content ol {
+    list-style-type: decimal
+}
+
+.article-detail .content ul {
+    list-style-type: disc
+}
+
+.article-detail .content img {
+    margin: auto;
+    max-width: 80%;
+    height: auto!important
+}
+
+@media only screen and (max-width: 767px) {
+    .article-detail .content img {
+        max-width:100%
+    }
+}
+
+.article-detail .content table {
+    border-collapse: collapse;
+    border-spacing: 1px;
+    font-size: 14px;
+    color: #444;
+    overflow-x: auto;
+    max-width: 100%!important;
+    width: auto!important;
+    border: 0;
+    line-height: 28px
+}
+
+.article-detail .content table thead {
+    text-align: left
+}
+
+.article-detail .content table th,.article-detail .content table thead {
+    background: #f8f8f8
+}
+
+.article-detail .content table td,.article-detail .content table th {
+    padding: 4px 8px;
+    border: 1px solid #ccc
+}
+
+.article-detail .content blockquote {
+    position: relative;
+    color: #000;
+    font-size: 15px;
+    background: #f4f4f4;
+    margin: 20px 0;
+    padding: 16px 24px 16px 35px
+}
+
+.article-detail .content blockquote:before {
+    content: "";
+    background-image: url(../img/icon-quotation.svg);
+    top: 18px;
+    left: 16px;
+    font-size: 24px;
+    position: absolute;
+    width: 13px;
+    height: 9px;
+    display: inline-block
+}
+
+.article-detail .content h1,.article-detail .content h2,.article-detail .content h3,.article-detail .content h4,.article-detail .content h5,.article-detail .content h6 {
+    font-weight: 500;
+    margin: 1.2em 0 .8em
+}
+
+.article-detail .content h1 {
+    font-size: 24px
+}
+
+.article-detail .content h2 {
+    font-size: 22px
+}
+
+.article-detail .content h3 {
+    font-size: 20px
+}
+
+.article-detail .content h4 {
+    font-size: 18px
+}
+
+.article-detail .content h5 {
+    font-size: 16px
+}
+
+.article-detail .content h6 {
+    font-size: 16px
+}
+
+.article-detail .content video {
+    max-width: 100%
+}
+
+.article-detail .content ul,.article-detail .content li{
+    list-style-type: disc !important;
+}

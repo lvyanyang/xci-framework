@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xci.sys.dao.DeptDao">
+    <!--region 公共代码段-->
+
+    <!--公共查询列-->
+    <sql id="select">
+        select d.id,d.parent_id,d.name,d.spell,d.code,d.category,d.nature,d.leader_id,us.name leader_name,
+            d.path,d.status,d.remark
+        from sys_dept d left join sys_user us on d.leader_id = us.id
+    </sql>
+
+    <!--公共Where查询条件-->
+    <sql id="where">
+        <where>
+            <if test="filter.status != null">d.status = #{filter.status}</if>
+            <if test="filter.dataScope != null and filter.dataScope == true">
+                <include refid="com.xci.internal.FrameworkDao.dataScope"/>
+            </if>
+        </where>
+    </sql>
+
+    <!--查询List-->
+    <sql id="list">
+        <include refid="select"/>
+        <include refid="where"/>
+        order by d.parent_id asc,d.path asc
+    </sql>
+
+    <!--endregion-->
+
+    <!--region 是否存在指定主键的机构-->
+    <select id="existById" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_dept"/>
+            <property name="where" value="existByIdWhere"/>
+        </include>
+    </select>
+    <!--existById Where-->
+    <sql id="existByIdWhere">
+        where id = #{id}
+    </sql>
+    <!--endregion-->
+
+    <!--region 是否存在指定编码的机构-->
+    <select id="existByCode" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_dept"/>
+            <property name="where" value="existByCodeWhere"/>
+        </include>
+    </select>
+    <!--existByCode Where-->
+    <sql id="existByCodeWhere">
+        where code = #{code}
+        <if test="excludeId != null">and id != #{excludeId}</if>
+    </sql>
+    <!--endregion-->
+
+    <!--region 检查是否存在指定的机构名称-->
+    <select id="existByName" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_dept"/>
+            <property name="where" value="existByNameWhere"/>
+        </include>
+    </select>
+    <!--existByNameWhere-->
+    <sql id="existByNameWhere">
+        where name = #{name} and parent_id = #{parentId}
+        <if test="excludeId != null">and id != #{excludeId}</if>
+    </sql>
+    <!--endregion-->
+
+    <!--region 新建机构-->
+    <insert id="insert">
+        insert into sys_dept (id, parent_id, name, spell, code, category, nature, leader_id, path, status, remark)
+        values
+        (
+        #{entity.id},
+        #{entity.parentId},
+        #{entity.name},
+        #{entity.spell},
+        #{entity.code},
+        #{entity.category},
+        #{entity.nature},
+        #{entity.leaderId},
+        #{entity.path},
+        #{entity.status},
+        #{entity.remark}
+        )
+    </insert>
+    <!--endregion-->
+
+    <!--region 修改机构-->
+    <update id="update">
+        update sys_dept
+        set parent_id     = #{entity.parentId},
+            name          = #{entity.name},
+            spell         = #{entity.spell},
+            code          = #{entity.code},
+            category      = #{entity.category},
+            nature        = #{entity.nature},
+            leader_id     = #{entity.leaderId},
+            path          = #{entity.path},
+            status        = #{entity.status},
+            remark        = #{entity.remark}
+        where id = #{entity.id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键删除机构-->
+    <update id="deleteById">
+        update sys_dept
+        set deleted = #{deleteId}
+        where id = #{id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键更新机构状态-->
+    <update id="updateStatus">
+        update sys_dept
+        set status = #{status}
+        where id = #{id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键更新排序路径-->
+    <update id="updatePath">
+        update sys_dept
+        set path = #{path}
+        where id = #{id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键更新父节点-->
+    <update id="updateParentId">
+        update sys_dept
+        set parent_id = #{parentId}
+        where id = #{id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键查询单个机构-->
+    <select id="selectById" resultType="com.xci.sys.entity.SysDept">
+        <include refid="select"/>
+        where d.id = #{id}
+    </select>
+    <!--endregion-->
+
+    <!--region 根据编码查询单个机构-->
+    <select id="selectByCode" resultType="com.xci.sys.entity.SysDept">
+        <include refid="select"/>
+        where d.code = #{code}
+    </select>
+    <!--endregion-->
+
+    <!--region 查询机构列表-->
+    <select id="selectList" resultType="com.xci.sys.entity.SysDept">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+
+    <!--region 获取指定节点的直接子节点数-->
+    <select id="selectChildCount" resultType="java.lang.Integer">
+        select count(1)
+        from sys_dept
+        where parent_id = #{id}
+    </select>
+    <!--endregion-->
+</mapper>

@@ -1,0 +1,249 @@
+﻿
+.jxsection-container {
+    margin-left: 5px;
+}
+
+.jxtable-form {
+    width: 92%;
+}
+
+.jxtable-details {
+    margin: 5px auto;
+    width: 99%;
+}
+
+.jxhistroy-grid {
+    padding: 5px;
+}
+
+.jxgrid-sub {
+    padding: 5px;
+}
+
+.icheck-inline label {
+    margin-bottom: 0;
+}
+
+.jxtabs-line > .tab-content {
+    padding: 5px 0;
+}
+
+.jxsection-container {
+    color: #418bca;
+}
+
+.tabs-close {
+    position: absolute;
+    top: 12px;
+    right: 10px;
+}
+
+.border-top-gray {
+    border-top: 1px solid #ccc;
+}
+
+@media screen and (max-width: 1040px) {
+    .tool-mt {
+        margin-top: 5px;
+    }
+}
+
+.datagrid-toolbar .form-inline .select2-container--bootstrap {
+    margin-top: 1px;
+}
+
+.datagrid-cell .fa-check {
+    color: #449d44;
+}
+
+.datagrid-cell .fa-close {
+    color: #d9534f;
+}
+
+.editormd-preview-theme-osc .editormd-preview-container code {
+    color: #3d464d !important;
+}
+
+.editormd-preview-theme-osc .editormd-preview-container ul,
+.editormd-preview-theme-osc .editormd-preview-container li{
+    list-style-type: disc !important;
+}
+
+.tabpanel-footer{
+    padding: 10px;
+    border-top: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+    background: #f8fafe;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.jxfs,.jxfs-actual{
+    font-size: .5em;
+    cursor: pointer;
+    font-family: 'Simple-Line-Icons';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased
+}
+.jxfs:before {
+    content: "\e057"
+}
+.jxfs-actual:before {
+    content: "\e058" !important;
+}
+
+.m-switch-toolbar > label{
+    display: list-item;
+    list-style:none;
+}
+
+.searchTable{
+    width: 100% !important;
+}
+.searchTable td{
+    height: 40px;
+}
+
+.card-listview {
+    margin: 5px;
+    list-style: none;
+}
+.card-listview li {
+    margin:0 10px 10px 10px;
+    padding: 10px;
+    width: 150px;
+    float:left;
+    position: relative;
+    display: block;
+    cursor: pointer;
+    border: 3px #ccc solid;
+    background-color:SeaShell;
+    text-align: center;
+    /*line-height: 40px;*/
+    /*height: 66px;*/
+    border-radius: 4px;
+}
+
+.card-listview li:hover {
+    border:3px #2d89ef solid;
+}
+.padding-0{
+    padding: 0;
+}
+.padding-1{
+    padding: 1px;
+}
+.padding-5{
+    padding: 5px;
+}
+.padding-10{
+    padding: 10px;
+}
+.margin-0{
+    margin: 0;
+}
+.margin-1{
+    margin: 1px;
+}
+.margin-5{
+    margin: 5px;
+}
+.margin-10{
+    margin: 10px;
+}
+
+
+.car-map-view,.car-unmap-view {
+    margin: 5px;
+    list-style: none;
+}
+.car-map-view li,.car-unmap-view li {
+    margin:5px;
+    padding: 3px 5px;
+    width: 100px;
+    float:left;
+    position: relative;
+    display: block;
+    cursor: pointer;
+    border: 2px #ccc solid;
+    /*background-color:SeaShell;*/
+    background-color:#c4eeff;
+    text-align: center;
+    /*line-height: 40px;*/
+    /*height: 66px;*/
+    border-radius: 4px;
+    user-select: none;
+}
+.car-unmap-view li{
+    background-color:SeaShell;
+}
+.car-map-view li:hover,
+.car-unmap-view li:hover {
+    border:2px #2d89ef solid;
+}
+
+.car-map-view > li.selected{
+    border-color: #ff5d5b;
+}
+.car-map-view > li.selected:after {
+    width: 0;
+    height: 0;
+    border-top: 20px solid #ff5d5b;;
+    border-left: 20px solid transparent;
+    position: absolute;
+    display: block;
+    right: 0;
+    content: "";
+    top: 0;
+    z-index: 1001;
+}
+.car-map-view > li.selected:before {
+    position: absolute;
+    content: "\f17b";
+    color: #fff;
+    right: -1px;
+    top: -4px;
+    font-family: LineAwesome;
+    font-size: 8px;
+    z-index: 1002;
+    display: block;
+}
+
+.lab-car {
+    font-size: 16px;
+    font-weight: unset;
+    margin-right: 10px;
+    display: inline-block;
+    margin-top: 5px;
+    width: 100px;
+    background-color: #1178a2;
+    padding-top: .3em;
+    position: relative;
+    cursor: default;
+    user-select: none;
+}
+
+.lab-car:hover:before{
+    position: absolute;
+    content: "\f343";
+    color: #fff;
+    right: -8px;
+    top: -5px;
+    font-family: LineAwesome;
+    font-size: 1em;
+    z-index: 1002;
+    display: block;
+    background-color: red;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.car-number{
+    margin-left: 2px;
+}

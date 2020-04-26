@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xci.internal.FrameworkDao">
+
+    <!--检查某个表指定查询条件的记录是否存在,存在返回1,否则返回0-->
+    <sql id="exists">
+        <if test='_databaseId == "sqlserver" or _databaseId == "mysql"'>
+            select case when exists(select 1 from ${table} <include refid="${where}"/>) then 1 else 0 end
+        </if>
+        <if test='_databaseId == "oracle"'>
+            select case when exists(select 1 from ${table} <include refid="${where}"/>) then 1 else 0 end from dual
+        </if>
+        <if test='_databaseId != "sqlserver" and _databaseId != "mysql" and _databaseId != "oracle"'>
+            select count(1) from ${table} <include refid="${where}"/>
+        </if>
+    </sql>
+
+
+    <!--查询机构以及所有下级的主键-->
+    <!--sqlserver:select dept_id from fnGetDeptLower(${deptId},1)-->
+    <!--oracle:select dept_id from sys_dept start with dept_id = ${deptId} connect by prior dept_id = parent_id-->
+    <!--mysql:select dept_id from sys_department where find_in_set(id, fnGetDeptLower('${deptId}',1))-->
+    <sql id="selectDeptAndLower">
+        <if test='_databaseId == "sqlserver"'>
+            select id from fnGetDeptLower(${deptId},1)
+        </if>
+        <if test='_databaseId == "oracle"'>
+            select id from sys_dept start with id=${deptId} connect by prior id=parent_id
+        </if>
+        <if test='_databaseId == "mysql"'>
+            select id from sys_dept where find_in_set(id, fnGetDeptLower('${deptId}',1))
+        </if>
+    </sql>
+
+    <!--获取机构主键列名-->
+    <sql id="getDeptColumn">
+        <choose>
+            <when test="filter.params.deptIdColumn == null || filter.params.deptIdColumn == ''">
+                ${filter.params.deptAlias}.id
+            </when>
+            <otherwise>
+                ${filter.params.deptIdColumn}
+            </otherwise>
+        </choose>
+    </sql>
+    <!--获取用户主键列名-->
+    <sql id="getUserColumn">
+        <choose>
+            <when test="filter.params.userIdColumn == null || filter.params.userIdColumn == ''">
+                ${filter.params.userAlias}.id
+            </when>
+            <otherwise>
+                ${filter.params.userIdColumn}
+            </otherwise>
+        </choose>
+    </sql>
+    <!--数据权限
+    [1-全部, 2-自定义, 3-所在部门, 4-所在部门及所有下级, 5-仅本人]
+    1:全部             不需要要任何条件
+    2:自定义            and d.dept_id in ( select dept_id from sys_role_module_map where role_id = ${role_Id} )
+    3:机构             and d.dept_id = ${deptId}
+    4:机构及以下        and d.dept_id in ( ${selectDeptAndLower} )
+    5:仅本人           and d.user_id = ${userId}
+
+    参数变量
+    1.数据范围 params.dataScope
+    2.用户主键 params.userId
+    3.机构主键 params.deptId
+    4.机构表别名 params.deptAlias
+    5.用户表别名 params.userAlias
+    -->
+    <sql id="dataScope">
+        <if test="filter.params.dataScope!=null">
+            <!--1:全部 不需要要任何条件-->
+            <!--2:自定义-->
+            <if test="filter.params.dataScope == 2">
+                and <include refid="com.xci.internal.FrameworkDao.getDeptColumn"/> in (
+                    select distinct target_id dept_id from sys_object_map
+                    where object_name='role'
+                        and object_id in
+                        (
+                            select r.id role_id from sys_role r join sys_user_role_map urmap
+                            on r.status=1 and urmap.user_id=${filter.params.userId} and urmap.role_id=r.id
+                        )
+                        and target_name='dept'
+                )
+            </if>
+            <!--3:机构-->
+            <if test="filter.params.dataScope == 3">
+                and <include refid="com.xci.internal.FrameworkDao.getDeptColumn"/> = ${filter.params.deptId}
+            </if>
+            <!--4:机构及以下-->
+            <if test="filter.params.dataScope == 4">
+                and <include refid="com.xci.internal.FrameworkDao.getDeptColumn"/> in (
+                <include refid="com.xci.internal.FrameworkDao.selectDeptAndLower">
+                    <property name="deptId" value="${filter.params.deptId}"/>
+                </include>
+                )
+            </if>
+            <!--5:仅本人-->
+            <if test="filter.params.dataScope == 5 and (filter.params.userAlias != null and filter.params.userAlias != '')">
+                and <include refid="com.xci.internal.FrameworkDao.getUserColumn"/> = ${filter.params.userId}
+            </if>
+            <!--不查询任何数据-->
+            <if test="filter.params.dataScope == 5 and (filter.params.userAlias == null || filter.params.userAlias == '')">
+                and 1=0
+            </if>
+        </if>
+    </sql>
+</mapper>

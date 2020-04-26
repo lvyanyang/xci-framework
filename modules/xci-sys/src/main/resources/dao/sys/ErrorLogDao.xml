@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xci.sys.dao.ErrorLogDao">
+    <!--region 公共代码段-->
+
+    <!--公共查询列-->
+    <sql id="columns">
+        id,req_url,req_method,app_id,app_name,ip,operate_user_id,operate_user_name,operate_date_time
+    </sql>
+
+    <!--公共Where查询条件-->
+    <sql id="where">
+        <where>
+            <if test="filter.reqUrl != null and filter.reqUrl != ''">
+                <bind name="sreqUrl" value="'%' + filter.reqUrl + '%'"/>
+                and req_url like #{sreqUrl}
+            </if>
+            <if test="filter.appId != null and filter.appId != ''">
+                and app_id = #{filter.appId}
+            </if>
+            <if test="filter.appName != null and filter.appName != ''">
+                and app_name = #{sappName}
+            </if>
+            <if test="filter.ip != null and filter.ip != ''">
+                and ip = #{sip}
+            </if>
+            <if test="filter.operateUserName != null and filter.operateUserName != ''">
+                <bind name="soperateUserName" value="'%' + filter.operateUserName + '%'"/>
+                and operate_user_name like #{soperateUserName}
+            </if>
+            <if test="filter.operateStartDateTime != null">
+                <![CDATA[ and operate_date_time >= #{filter.operateStartDateTime} ]]>
+            </if>
+            <if test="filter.operateEndDateTime != null">
+                <![CDATA[ and operate_date_time <= #{filter.operateEndDateTime} ]]>
+            </if>
+        </where>
+    </sql>
+
+    <!--查询List-->
+    <sql id="list">
+        select
+        <include refid="columns"/>
+        from sys_error_log
+        <include refid="where"/>
+        order by id desc
+    </sql>
+
+    <!--endregion-->
+
+    <!--region 新建错误日志-->
+    <insert id="insert">
+        insert into sys_error_log (id,req_url,req_method,app_id,app_name,ip,operate_user_id,operate_user_name,operate_date_time,req_param,msg,details) values
+        (
+        #{entity.id},
+        #{entity.reqUrl},
+        #{entity.reqMethod},
+        #{entity.appId},
+        #{entity.appName},
+        #{entity.ip},
+        #{entity.operateUserId},
+        #{entity.operateUserName},
+        #{entity.operateDateTime},
+        <choose>
+            <when test='_databaseId == "oracle"'>
+                #{entity.reqParam,jdbcType=NCLOB},
+                #{entity.msg,jdbcType=NCLOB},
+                #{entity.details,jdbcType=NCLOB},
+            </when>
+            <otherwise>
+                #{entity.reqParam},
+                #{entity.msg},
+                #{entity.details}
+            </otherwise>
+        </choose>
+        )
+    </insert>
+    <!--endregion-->
+
+    <!--region 根据主键查询单个错误日志-->
+    <select id="selectById" resultType="com.xci.sys.entity.SysErrorLog">
+        select<include refid="columns"/>,req_param,msg,details
+        from sys_error_log
+        where id = #{id}
+    </select>
+    <!--endregion-->
+
+    <!--region 查询错误日志分页列表-->
+    <select id="selectPageList" resultType="com.xci.sys.entity.SysErrorLog">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+</mapper>

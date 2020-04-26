@@ -1,0 +1,41 @@
+/*
+ * Copyright (c) 2007-2020 西安交通信息投资营运有限公司 版权所有
+ */
+
+.m-error-1 {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover
+}
+
+.m-error-1 .m-error_container .m-error_number>h1 {
+    font-size: 5rem;
+    margin-left: 80px;
+    margin-top: 2rem;
+    font-weight: 600;
+}
+
+.m-error-1 .m-error_container .m-error_desc {
+    font-size: 1.5rem;
+    margin-left: 80px
+}
+
+@media (max-width: 768px) {
+    .m-error-1 .m-error_container .m-error_number>h1 {
+        margin-top: 2rem;
+    }
+
+    .m-error-1 .m-error_container .m-error_desc {
+        margin-left: 3rem;
+        padding-right: 0.5rem
+    }
+}
+
+.m-error_container .m-error_number>h1 {
+    color: #6587C6
+}
+
+.m-error_container .m-error_desc {
+    color: #898b96
+}

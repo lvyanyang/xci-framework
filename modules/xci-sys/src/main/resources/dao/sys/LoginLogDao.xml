@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xci.sys.dao.LoginLogDao">
+    <!--region 公共代码段-->
+
+    <!--公共查询列-->
+    <sql id="columns">
+        id,category,account,user_agent,status,msg,app_id,app_name,ip,operate_date_time
+    </sql>
+
+    <!--公共Where查询条件-->
+    <sql id="where">
+        <where>
+            <if test="filter.account != null and filter.account != ''">
+                and account = #{filter.account}
+            </if>
+            <if test="filter.ip != null and filter.ip != ''">
+                and ip = #{sip}
+            </if>
+            <if test="filter.category != null">
+                and category = #{filter.category}
+            </if>
+            <if test="filter.status != null">
+                and status = #{filter.status}
+            </if>
+            <if test="filter.appId != null and filter.appId != ''">
+                and app_id = #{filter.appId}
+            </if>
+            <if test="filter.appName != null and filter.appName != ''">
+                <bind name="sappName" value="'%' + filter.appName + '%'"/>
+                and app_name like #{sappName}
+            </if>
+            <if test="filter.operateStartDateTime != null">
+                <![CDATA[ and operate_date_time >= #{filter.operateStartDateTime} ]]>
+            </if>
+            <if test="filter.operateEndDateTime != null">
+                <![CDATA[ and operate_date_time <= #{filter.operateEndDateTime} ]]>
+            </if>
+        </where>
+    </sql>
+
+    <!--查询List-->
+    <sql id="list">
+        select
+        <include refid="columns"/>
+        from sys_login_log
+        <include refid="where"/>
+        order by id desc
+    </sql>
+
+    <!--endregion-->
+
+    <!--region 新建登录日志-->
+    <insert id="insert">
+        insert into sys_login_log (<include refid="columns"/>) values
+        (
+        #{entity.id},
+        #{entity.category},
+        #{entity.account},
+        #{entity.userAgent},
+        #{entity.status},
+        #{entity.msg},
+        #{entity.appId},
+        #{entity.appName},
+        #{entity.ip},
+        #{entity.operateDateTime}
+        )
+    </insert>
+    <!--endregion-->
+
+    <!--region 根据主键查询单个登录日志-->
+    <select id="selectById" resultType="com.xci.sys.entity.SysLoginLog">
+        select
+        <include refid="columns"/>
+        from sys_login_log
+        where id = #{id}
+    </select>
+    <!--endregion-->
+
+    <!--region 查询登录日志分页列表-->
+    <select id="selectPageList" resultType="com.xci.sys.entity.SysLoginLog">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+</mapper>

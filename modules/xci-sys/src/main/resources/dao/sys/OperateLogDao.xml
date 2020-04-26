@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xci.sys.dao.OperateLogDao">
+    <!--region 公共代码段-->
+
+    <!--公共查询列-->
+    <sql id="columns">
+        id,tag,msg,method,req_url,req_method,cost_time,user_agent,status,app_id,app_name,ip,operate_dept_id,operate_dept_name,operate_user_id,operate_user_name,operate_date_time
+    </sql>
+
+    <!--公共Where查询条件-->
+    <sql id="where">
+        <where>
+            <if test="filter.tag != null and filter.tag != ''">
+                <bind name="stag" value="'%' + filter.tag + '%'"/>
+                and tag like #{stag}
+            </if>
+            <if test="filter.method != null and filter.method != ''">
+                <bind name="smethod" value="'%' + filter.method + '%'"/>
+                and method like #{smethod}
+            </if>
+            <if test="filter.ip != null and filter.ip != ''">
+                and ip = #{ip}
+            </if>
+            <if test="filter.reqUrl != null and filter.reqUrl != ''">
+                <bind name="sreqUrl" value="'%' + filter.reqUrl + '%'"/>
+                and req_url like #{sreqUrl}
+            </if>
+            <if test="filter.appId != null and filter.appId != ''">
+                and app_id = #{filter.appId}
+            </if>
+            <if test="filter.appName != null and filter.appName != ''">
+                <bind name="sappName" value="'%' + filter.appName + '%'"/>
+                and app_name like #{sappName}
+            </if>
+            <if test="filter.operateUserName != null and filter.operateUserName != ''">
+                <bind name="soperateUserName" value="'%' + filter.operateUserName + '%'"/>
+                and operate_user_name like #{soperateUserName}
+            </if>
+            <if test="filter.operateStartDateTime != null">
+                <!--<bind tableName="soperateStartDateTime" group="filter.operateStartDateTime + ' 00:00:00'"/>-->
+                <!--<![CDATA[ and operate_date_time >= #{soperateStartDateTime} ]]>-->
+                <!--<![CDATA[ and operate_date_time >= to_date(#{soperateStartDateTime},'yyyy-MM-dd hh24:mi:ss')]]>-->
+                <![CDATA[ and operate_date_time >= #{filter.operateStartDateTime} ]]>
+            </if>
+            <if test="filter.operateEndDateTime != null">
+                <!--<bind tableName="soperateEndDateTime" group="filter.operateEndDateTime + ' 23:59:59'"/>-->
+                <!--<![CDATA[ and operate_date_time <= #{soperateEndDateTime} ]]>-->
+                <!--<![CDATA[ and operate_date_time <= to_date(#{soperateEndDateTime},'yyyy-MM-dd hh24:mi:ss')]]>-->
+                <![CDATA[ and operate_date_time <= #{filter.operateEndDateTime} ]]>
+            </if>
+        </where>
+    </sql>
+
+    <!--查询List-->
+    <sql id="list">
+        select
+        <include refid="columns"/>
+        from sys_operate_log
+        <include refid="where"/>
+        order by id desc
+    </sql>
+
+    <!--endregion-->
+
+    <!--region 新建操作日志-->
+    <insert id="insert">
+        insert into sys_operate_log (<include refid="columns"/>, execute_param,execute_result) values
+        (
+        #{entity.id},
+        #{entity.tag},
+        #{entity.msg},
+        #{entity.method},
+        #{entity.reqUrl},
+        #{entity.reqMethod},
+        #{entity.costTime},
+        #{entity.userAgent},
+        #{entity.status},
+        #{entity.appId},
+        #{entity.appName},
+        #{entity.ip},
+        #{entity.operateDeptId},
+        #{entity.operateDeptName},
+        #{entity.operateUserId},
+        #{entity.operateUserName},
+        #{entity.operateDateTime},
+        <choose>
+            <when test='_databaseId == "oracle"'>
+                #{entity.executeParam,jdbcType=NCLOB},
+                #{entity.executeResult,jdbcType=NCLOB}
+            </when>
+            <otherwise>
+                #{entity.executeParam},
+                #{entity.executeResult}
+            </otherwise>
+        </choose>
+        )
+    </insert>
+    <!--endregion-->
+
+    <!--region 根据主键查询单个操作日志-->
+    <select id="selectById" resultType="com.xci.sys.entity.SysOperateLog">
+        select
+        <include refid="columns"/>,execute_param,execute_result
+        from sys_operate_log
+        where id = #{id}
+    </select>
+    <!--endregion-->
+
+    <!--region 查询操作日志分页列表-->
+    <select id="selectPageList" resultType="com.xci.sys.entity.SysOperateLog">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+
+</mapper>

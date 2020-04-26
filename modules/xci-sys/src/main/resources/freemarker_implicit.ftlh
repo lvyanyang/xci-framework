@@ -1,0 +1,7 @@
+[#ftl]
+[#-- @implicitly included --]
+[#-- @ftlroot "../resources/templates/" --]
+[#-- @ftlroot "../resources/static/" --]
+[#-- @ftlvariable name="request" type="org.springframework.web.servlet.support.RequestContext" --]
+[#-- @ftlvariable name="web" type="com.xci.web.component.WebHelper" --]
+[#-- @ftlvariable name="sys" type="com.xci.sys.web.component.SysWebHelper" --]

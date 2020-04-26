@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xci.sys.dao.JobLogDao">
+    <!--region 公共代码段-->
+
+    <!--公共查询列-->
+    <sql id="columns">
+        id,job_id,job_name,job_expression,msg,trigger_category,status,operate_date_time,start_date_time,end_date_time
+    </sql>
+
+    <!--公共Where查询条件-->
+    <sql id="where">
+        <where>
+            <if test="filter.jobId != null">and job_id = #{filter.jobId}</if>
+            <if test="filter.jobName != null and filter.jobName != ''">
+                <bind name="sjobName" value="'%' + filter.jobName + '%'"/>
+                and job_name like #{filter.jobName}
+            </if>
+            <if test="filter.jobExpression != null and filter.jobExpression != ''">
+                and job_expression = #{filter.jobExpression}
+            </if>
+            <if test="filter.triggerCategory != null">
+                and trigger_category = #{filter.triggerCategory}
+            </if>
+            <if test="filter.status != null">
+                and status = #{filter.status}
+            </if>
+            <if test="filter.operateStartDateTime != null">
+                <![CDATA[ and operate_date_time >= #{filter.operateStartDateTime} ]]>
+            </if>
+            <if test="filter.operateEndDateTime != null">
+                <![CDATA[ and operate_date_time <= #{filter.operateEndDateTime} ]]>
+            </if>
+        </where>
+    </sql>
+
+    <!--查询List-->
+    <sql id="list">
+        select
+        <include refid="columns"/>
+        from sys_job_log
+        <include refid="where"/>
+        order by id desc
+    </sql>
+
+    <!--endregion-->
+
+
+    <!--region 新建定时任务日志-->
+    <insert id="insert">
+        insert into sys_job_log (<include refid="columns"/>,error_msg) values
+        (
+        #{entity.id},
+        #{entity.jobId},
+        #{entity.jobName},
+        #{entity.jobExpression},
+        #{entity.msg},
+        #{entity.triggerCategory},
+        #{entity.status},
+        #{entity.operateDateTime},
+        #{entity.startDateTime},
+        #{entity.endDateTime},
+        <choose>
+            <when test='_databaseId == "oracle"'>#{entity.errorMsg,jdbcType=NCLOB},</when>
+            <otherwise>#{entity.errorMsg},</otherwise>
+        </choose>
+        )
+    </insert>
+    <!--endregion-->
+
+    <!--region 根据主键查询单个定时任务日志-->
+    <select id="selectById" resultType="com.xci.sys.entity.SysJobLog">
+        select
+        <include refid="columns"/>,error_msg
+        from sys_job_log
+        where id = #{id}
+    </select>
+    <!--endregion-->
+
+    <!--region 查询定时任务日志分页列表-->
+    <select id="selectPageList" resultType="com.xci.sys.entity.SysJobLog">
+        <include refid="list" />
+    </select>
+    <!--endregion-->
+</mapper>

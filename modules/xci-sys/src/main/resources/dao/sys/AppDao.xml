@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xci.sys.dao.AppDao">
+    <!--region 公共代码段-->
+
+    <!--公共查询列-->
+    <sql id="columns">
+        id,name,status,remark
+    </sql>
+
+    <!--公共Where查询条件-->
+    <sql id="where">
+        <where>
+            <if test="filter.status != null">and status = #{filter.status}</if>
+            <if test="filter.name != null and filter.name != ''">
+                <bind name="sname" value="'%' + filter.name + '%'"/>
+                and ( id like #{sname} or name like #{sname} )
+            </if>
+        </where>
+    </sql>
+
+    <!--查询List-->
+    <sql id="list">
+        select
+        <include refid="columns"/>
+        from sys_app
+        <include refid="where"/>
+        order by id desc
+    </sql>
+
+    <!--endregion-->
+
+    <!--region 是否存在指定主键的应用-->
+    <select id="existById" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_app"/>
+            <property name="where" value="existByIdWhere"/>
+        </include>
+    </select>
+    <!--existById Where-->
+    <sql id="existByIdWhere">
+        where id = #{id}
+    </sql>
+    <!--endregion-->
+
+    <!--region 检查是否存在指定的应用名称-->
+    <select id="existByName" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_app"/>
+            <property name="where" value="existByNameWhere"/>
+        </include>
+    </select>
+    <!--existByNameWhere-->
+    <sql id="existByNameWhere">
+        where name = #{name}
+        <if test="excludeId != null">and id != #{excludeId}</if>
+    </sql>
+    <!--endregion-->
+
+    <!--region 新建应用-->
+    <insert id="insert">
+        insert into sys_app (<include refid="columns" />) values
+        (
+        #{entity.id},
+        #{entity.name},
+        #{entity.status},
+        #{entity.remark}
+        )
+    </insert>
+    <!--endregion-->
+
+    <!--region 修改应用-->
+    <update id="update">
+        update sys_app
+        set name = #{entity.name},
+            status = #{entity.status},
+            remark = #{entity.remark}
+        where id = #{entity.id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键修改应用状态-->
+    <update id="updateStatus">
+        update sys_app
+        set status = #{status}
+        where id = #{id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键删除应用-->
+    <delete id="deleteById">
+        delete from sys_app
+        where id = #{id}
+    </delete>
+    <!--endregion-->
+
+    <!--region 根据主键查询单个应用-->
+    <select id="selectById" resultType="com.xci.sys.entity.SysApp">
+        select
+        <include refid="columns"/>
+        from sys_app
+        where id = #{id}
+    </select>
+    <!--endregion-->
+
+    <!--region 查询应用列表-->
+    <select id="selectList" resultType="com.xci.sys.entity.SysApp">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+
+    <!--region 查询应用分页列表-->
+    <select id="selectPageList" resultType="com.xci.sys.entity.SysApp">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+</mapper>

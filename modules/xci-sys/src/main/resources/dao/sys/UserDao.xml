@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xci.sys.dao.UserDao">
+    <!--region 公共代码段-->
+
+    <!--公共查询-->
+    <sql id="select">
+        select  u.id,u.name,u.spell,u.account,u.category,u.pwd_must_modify,u.pwd_allow_modify,
+                u.pwd_never_expire,u.pwd_expire_time,u.allow_start_time,u.allow_end_time,u.admin,
+                u.mobile,u.email,u.post,u.login_times,u.first_visit_time,u.last_visit_time,
+                u.ent_id,u.ent_name,u.visible,u.status,u.remark, d.id dept_id,d.name dept_name
+        from sys_user u left join sys_dept d on u.dept_id=d.id and d.status=1
+    </sql>
+
+    <!--公共Where查询条件-->
+    <sql id="where">
+        <where>
+            u.deleted=0
+            <if test="filter.status != null">and u.status = #{filter.status}</if>
+            <if test="filter.visible != null">and u.visible = #{filter.visible}</if>
+            <if test="filter.category != null">and u.category = #{filter.category}</if>
+            <if test="filter.deptId != null">
+                <choose>
+                    <when test="filter.deptAllLower != null and filter.deptAllLower == true">
+                        and u.dept_id in (
+                        <include refid="com.xci.internal.FrameworkDao.selectDeptAndLower">
+                            <property name="deptId" value="${filter.deptId}"/>
+                        </include>
+                        )
+                    </when>
+                    <otherwise>
+                        and u.dept_id = #{filter.deptId}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="filter.entId != null and filter.entId != ''">and u.ent_id = #{filter.entId}</if>
+            <if test="filter.entName != null and filter.entName != ''">
+                <bind name="sename" value="'%' + filter.entName + '%'"/>
+                and u.ent_name like #{sename}
+            </if>
+            <if test="filter.name != null and filter.name != ''">
+                <bind name="sname" value="'%' + filter.name + '%'"/>
+                and ( u.account like #{sname} or u.name like #{sname} or u.spell like #{sname} )
+            </if>
+            <if test="filter.mobile != null and filter.mobile != ''">
+                <bind name="smobile" value="'%' + filter.mobile + '%'"/>
+                and u.mobile like #{smobile}
+            </if>
+            <if test="filter.email != null and filter.email != ''">
+                <bind name="semail" value="'%' + filter.email + '%'"/>
+                and u.email like #{semail}
+            </if>
+            <if test="filter.dataScope != null and filter.dataScope == true">
+                <include refid="com.xci.internal.FrameworkDao.dataScope"/>
+            </if>
+        </where>
+    </sql>
+
+    <!--查询安全List-->
+    <sql id="selectSecurity">
+        select id,name,spell,account,category,dept_id,pwd,pwd_salt,pwd_must_modify,pwd_allow_modify,
+               pwd_never_expire,pwd_expire_time,allow_start_time,allow_end_time,admin,mobile,email,
+               post,login_times,first_visit_time,last_visit_time,ent_id,ent_name,visible,status,remark
+        from sys_user
+    </sql>
+
+    <!--查询List-->
+    <sql id="list">
+        <include refid="select"/>
+        <include refid="where"/>
+        order by u.id desc
+    </sql>
+
+    <!--endregion-->
+
+    <!--region 是否存在指定主键的用户-->
+    <select id="existById" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_user"/>
+            <property name="where" value="existByIdWhere"/>
+        </include>
+    </select>
+    <!--existById Where-->
+    <sql id="existByIdWhere">
+        where id = #{id} and deleted = 0
+    </sql>
+    <!--endregion-->
+
+    <!--region 是否存在指定机构主键的用户-->
+    <select id="existByDeptId" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_user"/>
+            <property name="where" value="existByDeptIdWhere"/>
+        </include>
+    </select>
+    <!--existByDeptId Where-->
+    <sql id="existByDeptIdWhere">
+        where dept_id = #{deptId} and deleted = 0
+    </sql>
+    <!--endregion-->
+
+    <!--region 是否存在指定角色主键的用户-->
+    <select id="existByRoleId" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_user"/>
+            <property name="where" value="existByRoleIdWhere"/>
+        </include>
+    </select>
+    <!--existByRoleId Where-->
+    <sql id="existByRoleIdWhere">
+        where role_id = #{roleId} and deleted = 0
+    </sql>
+    <!--endregion-->
+
+    <!--region 是否存在指定账号的用户-->
+    <select id="existByAccount" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_user"/>
+            <property name="where" value="existByAccountWhere"/>
+        </include>
+    </select>
+    <!--检查账号是否存在Where条件-->
+    <sql id="existByAccountWhere">
+        where account = #{account} and deleted = 0
+        <if test="excludeId != null">and id != #{excludeId}</if>
+    </sql>
+    <!--endregion-->
+
+    <!--region 新建用户-->
+    <insert id="insert">
+        insert into sys_user ( id,name,spell,account,category,dept_id,pwd,pwd_salt,pwd_must_modify,
+                               pwd_allow_modify,pwd_never_expire,pwd_expire_time,allow_start_time,allow_end_time,admin,mobile,
+                               email,post, login_times,first_visit_time,last_visit_time,ent_id,ent_name,visible,status,deleted,remark)
+        values
+        (
+            #{entity.id},
+            #{entity.name},
+            #{entity.spell},
+            #{entity.account},
+            #{entity.category},
+            #{entity.deptId},
+            #{entity.pwd},
+            #{entity.pwdSalt},
+            #{entity.pwdMustModify},
+            #{entity.pwdAllowedModify},
+            #{entity.pwdNeverExpire},
+            #{entity.pwdExpireTime},
+            #{entity.allowStartTime},
+            #{entity.allowEndTime},
+            #{entity.admin},
+            #{entity.mobile},
+            #{entity.email},
+            #{entity.post},
+            #{entity.loginTimes},
+            #{entity.firstVisitTime},
+            #{entity.lastVisitTime},
+            #{entity.entId},
+            #{entity.entName},
+            #{entity.visible},
+            #{entity.status},
+            0,
+            #{entity.remark}
+        )
+    </insert>
+    <!--endregion-->
+
+    <!--region 修改用户-->
+    <update id="update">
+        update sys_user
+        <set>
+            name = #{entity.name},
+            spell = #{entity.spell},
+            account = #{entity.account},
+            dept_id = #{entity.deptId},
+            role_id = #{entity.roleId},
+            pwd_must_modify = #{entity.pwdMustModify},
+            pwd_allow_modify = #{entity.pwdAllowModify},
+            pwd_never_expire = #{entity.pwdNeverExpire},
+            pwd_expire_time = #{entity.pwdExpireTime},
+            allow_start_time = #{entity.allowStartTime},
+            allow_end_time = #{entity.allowEndTime},
+            admin = #{entity.admin},
+            mobile = #{entity.mobile},
+            email = #{entity.email},
+            post = #{entity.post},
+            <if test="entity.category != null">category = #{entity.category},</if>
+            <if test="entity.entId != null">ent_id = #{entity.entId},</if>
+            <if test="entity.entName != null">ent_name = #{entity.entName},</if>
+            visible = #{entity.visible},
+            status = #{entity.status},
+            remark = #{entity.remark}
+        </set>
+        where id = #{entity.id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键修改用户状态-->
+    <update id="updateStatus">
+        update sys_user
+        set status = #{status}
+        where id = #{id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键删除用户-->
+    <update id="deleteById">
+        update sys_user
+        set deleted = #{newId}
+        where id = #{id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键查询单个用户-->
+    <select id="selectById" resultType="com.xci.sys.entity.SysUser">
+        <include refid="select"/>
+        where u.id = #{id}
+    </select>
+    <!--endregion-->
+
+    <!--region 根据账号查询单个用户-->
+    <select id="selectByAccount" resultType="com.xci.sys.entity.SysUser">
+        <include refid="select"/>
+        where u.account = #{account} and u.deleted = 0
+    </select>
+    <!--endregion-->
+
+    <!--region 根据户账号查询单个用户,包含安全信息-->
+    <select id="selectSecurityById" resultType="com.xci.sys.entity.SysUserSecurity">
+        <include refid="selectSecurity"/>
+        where id = #{id}
+    </select>
+    <!--endregion-->
+
+    <!--region 根据户账号查询单个用户,包含安全信息-->
+    <select id="selectSecurityByAccount" resultType="com.xci.sys.entity.SysUserSecurity">
+        <include refid="selectSecurity"/>
+        where account = #{account} and deleted = 0
+    </select>
+    <!--endregion-->
+
+    <!--region 查询用户列表-->
+    <select id="selectList" resultType="com.xci.sys.entity.SysUser">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+
+    <!--region 查询用户分页列表-->
+    <select id="selectPageList" resultType="com.xci.sys.entity.SysUser">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+
+    <!--region 账户 -->
+    
+    <!--region 更新用户登录状态-->
+    <update id="updateLoginStatus">
+        update sys_user
+        <set>
+            login_times = login_times + 1,
+            last_visit_time = #{lastVisitTime},
+            <if test="firstVisitTime != null">first_visit_time = #{firstVisitTime}</if>
+        </set>
+        where id = #{id}
+    </update>
+    <!--endregion -->
+
+    <!--region 修改用户密码-->
+    <update id="modifyPassword">
+        update sys_user
+        <set>
+            pwd_salt = #{salt},
+            pwd = #{pwd},
+            pwd_must_modify = 0,
+            <if test="pwdExpireTime != null">pwd_expire_time = #{pwdExpireTime}</if>
+        </set>
+        where id = #{id}
+    </update>
+    <!--endregion -->
+
+    <!--region 重置用户密码-->
+    <update id="revisePassword">
+        update sys_user
+        <set>
+            pwd_salt = #{salt},
+            pwd = #{pwd}
+        </set>
+        where id = #{id}
+    </update>
+    <!--endregion -->
+
+    <!--endregion -->
+
+    <!--region 用户角色关联 -->
+    
+    <!--region 查询指定角色关联的用户列表-->
+    <select id="selectListByRoleId" resultType="com.xci.sys.entity.SysUser">
+        <include refid="select"/>
+        where u.deleted=0 and u.status = 1 and exists (
+            select 1 from sys_user_role_map map where map.role_id = #{roleId} and map.user_id = u.id
+        )
+    </select>
+    <!--endregion-->
+
+    <!--region 查询指定角色未关联的用户列表-->
+    <select id="selectUnListByRoleId" resultType="com.xci.sys.entity.SysUser">
+        <include refid="select"/>
+        where u.deleted=0 and u.status = 1 and not exists (
+            select 1 from sys_user_role_map map where map.role_id = #{roleId} and map.user_id = u.id
+        )
+    </select>
+    <!--endregion-->
+
+    <!--region 新建用户角色关联-->
+    <insert id="insertUserRoleMap">
+        insert into sys_user_role_map (user_id, role_id)
+        values (#{entity.userId},#{entity.roleId})
+    </insert>
+    <!--endregion-->
+
+    <!--region 根据用户主键删除用户角色关联-->
+    <delete id="deleteUserRoleMapByUserId">
+        delete from sys_user_role_map
+        where user_id = #{userId}
+    </delete>
+    <!--endregion-->
+
+    <!--endregion -->
+
+    <!--region 用户拥有的模块 -->
+    <select id="selectUserModuleListByUserId" resultType="com.xci.sys.entity.SysModule">
+        select <include refid="com.xci.sys.dao.ModuleDao.columns"/>
+        from (
+            select <include refid="com.xci.sys.dao.ModuleDao.columns"/>
+            from sys_module
+            where status=1 and publiced=1
+            union
+            select <include refid="com.xci.sys.dao.ModuleDao.columns"/>
+            from sys_module m inner join
+                 (
+                     select distinct target_id module_id
+                     from sys_object_map
+                     where object_name='role'
+                       and object_id in
+                           (
+                               select r.id role_id from sys_role r join sys_user_role_map urmap
+                                on r.status=1 and urmap.user_id=#{userId} and urmap.role_id=r.id
+                           )
+                       and target_name='module'
+                 ) map
+                 on m.status=1 and map.module_id=m.id
+             ) x
+        order by x.parent_id asc, x.path asc
+    </select>
+    <!--endregion -->
+</mapper>

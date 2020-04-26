@@ -1,0 +1,36 @@
+* {
+    font-size: 100% !important;
+}
+.north-panel.mini{
+    height: 54px !important;
+}
+.north-panel .title {
+    font-size: 32px !important;
+}
+.north-panel .subtitle {
+    font-size: 16px !important;
+}
+.north-panel.mini .nav {
+    font-size: 14px !important;
+}
+.north-panel.mini li i {
+    font-size: 20px !important;
+}
+.south-panel .left {
+    font-size: 14px !important;
+}
+
+.south-panel .right {
+    font-size: 14px !important;
+}
+.south-panel {
+    height: 32px;
+    line-height: 30px;
+}
+
+.datagrid-cell .fa-toggle-on,.datagrid-cell .fa-toggle-off{
+    font-size: 1.5em !important;
+}
+.datagrid-cell .fa-check,.datagrid-cell .fa-close{
+    font-size: 1.5em !important;
+}

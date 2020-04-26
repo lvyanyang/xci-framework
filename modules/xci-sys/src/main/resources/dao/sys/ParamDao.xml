@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xci.sys.dao.ParamDao">
+    <!--region 公共代码段-->
+    
+    <!--公共查询列-->
+    <sql id="columns">
+        id,name,code,spell,value,category,remark
+    </sql>
+
+    <!--公共Where查询条件-->
+    <sql id="where">
+        <where>
+            <if test="filter.category != null">and category = #{filter.category}</if>
+            <if test="filter.name != null and filter.name != ''">
+                <bind name="sname" value="'%' + filter.name + '%'"/>
+                and ( code like #{sname} or name like #{sname} or spell like #{sname})
+            </if>
+        </where>
+    </sql>
+
+    <!--查询List-->
+    <sql id="list">
+        select <include refid="columns"/>
+        from sys_param
+        <include refid="where"/>
+        order by id desc
+    </sql>
+    
+    <!--endregion-->
+
+    <!--region 是否存在指定主键的参数-->
+    <select id="existById" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_param"/>
+            <property name="where" value="existByIdWhere"/>
+        </include>
+    </select>
+    <!--existById Where-->
+    <sql id="existByIdWhere">
+        where id = #{id}
+    </sql>
+    <!--endregion-->
+
+    <!--region 是否存在指定编码的参数-->
+    <select id="existByCode" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_param"/>
+            <property name="where" value="existByCodeWhere"/>
+        </include>
+    </select>
+    <!--existByCode Where-->
+    <sql id="existByCodeWhere">
+        where code = #{code}
+        <if test="excludeId != null">and id != #{excludeId}</if>
+    </sql>
+    <!--endregion-->
+    
+    <!--region 新建参数-->
+    <insert id="insert">
+        insert into sys_param (<include refid="columns"/>) values
+        (
+        #{entity.id},
+        #{entity.name},
+        #{entity.code},
+        #{entity.spell},
+        #{entity.value},
+        #{entity.category},
+        #{entity.remark}
+        )
+    </insert>
+    <!--endregion-->
+
+    <!--region 修改参数-->
+    <update id="update">
+        update sys_param
+        set name = #{entity.name},
+            code = #{entity.code},
+            spell = #{entity.spell},
+            value = #{entity.value},
+            category = #{entity.category},
+            remark = #{entity.remark}
+        where id = #{entity.id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键删除参数-->
+    <update id="deleteById">
+        delete from sys_param
+        where id = #{id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键查询单个参数-->
+    <select id="selectById" resultType="com.xci.sys.entity.SysParam">
+        select
+        <include refid="columns"/>
+        from sys_param
+        where id = #{id}
+    </select>
+    <!--endregion-->
+
+    <!--region 根据编码查询单个参数-->
+    <select id="selectByCode" resultType="com.xci.sys.entity.SysParam">
+        select
+        <include refid="columns"/>
+        from sys_param
+        where code = #{code}
+    </select>
+    <!--endregion-->
+
+    <!--region 查询参数列表-->
+    <select id="selectList" resultType="com.xci.sys.entity.SysParam">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+
+    <!--region 查询参数分页列表-->
+    <select id="selectPageList" resultType="com.xci.sys.entity.SysParam">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+</mapper>

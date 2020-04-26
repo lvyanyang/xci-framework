@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xci.sys.dao.SeqDao">
+    <!--region 公共代码段-->
+
+    <!--公共查询列-->
+    <sql id="columns">
+        id,name,code,start_with,current_value,increment_by,remark
+    </sql>
+
+    <!--公共Where查询条件-->
+    <sql id="where">
+        <where>
+            <if test="filter.name != null and filter.name != ''">
+                <bind name="sname" value="'%' + filter.name + '%'"/>
+                (name like #{sname} or code like #{sname})
+            </if>
+        </where>
+    </sql>
+
+    <!--查询List-->
+    <sql id="list">
+        select <include refid="columns"/>
+        from sys_seq
+        <include refid="where"/>
+        order by id desc
+    </sql>
+
+    <!--endregion-->
+
+    <!--region 是否存在指定主键的序列-->
+    <select id="existById" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_seq"/>
+            <property name="where" value="existByIdWhere"/>
+        </include>
+    </select>
+    <!--existById Where-->
+    <sql id="existByIdWhere">
+        where id = #{id}
+    </sql>
+    <!--endregion-->
+
+    <!--region 是否存在指定编码的序列-->
+    <select id="existByCode" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_seq"/>
+            <property name="where" value="existByCodeWhere"/>
+        </include>
+    </select>
+    <!--existByCode Where-->
+    <sql id="existByCodeWhere">
+        where code = #{code}
+        <if test="excludeId != null">and id != #{excludeId}</if>
+    </sql>
+    <!--endregion-->
+
+    <!--region 新建序列-->
+    <insert id="insert">
+        insert into sys_seq (id,name,code,start_with,current_value,increment_by,remark) values
+        (
+        #{entity.id},
+        #{entity.name},
+        #{entity.code},
+        #{entity.startWith},
+        #{entity.currentValue},
+        #{entity.incrementBy},
+        #{entity.remark}
+        )
+    </insert>
+    <!--endregion-->
+
+    <!--region 修改序列-->
+    <update id="update">
+        update sys_seq
+        set
+            name = #{entity.name},
+            code = #{entity.code},
+            start_with = #{entity.startWith},
+            current_value = #{entity.currentValue},
+            increment_by = #{entity.incrementBy},
+            remark = #{entity.remark}
+        where id = #{entity.id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键删除序列-->
+    <update id="deleteById">
+        delete from sys_seq
+        where id = #{id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键查询单个序列-->
+    <select id="selectById" resultType="com.xci.sys.entity.SysSeq">
+        select
+        <include refid="columns"/>
+        from sys_seq
+        where id = #{id}
+    </select>
+    <!--endregion-->
+
+    <!--region 根据编码查询单个序列-->
+    <select id="selectByCode" resultType="com.xci.sys.entity.SysSeq">
+        select
+        <include refid="columns"/>
+        from sys_seq
+        where code = #{code}
+    </select>
+    <!--endregion-->
+
+    <!--region 获取当前序列值-->
+    <select id="currentValue" resultType="java.lang.Long">
+        select current_value
+        from sys_seq
+        where code = #{code}
+    </select>
+    <!--endregion-->
+
+    <!--region 增长当前序列值-->
+    <update id="incrementValue">
+        update sys_seq
+        set current_value = current_value + 1
+        where code = #{code}
+    </update>
+    <!--endregion-->
+
+    <!--region 查询序列列表-->
+    <select id="selectList" resultType="com.xci.sys.entity.SysSeq">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+
+    <!--region 查询序列分页列表-->
+    <select id="selectPageList" resultType="com.xci.sys.entity.SysSeq">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+</mapper>

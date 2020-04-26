@@ -1,0 +1,46 @@
+.jxpanel {
+    overflow-x: hidden;
+}
+
+.row {
+    margin-left: 0;
+    margin-right: 15px;
+    /*padding-top: 15px;*/
+}
+
+.column {
+    padding-left: 15px;
+    padding-right: 0;
+}
+
+.portlet-body {
+    background-color: white;
+}
+
+.portlet {
+    height: 300px;
+    margin-bottom: 15px;
+}
+
+.portlet:nth-last-child(2) {
+    margin-bottom: 0;
+}
+
+.portlet-sortable-empty {
+    height: 25px;
+    margin-bottom: 0;
+    border: 1px dashed #e7ecf1;
+    margin: 5px 0;
+}
+
+.portlet-data-list {
+    margin: 0;
+    padding: 0;
+    /*margin-top: -15px;*/
+    padding-right: 15px;
+    padding-left: 5px;
+}
+
+.portlet-data-list li {
+    margin-bottom: 5px;
+}

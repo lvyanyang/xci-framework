@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xci.sys.dao.ObjectMapDao">
+    <!--region 新建对象关联-->
+    <insert id="insert">
+        insert into sys_object_map (object_name, object_id, target_name, target_id)
+        values (#{entity.objectName}, #{entity.objectId}, #{entity.targetName}, #{entity.targetId})
+    </insert>
+    <!--endregion-->
+
+    <!--region 根据对象删除-->
+    <delete id="deleteByObject">
+        delete
+        from sys_object_map
+        where object_name = #{objectName}
+          and object_id = #{objectId}
+          and target_name = #{targetName}
+    </delete>
+    <!--endregion-->
+
+    <!--region 根据目标删除-->
+    <delete id="deleteByTarget">
+        delete
+        from sys_object_map
+        where target_name = #{targetName}
+          and target_id = #{targetId}
+          and object_name = #{objectName}
+    </delete>
+    <!--endregion-->
+
+    <!--region 获取目标列表-->
+    <select id="selectTargetList" resultType="string">
+        select target_id
+        from sys_object_map
+        where object_name = #{objectName}
+          and object_id = #{objectId}
+          and target_name = #{targetName}
+    </select>
+    <!--endregion-->
+
+    <!--region 获取对象列表-->
+    <select id="selectObjectList" resultType="string">
+        select object_id
+        from sys_object_map
+        where target_name = #{targetName}
+          and target_id = #{targetId}
+          and object_name = #{objectName}
+    </select>
+    <!--endregion-->
+</mapper>

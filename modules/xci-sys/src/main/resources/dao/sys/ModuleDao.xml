@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xci.sys.dao.ModuleDao">
+    <!--region 公共代码段-->
+    <!--公共查询列-->
+    <sql id="columns">
+        id,parent_id,name,code,spell,param,web_url,web_cls,win_url,win_cls,web_setting,win_setting,menu,web,win,expand,publiced,path,status,remark
+    </sql>
+    <!--公共查询-->
+    <sql id="select">
+        select <include refid="columns"/>
+        from sys_module
+    </sql>
+
+    <!--region 公共Where查询条件-->
+    <sql id="where">
+        <where>
+            <if test="filter.status != null">status = #{filter.status}</if>
+        </where>
+    </sql>
+    <!--endregion-->
+
+    <!--查询List-->
+    <sql id="list">
+        <include refid="select"/>
+        <include refid="where"/>
+        order by parent_id asc,path asc
+    </sql>
+
+    <!--endregion-->
+
+    <!--region 是否存在指定主键的模块-->
+    <select id="existById" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_module"/>
+            <property name="where" value="existByIdWhere"/>
+        </include>
+    </select>
+    <!--existById Where-->
+    <sql id="existByIdWhere">
+        where id = #{id}
+    </sql>
+    <!--endregion-->
+
+    <!--region 是否存在指定编码的模块-->
+    <select id="existByCode" resultType="java.lang.Boolean">
+        <include refid="com.xci.internal.FrameworkDao.exists">
+            <property name="table" value="sys_module"/>
+            <property name="where" value="existByCodeWhere"/>
+        </include>
+    </select>
+    <!--existByCode Where-->
+    <sql id="existByCodeWhere">
+        where code = #{code}
+        <if test="excludeId != null">and id != #{excludeId}</if>
+    </sql>
+    <!--endregion-->
+
+    <!--region 新建模块-->
+    <insert id="insert">
+        insert into sys_module (id,parent_id,name,code,spell,param,web_url,web_cls,win_url,win_cls,web_setting,win_setting,menu,web,win,expand,publiced,path,status,remark)
+        values
+        (
+            #{entity.id},
+            #{entity.parentId},
+            #{entity.name},
+            #{entity.code},
+            #{entity.spell},
+            #{entity.param},
+            #{entity.webUrl},
+            #{entity.webCls},
+            #{entity.winUrl},
+            #{entity.winCls},
+            #{entity.webSetting},
+            #{entity.winSetting},
+            #{entity.menu},
+            #{entity.web},
+            #{entity.win},
+            #{entity.expand},
+            #{entity.publiced},
+            #{entity.path},
+            #{entity.status},
+            #{entity.remark}
+        )
+    </insert>
+    <!--endregion-->
+
+    <!--region 修改模块-->
+    <update id="update">
+        update sys_module
+        set
+            parent_id = #{entity.parentId},
+            name = #{entity.name},
+            code = #{entity.code},
+            spell = #{entity.spell},
+            param = #{entity.param},
+            web_url = #{entity.webUrl},
+            web_cls = #{entity.webCls},
+            win_url = #{entity.winUrl},
+            win_url = #{entity.winCls},
+            web_setting = #{entity.webSetting},
+            win_setting = #{entity.winSetting},
+            menu = #{entity.menu},
+            web = #{entity.web},
+            win = #{entity.win},
+            expand = #{entity.expand},
+            publiced = #{entity.publiced},
+            path = #{entity.path},
+            status = #{entity.status},
+            remark = #{entity.remark}
+        where id = #{entity.id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键更新排序路径-->
+    <update id="updatePath">
+        update sys_module
+        set path = #{path}
+        where id = #{id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键更新父节点-->
+    <update id="updateParentId">
+        update sys_module
+        set parent_id = #{parentId}
+        where id = #{id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键修改模块状态-->
+    <update id="updateStatus">
+        update sys_module
+        set status = #{status}
+        where id = #{id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键修改模块公共状态-->
+    <update id="updatePublicStatus">
+        update sys_module
+        set publiced = #{publicStatus}
+        where id = #{id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键修改模块展开状态-->
+    <update id="updateExpandStatus">
+        update sys_module
+        set expand = #{expandStatus}
+        where id = #{id}
+    </update>
+    <!--endregion-->
+    
+    <!--region 根据主键删除模块-->
+    <delete id="deleteById">
+        delete from sys_module
+        where id = #{id}
+    </delete>
+    <!--endregion-->
+
+    <!--region 根据主键查询单个模块-->
+    <select id="selectById" resultType="com.xci.sys.entity.SysModule">
+        <include refid="select"/>
+        where id = #{id}
+    </select>
+    <!--endregion-->
+
+    <!--region 根据编码查询单个模块-->
+    <select id="selectByCode" resultType="com.xci.sys.entity.SysModule">
+        <include refid="select"/>
+        where code = #{code}
+    </select>
+    <!--endregion-->
+
+    <!--region 查询模块列表-->
+    <select id="selectList" resultType="com.xci.sys.entity.SysModule">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+
+    <!--region 获取指定节点的直接子节点数-->
+    <select id="selectChildCount" resultType="java.lang.Integer">
+        select count(1)
+        from sys_module
+        where parent_id = #{id}
+    </select>
+    <!--endregion-->
+</mapper>

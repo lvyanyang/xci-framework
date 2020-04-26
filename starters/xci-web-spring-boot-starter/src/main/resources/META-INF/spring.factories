@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.xci.configuration.ApiAutoConfiguration,\
+com.xci.web.configuration.WebAutoConfiguration

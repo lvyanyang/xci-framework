@@ -1,0 +1,7 @@
+.tree .tree-node-selected,
+.tree .tree-node-hover {
+    background: none;
+    border: 1px dashed transparent;
+    margin: 1px;
+    cursor: default;
+}
