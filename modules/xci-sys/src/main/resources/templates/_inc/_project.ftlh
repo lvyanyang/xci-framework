@@ -117,7 +117,7 @@
 
 <#--是否编辑记录-->
 <#macro isEdit>
-    <#if !_create_?? || _create_ == "0">
+    <#if !_create_?? || _create_ == "0" || _create_ == "">
         <#nested/>
     </#if>
 </#macro>

@@ -4,6 +4,7 @@
 
 package com.github.lvyanyang.sys.web.component;
 
+import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.entity.SysDic;
 import com.github.lvyanyang.core.XCI;
 import com.github.lvyanyang.sys.entity.SysDept;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class SysWebService {
+public class SysWebService extends SysService {
     private static SysWebService me;
 
     @PostConstruct
@@ -85,7 +86,7 @@ public class SysWebService {
      * 字典列表转为树节点列表
      * @param dicList 字典列表
      */
-    public List<TreeNode> dicListToTreeNodeList(List<SysDic> dicList) {
+    public List<TreeNode> toDicNodeList(List<SysDic> dicList) {
         List<TreeNode> nodes = new ArrayList<>();
         if (ObjectUtils.isEmpty(dicList)) return nodes;
 
@@ -106,7 +107,7 @@ public class SysWebService {
      * 字典类型列表转为树节点列表
      * @param dicCategoryList 字典类型列表
      */
-    public List<TreeNode> dicCategoryListToTreeNodeList(List<SysDicCategory> dicCategoryList) {
+    public List<TreeNode> toDicCategoryNodeList(List<SysDicCategory> dicCategoryList) {
         List<TreeNode> nodes = new ArrayList<>();
         if (ObjectUtils.isEmpty(dicCategoryList)) return nodes;
 
@@ -122,4 +123,6 @@ public class SysWebService {
         }
         return nodes;
     }
+
+
 }

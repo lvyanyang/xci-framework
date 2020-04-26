@@ -7,7 +7,7 @@ package com.github.lvyanyang.sys.api;
 import com.github.lvyanyang.sys.component.CaptchaService;
 import com.github.lvyanyang.sys.core.SysApiController;
 import com.github.lvyanyang.sys.entity.SysUserSave;
-import com.github.lvyanyang.sys.service.SysService;
+import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.annotation.AllowAnonymous;
 import com.github.lvyanyang.annotation.Authorize;
 import com.github.lvyanyang.annotation.SingleJson;

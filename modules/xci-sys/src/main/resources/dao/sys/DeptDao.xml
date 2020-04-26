@@ -13,7 +13,8 @@
     <!--公共Where查询条件-->
     <sql id="where">
         <where>
-            <if test="filter.status != null">d.status = #{filter.status}</if>
+            d.deleted=0
+            <if test="filter.status != null">and d.status = #{filter.status}</if>
             <if test="filter.dataScope != null and filter.dataScope == true">
                 <include refid="com.github.lvyanyang.internal.FrameworkDao.dataScope"/>
             </if>

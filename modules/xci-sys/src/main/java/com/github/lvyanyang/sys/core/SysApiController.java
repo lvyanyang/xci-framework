@@ -7,7 +7,7 @@ package com.github.lvyanyang.sys.core;
 
 import com.github.lvyanyang.base.ApiController;
 import com.github.lvyanyang.sys.entity.SysUser;
-import com.github.lvyanyang.sys.service.SysService;
+import com.github.lvyanyang.sys.component.SysService;
 
 /**
  * 系统管理模块Api控制器基类

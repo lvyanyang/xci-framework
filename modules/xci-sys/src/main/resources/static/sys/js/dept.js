@@ -14,7 +14,7 @@ jx.ready(function () {
     };
     //定义变量
     var gridInstance;
-    var dialogWidth = '40%';
+    var dialogWidth = '600px';
     var dialogHeight = '580px';
     //endregion
 
@@ -69,9 +69,6 @@ jx.ready(function () {
         });
         $('#btn-delete,#btn-cmdelete').click(function () {
             deleteData();
-        });
-        $('#btn-export').click(function () {
-            exportData();
         });
 
         // 表格事件

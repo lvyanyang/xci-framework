@@ -14,6 +14,7 @@ import com.github.lvyanyang.core.XCI;
 import com.github.lvyanyang.exceptions.AppException;
 import com.github.lvyanyang.model.IdValue;
 import com.github.lvyanyang.sys.annotation.DataScope;
+import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.dao.DeptDao;
 import com.github.lvyanyang.sys.entity.SysDept;
 import com.github.lvyanyang.sys.entity.SysUser;
@@ -235,7 +236,14 @@ public class DeptService extends BaseService {
         //设置父节点默认值
         XCI.ifNullAction(entity.getParentId(), () -> entity.setParentId(R.ROOT_NODE_ID));
 
-        //todo:检测:修改时,上级节点不能是自己及所有下级节点
+        //重要校验:新增时父节点都不允许为空
+        if (created && entity.getParentId().equals(R.ROOT_NODE_ID)) {
+            return RestResult.fail("请指定上级机构");
+        }
+
+        // 重要校验:修改时上级节点不能是自己及所有下级节点
+        // 基于性能考虑，在客户端查询父节点时会把当前编辑的节点和所有子节点做移除处理
+        // 所以服务端只检测父节点不能是自己
         if (entity.getParentId().equals(entity.getId())) {
             return RestResult.fail("上级机构不能是自己");
         }

@@ -13,6 +13,7 @@ import com.github.lvyanyang.core.XCI;
 import com.github.lvyanyang.model.PageList;
 import com.github.lvyanyang.model.PermissionBody;
 import com.github.lvyanyang.sys.annotation.DataScope;
+import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.dao.RoleDao;
 import com.github.lvyanyang.sys.entity.SysDept;
 import com.github.lvyanyang.sys.entity.SysModule;

@@ -11,7 +11,7 @@ import com.github.lvyanyang.core.XCI;
 
 import com.github.lvyanyang.model.OperateLogInfo;
 import com.github.lvyanyang.sys.entity.SysApp;
-import com.github.lvyanyang.sys.service.SysService;
+import com.github.lvyanyang.sys.component.SysService;
 import lombok.extern.slf4j.Slf4j;
 
 /**

@@ -6,7 +6,7 @@ package com.github.lvyanyang.sys.web;
 
 import com.github.lvyanyang.core.XCI;
 import com.github.lvyanyang.sys.core.SysApiApplication;
-import com.github.lvyanyang.sys.service.SysService;
+import com.github.lvyanyang.sys.component.SysService;
 import lombok.extern.slf4j.Slf4j;
 
 /**

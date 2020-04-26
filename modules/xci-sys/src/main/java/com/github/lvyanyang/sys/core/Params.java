@@ -4,7 +4,7 @@
 
 package com.github.lvyanyang.sys.core;
 
-import com.github.lvyanyang.sys.service.SysService;
+import com.github.lvyanyang.sys.component.SysService;
 
 /**
  * 系统参数

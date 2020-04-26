@@ -5,7 +5,7 @@
 package com.github.lvyanyang.sys.api;
 
 import com.github.lvyanyang.sys.core.SysApiController;
-import com.github.lvyanyang.sys.service.SysService;
+import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.annotation.Authorize;
 import com.github.lvyanyang.annotation.SingleJson;
 import com.github.lvyanyang.sys.entity.SysErrorLog;

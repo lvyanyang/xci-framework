@@ -4,7 +4,7 @@
 
 package com.github.lvyanyang.sys.web.controller;
 
-import com.github.lvyanyang.sys.service.SysService;
+import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.web.component.SysWebService;
 import com.github.lvyanyang.annotation.Authorize;
 import com.github.lvyanyang.exceptions.NotFoundException;
@@ -50,17 +50,8 @@ public class DeptController extends SysWebController {
         entity.setParentId(Long.valueOf(parentId));
         entity.setStatus(true);
         map.put("entity", entity);
-        // map.put("parentName", getParentName(parentId));
-
-        //region 查询用户
-        var userFilter = new UserFilter();
-        userFilter.setStatus(true);
-        if (!getCurrentUser().getAdmin()){
-            //如果不是管理员,那么不显示隐藏的账户
-            userFilter.setVisible(true);
-        }
-        map.put("managerUserList", SysService.me().userService().selectList(userFilter));
-        //endregion
+        //查询负责人列表
+        map.put("managerUserList", SysWebService.me().selectEnabledUserList(true));
         return "sys/dept/edit";
     }
 
@@ -72,33 +63,10 @@ public class DeptController extends SysWebController {
         if (entity == null) throw new NotFoundException(id);
 
         map.put("entity", entity);
-        // map.put("parentName", getParentName(entity.getParentId()));
-        
-        //region 查询用户
-        var userFilter = new UserFilter();
-        userFilter.setStatus(true);
-        if (!getCurrentUser().getAdmin()){
-            //非管理员设置可见条件
-            userFilter.setVisible(true);
-        }
-        map.put("managerUserList", SysService.me().userService().selectList(userFilter));
-        //endregion
+        //查询负责人列表
+        map.put("managerUserList", SysWebService.me().selectEnabledUserList(true));
         return "sys/dept/edit";
     }
-
-    // private String getParentName(String id) {
-    //     String parentName = Const.EMPTY;
-    //     if (Helper.isNotBlank(id) && !id.equals(Const.ROOT_NODE_ID)) {
-    //         var parentModel = SysService.me().deptService().selectById(id);
-    //         if (parentModel!= null){
-    //             parentName = parentModel.getName();
-    //         }
-    //     }
-    //     if (Helper.isBlank(parentName)){
-    //         parentName = "顶层";
-    //     }
-    //     return parentName;
-    // }
 
     /** 详情页 */
     @GetMapping("/details")
@@ -108,12 +76,11 @@ public class DeptController extends SysWebController {
         if (entity == null) throw new NotFoundException(id);
 
         map.put("entity", entity);
-        // map.put("parentName", getParentName(entity.getParentId()));
-
-        var userFilter = new UserFilter();
-        userFilter.setDeptId(longId);
-        userFilter.setStatus(true);
-        map.put("users",SysService.me().userService().selectList(userFilter));
+        //查询当前机构成员列表
+        map.put("users", SysService.me().userService().selectList(new UserFilter() {{
+            setDeptId(longId);
+            setStatus(true);
+        }}));
         return "sys/dept/details";
     }
 
@@ -121,26 +88,16 @@ public class DeptController extends SysWebController {
 
     //region 数据处理
 
-   // /**
-   //  * Tree
-   //  */
-   // @ResponseBody
-   // @GetMapping("/tree")
-   // public Object tree(@RequestParam Map<String, String> params) {
-   //     params.put("status", "1");
-   //     List<SysDept> list = SysService.me().deptService().query(params);
-   //     List<TreeNode> models = SysService.me().deptService().convertToNodeList(list);
-   //     return RestMessage.tree(models);
-   // }
-
-    /** 用户拥有的部门 tree 节点 */
+    /**
+     *
+     */
     @ResponseBody
-    @GetMapping("/user-own-departments")
-    public RestResult userOwnDepartments() {
-        var filter = new DeptFilter();
-        filter.setStatus(true);
-        List<SysDept> departments = SysService.me().deptService().selectList(filter);
-        return RestResult.ok(SysWebService.me().toDeptNodeList(departments));
+    @GetMapping("/parentList")
+    public RestResult parentList(@RequestParam Long id, @RequestParam String created) {
+        List<SysDept> depts = SysWebService.me().selectEnabledDeptList(true);
+        //如果是修改时移除当前记录以及所有下级
+        XCI.ifTrueAction(XCI.isBlank(created),()->XCI.removeTreeChildren(depts,id,true));
+        return RestResult.ok(SysWebService.me().toDeptNodeList(depts));
     }
 
     /**
@@ -149,8 +106,7 @@ public class DeptController extends SysWebController {
     @ResponseBody
     @GetMapping("/grid")
     public JsonGrid grid(DeptFilter filter) {
-        List<SysDept> list = SysService.me().deptService().selectList(filter);
-        return new JsonGrid(list);
+        return new JsonGrid(SysService.me().deptService().selectList(filter));
     }
 
     /** 新增保存 */

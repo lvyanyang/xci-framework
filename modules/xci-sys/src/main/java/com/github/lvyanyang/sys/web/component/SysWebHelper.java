@@ -4,15 +4,12 @@
 
 package com.github.lvyanyang.sys.web.component;
 
+import com.github.lvyanyang.core.R;
+import com.github.lvyanyang.sys.component.SysService;
+import com.github.lvyanyang.sys.entity.SysDept;
 import com.github.lvyanyang.sys.entity.SysDic;
 import com.github.lvyanyang.sys.entity.SysRole;
-import com.github.lvyanyang.sys.service.SysService;
-import com.github.lvyanyang.core.R;
-import com.github.lvyanyang.sys.entity.SysDept;
 import com.github.lvyanyang.sys.entity.SysUser;
-import com.github.lvyanyang.sys.filter.DeptFilter;
-import com.github.lvyanyang.sys.filter.RoleFilter;
-import com.github.lvyanyang.sys.filter.UserFilter;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -29,7 +26,7 @@ public class SysWebHelper {
      */
     public boolean auth(String code) {
         var user = SysService.me().getCurrentUser();
-        return SysService.me().isAuthorize(user, code);
+        return SysWebService.me().isAuthorize(user, code);
     }
 
     /**
@@ -38,7 +35,7 @@ public class SysWebHelper {
      * @return 返回参数编码对应的参数值, 如果找不到指定的参数则返回空字符串
      */
     public String param(String code) {
-        return SysService.me().getParamStringValueByCode(code, R.Empty);
+        return SysWebService.me().getParamStringValueByCode(code, R.Empty);
     }
 
     /**
@@ -48,7 +45,7 @@ public class SysWebHelper {
      * @return 返回参数编码对应的参数值
      */
     public String param(String code, String defaultValue) {
-        return SysService.me().getParamStringValueByCode(code, defaultValue);
+        return SysWebService.me().getParamStringValueByCode(code, defaultValue);
     }
 
     /**
@@ -56,7 +53,29 @@ public class SysWebHelper {
      * @param dicCode 字典编码
      */
     public List<SysDic> dics(String dicCode) {
-        return SysService.me().getDicList(dicCode);
+        return SysWebService.me().getDicList(dicCode);
+    }
+
+    /**
+     * 查询数据字典键值对
+     * @param dicCode      字典类型编码
+     * @param name         字典名称
+     * @param defaultValue 找不到指定的项值时返回的默认值
+     * @return 返回数据字典键值对
+     */
+    public String dicValueByName(String dicCode, Object name, String defaultValue) {
+        return SysWebService.me().getDicValueByName(dicCode, name.toString(), defaultValue);
+    }
+
+    /**
+     * 查询数据字典键值对
+     * @param dicCode     字典类型编码
+     * @param value       字典项值
+     * @param defaultName 找不到指定的项值时返回的默认名称
+     * @return 返回数据字典键值对
+     */
+    public String dicNameByValue(String dicCode, Object value, String defaultName) {
+        return SysWebService.me().getDicNameByValue(dicCode, value.toString(), defaultName);
     }
 
     /**
@@ -65,14 +84,7 @@ public class SysWebHelper {
      * @param dataScope 是否启用数据权限过滤 [true-启用, false-禁用]
      */
     public List<SysUser> enabledUserList(boolean dataScope) {
-        var filter = new UserFilter();
-        filter.setStatus(true);
-        filter.setDataScope(dataScope);
-        if (!SysService.me().getCurrentUser().getAdmin()) {
-            //如果不是管理员,那么不显示隐藏的账户
-            filter.setVisible(true);
-        }
-        return SysService.me().userService().selectList(filter);
+        return SysWebService.me().selectEnabledUserList(dataScope);
     }
 
     /**
@@ -80,22 +92,15 @@ public class SysWebHelper {
      * @param dataScope 是否启用数据权限过滤 [true-启用, false-禁用]
      */
     public List<SysDept> enabledDeptList(boolean dataScope) {
-        var filter = new DeptFilter();
-        filter.setStatus(true);
-        filter.setDataScope(dataScope);
-        return SysService.me().deptService().selectList(filter);
+        return SysWebService.me().selectEnabledDeptList(dataScope);
     }
 
     /**
      * 查询启用的角色列表
-     * @param deptId 机构主键
+     * @param deptId    机构主键
      * @param dataScope 是否启用数据权限过滤 [true-启用, false-禁用]
      */
     public List<SysRole> enabledRoleList(Long deptId, boolean dataScope) {
-        var filter = new RoleFilter();
-        filter.setStatus(true);
-        filter.setDeptId(deptId);
-        filter.setDataScope(dataScope);
-        return SysService.me().roleService().selectList(filter);
+        return SysWebService.me().selectEnabledRoleList(deptId, dataScope);
     }
 }

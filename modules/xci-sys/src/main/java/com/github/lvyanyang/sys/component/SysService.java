@@ -2,7 +2,7 @@
  * Copyright (c) 2007-2020 西安交通信息投资营运有限公司 版权所有
  */
 
-package com.github.lvyanyang.sys.service;
+package com.github.lvyanyang.sys.component;
 
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateUtil;
@@ -16,8 +16,12 @@ import com.github.lvyanyang.model.HistoryInfo;
 import com.github.lvyanyang.model.HistoryOperateType;
 import com.github.lvyanyang.model.OperateLogInfo;
 import com.github.lvyanyang.sys.entity.*;
+import com.github.lvyanyang.sys.filter.DeptFilter;
+import com.github.lvyanyang.sys.filter.RoleFilter;
+import com.github.lvyanyang.sys.filter.UserFilter;
 import com.github.lvyanyang.sys.model.BaseOperateUserEntity;
 import com.github.lvyanyang.sys.model.BaseUserEntity;
+import com.github.lvyanyang.sys.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -489,6 +493,7 @@ public class SysService {
     public String getDicValueByName(String dicCode, Object name, String defaultValue) {
         return dicService.selectValueByName(dicCode, name.toString(), defaultValue);
     }
+
     //endregion
 
     //region getParam
@@ -543,6 +548,46 @@ public class SysService {
      */
     public Boolean getParamBooleanValueByCode(String code, Boolean defaultValue) {
         return XCI.toBool(getParamValueByCode(code, defaultValue));
+    }
+
+    /**
+     * 查询启用的用户列表
+     * 如果不是管理员,那么不显示隐藏的用户
+     * @param dataScope 是否启用数据权限过滤 [true-启用, false-禁用]
+     */
+    public List<SysUser> selectEnabledUserList(boolean dataScope) {
+        var filter = new UserFilter();
+        filter.setStatus(true);
+        filter.setDataScope(dataScope);
+        if (!SysService.me().getCurrentUser().getAdmin()) {
+            //如果不是管理员,那么不显示隐藏的账户
+            filter.setVisible(true);
+        }
+        return userService().selectList(filter);
+    }
+
+    /**
+     * 查询启用的部门列表
+     * @param dataScope 是否启用数据权限过滤 [true-启用, false-禁用]
+     */
+    public List<SysDept> selectEnabledDeptList(boolean dataScope) {
+        var filter = new DeptFilter();
+        filter.setStatus(true);
+        filter.setDataScope(dataScope);
+        return deptService().selectList(filter);
+    }
+
+    /**
+     * 查询启用的角色列表
+     * @param deptId 机构主键
+     * @param dataScope 是否启用数据权限过滤 [true-启用, false-禁用]
+     */
+    public List<SysRole> selectEnabledRoleList(Long deptId, boolean dataScope) {
+        var filter = new RoleFilter();
+        filter.setStatus(true);
+        filter.setDeptId(deptId);
+        filter.setDataScope(dataScope);
+        return roleService().selectList(filter);
     }
 
     //endregion

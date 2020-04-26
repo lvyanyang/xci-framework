@@ -12,7 +12,7 @@ import com.github.lvyanyang.model.PageList;
 import com.github.lvyanyang.sys.core.SysApiController;
 import com.github.lvyanyang.sys.entity.SysHistoryLog;
 import com.github.lvyanyang.sys.filter.HistoryLogFilter;
-import com.github.lvyanyang.sys.service.SysService;
+import com.github.lvyanyang.sys.component.SysService;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -6,12 +6,12 @@ package com.github.lvyanyang.sys.service;
 
 import com.github.lvyanyang.annotation.OperateLog;
 import com.github.lvyanyang.annotation.Valid;
-import com.github.lvyanyang.component.AsyncService;
 import com.github.lvyanyang.core.BaseService;
 import com.github.lvyanyang.core.R;
 import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
 import com.github.lvyanyang.model.PageList;
+import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.dao.AppDao;
 import com.github.lvyanyang.sys.entity.SysApp;
 import com.github.lvyanyang.sys.filter.AppFilter;
@@ -25,7 +25,6 @@ import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.TimerTask;
 
 /**
  * 系统应用服务

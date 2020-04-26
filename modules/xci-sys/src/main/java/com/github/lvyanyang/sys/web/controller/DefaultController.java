@@ -14,7 +14,7 @@ import com.github.lvyanyang.core.XCI;
 import com.github.lvyanyang.sys.entity.SysModule;
 import com.github.lvyanyang.sys.filter.HistoryLogFilter;
 import com.github.lvyanyang.sys.service.LockUserService;
-import com.github.lvyanyang.sys.service.SysService;
+import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.service.UserService;
 import com.github.lvyanyang.sys.web.component.SysWebService;
 import com.github.lvyanyang.sys.web.model.JsonGrid;

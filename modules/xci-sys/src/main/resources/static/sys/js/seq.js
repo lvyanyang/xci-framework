@@ -12,7 +12,7 @@ jx.ready(function () {
         details: '/sys/seq/details'
     };
     var gridInstance;
-    var dialogWidth = '50%'
+    var dialogWidth = '600px'
     var dialogHeight = '400px';
 
     //endregion

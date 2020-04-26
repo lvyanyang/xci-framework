@@ -1,3 +1,4 @@
+<#-- @ftlvariable name="_create_" type="java.lang.String" -->
 <#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.entity.SysDept" -->
 <#-- @ftlvariable name="managerUserList" type="java.util.List<com.github.lvyanyang.sys.entity.SysUser>" -->
 <#-- @ftlvariable name="parentName" type="java.lang.String" -->
@@ -14,9 +15,12 @@
                 <th>上级机构</th>
                 <td>
                     <input name="deptName" class='form-control jxcombotree'
-                           data-value="${entity.parentId}" data-validate="required: [true,'请选择上级机构']"
+                           data-value="${entity.parentId}"
+                            <#if (_create_?? && _create_ == "1") || entity.parentId!="0">
+                                data-validate="required: [true,'请选择上级机构']"
+                            </#if>
                            data-options="editable: false,showClear: false,hiddenField: 'parentId',panelHeight: '250px',
-                                        treeOptions: {url: '<@xci.url "/sys/dept/user-own-departments"/>',defaultIconCls: 'icon-users'}"/>
+                                        treeOptions: {url: '${web.url("/sys/dept/parentList?id="+entity.id+"&created="+_create_)}',defaultIconCls: 'icon-users',loadEmptyMessage: '无'}"/>
                 </td>
             </tr>
             <tr>

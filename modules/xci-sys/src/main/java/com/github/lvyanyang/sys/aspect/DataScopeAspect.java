@@ -11,7 +11,7 @@ import com.github.lvyanyang.core.XCI;
 import com.github.lvyanyang.exceptions.AppException;
 import com.github.lvyanyang.sys.annotation.DataScope;
 import com.github.lvyanyang.sys.entity.SysUser;
-import com.github.lvyanyang.sys.service.SysService;
+import com.github.lvyanyang.sys.component.SysService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Aspect;

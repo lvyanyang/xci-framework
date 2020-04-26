@@ -4,7 +4,7 @@
 
 package com.github.lvyanyang.sys.web.controller;
 
-import com.github.lvyanyang.sys.service.SysService;
+import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.web.WebController;
 import com.github.lvyanyang.sys.entity.SysUser;
 

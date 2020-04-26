@@ -11,6 +11,7 @@ import com.github.lvyanyang.core.R;
 import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
 import com.github.lvyanyang.model.IdValue;
+import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.dao.DicCategoryDao;
 import com.github.lvyanyang.sys.entity.SysDicCategory;
 import org.springframework.stereotype.Service;

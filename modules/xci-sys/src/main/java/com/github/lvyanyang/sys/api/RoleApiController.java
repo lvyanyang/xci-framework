@@ -18,7 +18,7 @@ import com.github.lvyanyang.sys.entity.SysModule;
 import com.github.lvyanyang.sys.entity.SysParam;
 import com.github.lvyanyang.sys.entity.SysRole;
 import com.github.lvyanyang.sys.filter.RoleFilter;
-import com.github.lvyanyang.sys.service.SysService;
+import com.github.lvyanyang.sys.component.SysService;
 import io.swagger.annotations.*;
 import lombok.Data;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -14,7 +14,7 @@ import com.github.lvyanyang.model.StatusBody;
 import com.github.lvyanyang.sys.core.SysApiController;
 import com.github.lvyanyang.sys.entity.SysApp;
 import com.github.lvyanyang.sys.filter.AppFilter;
-import com.github.lvyanyang.sys.service.SysService;
+import com.github.lvyanyang.sys.component.SysService;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

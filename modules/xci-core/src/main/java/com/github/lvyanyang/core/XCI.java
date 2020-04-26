@@ -3197,7 +3197,7 @@ public class XCI {
      * @param id      指定节点id
      * @param hasSelf 是否包含自身
      */
-    public static List<? extends ITreeModel> getTreeChilds(List<? extends ITreeModel> list, Long id, boolean hasSelf) {
+    public static List<? extends ITreeModel> getTreeChildren(List<? extends ITreeModel> list, Long id, boolean hasSelf) {
         ITreeModel current = getTreeCurrentModel(list, id);
         List<ITreeModel> storeList = new ArrayList<>();
         if (current != null) {
@@ -3224,6 +3224,19 @@ public class XCI {
         return entityOptional.orElse(null);
     }
 
+    /**
+     * 移除子节点
+     * @param list 树形对象集合
+     * @param id 待移除的对象注解
+     * @param hasSelf 是否移除自身
+     */
+    public static void removeTreeChildren(List<? extends ITreeModel> list, Long id,boolean hasSelf){
+        var children = XCI.getTreeChildren(list, id, hasSelf);
+        children.forEach(p -> {
+            list.removeIf(x -> x.getId().equals(p.getId()));
+        });
+    }
+
     public static List<IdValue> toParentIdValues(List<TreeNodeIndex> nodeIndexs) {
         List<IdValue> list = new ArrayList<>();
         for (TreeNodeIndex nodeIndex : nodeIndexs) {
@@ -3239,6 +3252,7 @@ public class XCI {
         }
         return list;
     }
+
 
     // endregion
 

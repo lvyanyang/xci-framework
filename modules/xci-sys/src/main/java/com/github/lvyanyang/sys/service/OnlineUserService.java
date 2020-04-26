@@ -7,6 +7,7 @@ package com.github.lvyanyang.sys.service;
 import com.github.lvyanyang.core.BaseService;
 import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
+import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.model.OnlineUserModel;
 import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;

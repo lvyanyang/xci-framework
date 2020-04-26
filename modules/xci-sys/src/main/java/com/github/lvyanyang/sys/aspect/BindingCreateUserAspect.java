@@ -5,7 +5,7 @@
 package com.github.lvyanyang.sys.aspect;
 
 import com.github.lvyanyang.sys.annotation.BindingCreateUser;
-import com.github.lvyanyang.sys.service.SysService;
+import com.github.lvyanyang.sys.component.SysService;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
