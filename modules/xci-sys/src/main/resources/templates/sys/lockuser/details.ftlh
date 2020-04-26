@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="entity" type="com.xci.sys.model.LockUserModel" -->
+<#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.model.LockUserModel" -->
 <#include "/_inc/_layout.ftlh">
 <@header/>
     <div class="jxpanel jx-overflow winpanel" data-options="fit:true">

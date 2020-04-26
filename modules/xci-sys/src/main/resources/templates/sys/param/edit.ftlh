@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="entity" type="com.xci.sys.entity.SysParam" -->
+<#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.entity.SysParam" -->
 <#include "/_inc/_layout.ftlh">
 <#assign url=xci.saveUrl("/sys/param/","createSave","updateSave")/>
 <@header/>

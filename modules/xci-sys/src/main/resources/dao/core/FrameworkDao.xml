@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xci.internal.FrameworkDao">
+<mapper namespace="com.github.lvyanyang.internal.FrameworkDao">
 
     <!--检查某个表指定查询条件的记录是否存在,存在返回1,否则返回0-->
     <sql id="exists">
@@ -74,7 +74,7 @@
             <!--1:全部 不需要要任何条件-->
             <!--2:自定义-->
             <if test="filter.params.dataScope == 2">
-                and <include refid="com.xci.internal.FrameworkDao.getDeptColumn"/> in (
+                and <include refid="com.github.lvyanyang.internal.FrameworkDao.getDeptColumn"/> in (
                     select distinct target_id dept_id from sys_object_map
                     where object_name='role'
                         and object_id in
@@ -87,19 +87,19 @@
             </if>
             <!--3:机构-->
             <if test="filter.params.dataScope == 3">
-                and <include refid="com.xci.internal.FrameworkDao.getDeptColumn"/> = ${filter.params.deptId}
+                and <include refid="com.github.lvyanyang.internal.FrameworkDao.getDeptColumn"/> = ${filter.params.deptId}
             </if>
             <!--4:机构及以下-->
             <if test="filter.params.dataScope == 4">
-                and <include refid="com.xci.internal.FrameworkDao.getDeptColumn"/> in (
-                <include refid="com.xci.internal.FrameworkDao.selectDeptAndLower">
+                and <include refid="com.github.lvyanyang.internal.FrameworkDao.getDeptColumn"/> in (
+                <include refid="com.github.lvyanyang.internal.FrameworkDao.selectDeptAndLower">
                     <property name="deptId" value="${filter.params.deptId}"/>
                 </include>
                 )
             </if>
             <!--5:仅本人-->
             <if test="filter.params.dataScope == 5 and (filter.params.userAlias != null and filter.params.userAlias != '')">
-                and <include refid="com.xci.internal.FrameworkDao.getUserColumn"/> = ${filter.params.userId}
+                and <include refid="com.github.lvyanyang.internal.FrameworkDao.getUserColumn"/> = ${filter.params.userId}
             </if>
             <!--不查询任何数据-->
             <if test="filter.params.dataScope == 5 and (filter.params.userAlias == null || filter.params.userAlias == '')">

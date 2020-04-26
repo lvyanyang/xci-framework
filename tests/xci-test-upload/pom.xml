@@ -9,12 +9,13 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.xci</groupId>
+    <groupId>com.github.lvyanyang</groupId>
     <artifactId>xci-test-upload</artifactId>
     <version>1.0.1</version>
     <description>文件上传模块测试程序</description>
 
     <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
@@ -23,12 +24,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.xci</groupId>
+            <groupId>com.github.lvyanyang</groupId>
             <artifactId>xci-web-spring-boot-starter</artifactId>
             <version>${xci.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.xci</groupId>
+            <groupId>com.github.lvyanyang</groupId>
             <artifactId>xci-upload-spring-boot-starter</artifactId>
             <version>${xci.version}</version>
         </dependency>

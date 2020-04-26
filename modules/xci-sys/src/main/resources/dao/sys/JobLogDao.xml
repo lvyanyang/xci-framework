@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xci.sys.dao.JobLogDao">
+<mapper namespace="com.github.lvyanyang.sys.dao.JobLogDao">
     <!--region 公共代码段-->
 
     <!--公共查询列-->
@@ -69,7 +69,7 @@
     <!--endregion-->
 
     <!--region 根据主键查询单个定时任务日志-->
-    <select id="selectById" resultType="com.xci.sys.entity.SysJobLog">
+    <select id="selectById" resultType="com.github.lvyanyang.sys.entity.SysJobLog">
         select
         <include refid="columns"/>,error_msg
         from sys_job_log
@@ -78,7 +78,7 @@
     <!--endregion-->
 
     <!--region 查询定时任务日志分页列表-->
-    <select id="selectPageList" resultType="com.xci.sys.entity.SysJobLog">
+    <select id="selectPageList" resultType="com.github.lvyanyang.sys.entity.SysJobLog">
         <include refid="list" />
     </select>
     <!--endregion-->

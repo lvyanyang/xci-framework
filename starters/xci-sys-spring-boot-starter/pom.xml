@@ -8,7 +8,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>xci-framework</artifactId>
-        <groupId>com.xci</groupId>
+        <groupId>com.github.lvyanyang</groupId>
         <version>2.0.1</version>
         <relativePath>../../</relativePath>
     </parent>
@@ -23,7 +23,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.xci</groupId>
+            <groupId>com.github.lvyanyang</groupId>
             <artifactId>xci-sys</artifactId>
         </dependency>
     </dependencies>

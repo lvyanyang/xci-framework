@@ -3,5 +3,5 @@
 [#-- @ftlroot "../resources/templates/" --]
 [#-- @ftlroot "../resources/static/" --]
 [#-- @ftlvariable name="request" type="org.springframework.web.servlet.support.RequestContext" --]
-[#-- @ftlvariable name="web" type="com.xci.web.component.WebHelper" --]
-[#-- @ftlvariable name="sys" type="com.xci.sys.web.component.SysWebHelper" --]
+[#-- @ftlvariable name="web" type="com.github.lvyanyang.web.component.WebHelper" --]
+[#-- @ftlvariable name="sys" type="com.github.lvyanyang.sys.web.component.SysWebHelper" --]

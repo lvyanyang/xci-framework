@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.xci.sys.configuration.SysAutoConfiguration
+com.github.lvyanyang.sys.configuration.SysAutoConfiguration

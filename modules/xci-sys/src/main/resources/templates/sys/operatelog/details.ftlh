@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="entity" type="com.xci.sys.entity.SysOperateLog" -->
+<#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.entity.SysOperateLog" -->
 <#include "/_inc/_layout.ftlh">
 <@header/>
 <div class="jxpanel winpanel" data-fit="true">

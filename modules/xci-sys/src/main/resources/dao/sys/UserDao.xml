@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xci.sys.dao.UserDao">
+<mapper namespace="com.github.lvyanyang.sys.dao.UserDao">
     <!--region 公共代码段-->
 
     <!--公共查询-->
@@ -23,7 +23,7 @@
                 <choose>
                     <when test="filter.deptAllLower != null and filter.deptAllLower == true">
                         and u.dept_id in (
-                        <include refid="com.xci.internal.FrameworkDao.selectDeptAndLower">
+                        <include refid="com.github.lvyanyang.internal.FrameworkDao.selectDeptAndLower">
                             <property name="deptId" value="${filter.deptId}"/>
                         </include>
                         )
@@ -51,7 +51,7 @@
                 and u.email like #{semail}
             </if>
             <if test="filter.dataScope != null and filter.dataScope == true">
-                <include refid="com.xci.internal.FrameworkDao.dataScope"/>
+                <include refid="com.github.lvyanyang.internal.FrameworkDao.dataScope"/>
             </if>
         </where>
     </sql>
@@ -75,7 +75,7 @@
 
     <!--region 是否存在指定主键的用户-->
     <select id="existById" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_user"/>
             <property name="where" value="existByIdWhere"/>
         </include>
@@ -88,7 +88,7 @@
 
     <!--region 是否存在指定机构主键的用户-->
     <select id="existByDeptId" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_user"/>
             <property name="where" value="existByDeptIdWhere"/>
         </include>
@@ -101,7 +101,7 @@
 
     <!--region 是否存在指定角色主键的用户-->
     <select id="existByRoleId" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_user"/>
             <property name="where" value="existByRoleIdWhere"/>
         </include>
@@ -114,7 +114,7 @@
 
     <!--region 是否存在指定账号的用户-->
     <select id="existByAccount" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_user"/>
             <property name="where" value="existByAccountWhere"/>
         </include>
@@ -211,41 +211,41 @@
     <!--endregion-->
 
     <!--region 根据主键查询单个用户-->
-    <select id="selectById" resultType="com.xci.sys.entity.SysUser">
+    <select id="selectById" resultType="com.github.lvyanyang.sys.entity.SysUser">
         <include refid="select"/>
         where u.id = #{id}
     </select>
     <!--endregion-->
 
     <!--region 根据账号查询单个用户-->
-    <select id="selectByAccount" resultType="com.xci.sys.entity.SysUser">
+    <select id="selectByAccount" resultType="com.github.lvyanyang.sys.entity.SysUser">
         <include refid="select"/>
         where u.account = #{account} and u.deleted = 0
     </select>
     <!--endregion-->
 
     <!--region 根据户账号查询单个用户,包含安全信息-->
-    <select id="selectSecurityById" resultType="com.xci.sys.entity.SysUserSecurity">
+    <select id="selectSecurityById" resultType="com.github.lvyanyang.sys.entity.SysUserSecurity">
         <include refid="selectSecurity"/>
         where id = #{id}
     </select>
     <!--endregion-->
 
     <!--region 根据户账号查询单个用户,包含安全信息-->
-    <select id="selectSecurityByAccount" resultType="com.xci.sys.entity.SysUserSecurity">
+    <select id="selectSecurityByAccount" resultType="com.github.lvyanyang.sys.entity.SysUserSecurity">
         <include refid="selectSecurity"/>
         where account = #{account} and deleted = 0
     </select>
     <!--endregion-->
 
     <!--region 查询用户列表-->
-    <select id="selectList" resultType="com.xci.sys.entity.SysUser">
+    <select id="selectList" resultType="com.github.lvyanyang.sys.entity.SysUser">
         <include refid="list"/>
     </select>
     <!--endregion-->
 
     <!--region 查询用户分页列表-->
-    <select id="selectPageList" resultType="com.xci.sys.entity.SysUser">
+    <select id="selectPageList" resultType="com.github.lvyanyang.sys.entity.SysUser">
         <include refid="list"/>
     </select>
     <!--endregion-->
@@ -293,7 +293,7 @@
     <!--region 用户角色关联 -->
     
     <!--region 查询指定角色关联的用户列表-->
-    <select id="selectListByRoleId" resultType="com.xci.sys.entity.SysUser">
+    <select id="selectListByRoleId" resultType="com.github.lvyanyang.sys.entity.SysUser">
         <include refid="select"/>
         where u.deleted=0 and u.status = 1 and exists (
             select 1 from sys_user_role_map map where map.role_id = #{roleId} and map.user_id = u.id
@@ -302,7 +302,7 @@
     <!--endregion-->
 
     <!--region 查询指定角色未关联的用户列表-->
-    <select id="selectUnListByRoleId" resultType="com.xci.sys.entity.SysUser">
+    <select id="selectUnListByRoleId" resultType="com.github.lvyanyang.sys.entity.SysUser">
         <include refid="select"/>
         where u.deleted=0 and u.status = 1 and not exists (
             select 1 from sys_user_role_map map where map.role_id = #{roleId} and map.user_id = u.id
@@ -327,14 +327,14 @@
     <!--endregion -->
 
     <!--region 用户拥有的模块 -->
-    <select id="selectUserModuleListByUserId" resultType="com.xci.sys.entity.SysModule">
-        select <include refid="com.xci.sys.dao.ModuleDao.columns"/>
+    <select id="selectUserModuleListByUserId" resultType="com.github.lvyanyang.sys.entity.SysModule">
+        select <include refid="com.github.lvyanyang.sys.dao.ModuleDao.columns"/>
         from (
-            select <include refid="com.xci.sys.dao.ModuleDao.columns"/>
+            select <include refid="com.github.lvyanyang.sys.dao.ModuleDao.columns"/>
             from sys_module
             where status=1 and publiced=1
             union
-            select <include refid="com.xci.sys.dao.ModuleDao.columns"/>
+            select <include refid="com.github.lvyanyang.sys.dao.ModuleDao.columns"/>
             from sys_module m inner join
                  (
                      select distinct target_id module_id

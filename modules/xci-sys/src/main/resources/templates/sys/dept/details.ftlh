@@ -1,5 +1,5 @@
-<#-- @ftlvariable name="entity" type="com.xci.sys.entity.SysDept" -->
-<#-- @ftlvariable name="users" type="java.util.List<com.xci.sys.entity.SysUser>" -->
+<#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.entity.SysDept" -->
+<#-- @ftlvariable name="users" type="java.util.List<com.github.lvyanyang.sys.entity.SysUser>" -->
 <#-- @ftlvariable name="parentName" type="java.lang.String" -->
 <#include "/_inc/_layout.ftlh">
 <#include "/_inc/_historyLog.ftlh">

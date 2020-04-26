@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xci.sys.dao.FileDao">
+<mapper namespace="com.github.lvyanyang.sys.dao.FileDao">
     <!--region 公共代码段-->
 
     <!--公共查询列-->
@@ -28,7 +28,7 @@
 
     <!--region 检查记录主键是否存在-->
     <select id="existByRecordId" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_file"/>
             <property name="where" value="existByRecordIdWhere"/>
         </include>
@@ -69,7 +69,7 @@
     <!--endregion-->
 
     <!--region 根据主键查询单个文件-->
-    <select id="selectById" resultType="com.xci.sys.entity.SysFile">
+    <select id="selectById" resultType="com.github.lvyanyang.sys.entity.SysFile">
         select
         <include refid="columns"/>
         from sys_file
@@ -78,7 +78,7 @@
     <!--endregion-->
 
     <!--region 根据主键查询单个文件-->
-    <select id="selectByRecordId" resultType="com.xci.sys.entity.SysFile">
+    <select id="selectByRecordId" resultType="com.github.lvyanyang.sys.entity.SysFile">
         select
         <include refid="columns"/>
         from sys_file
@@ -87,13 +87,13 @@
     <!--endregion-->
 
     <!--region 查询文件列表-->
-    <select id="selectList" resultType="com.xci.sys.entity.SysFile">
+    <select id="selectList" resultType="com.github.lvyanyang.sys.entity.SysFile">
         <include refid="list"/>
     </select>
     <!--endregion-->
 
     <!--region 查询文件分页列表-->
-    <select id="selectPageList" resultType="com.xci.sys.entity.SysFile">
+    <select id="selectPageList" resultType="com.github.lvyanyang.sys.entity.SysFile">
         <include refid="list"/>
     </select>
     <!--endregion-->

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xci.sys.dao.DicCategoryDao">
+<mapper namespace="com.github.lvyanyang.sys.dao.DicCategoryDao">
     <!--region 公共代码段-->
 
     <!--公共查询列-->
@@ -21,7 +21,7 @@
 
     <!--region 是否存在指定主键的字典类型-->
     <select id="existById" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_dic_category"/>
             <property name="where" value="existByIdWhere"/>
         </include>
@@ -34,7 +34,7 @@
 
     <!--region 是否存在指定编码的字典类型-->
     <select id="existByCode" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_dic_category"/>
             <property name="where" value="existByCodeWhere"/>
         </include>
@@ -48,7 +48,7 @@
 
     <!--region 检查是否存在指定的字典类型名称-->
     <select id="existByName" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_dic_category"/>
             <property name="where" value="existByNameWhere"/>
         </include>
@@ -114,21 +114,21 @@
     <!--endregion-->
 
     <!--region 根据主键查询单个字典类型-->
-    <select id="selectById" resultType="com.xci.sys.entity.SysDicCategory">
+    <select id="selectById" resultType="com.github.lvyanyang.sys.entity.SysDicCategory">
         <include refid="select"/>
         where id = #{id}
     </select>
     <!--endregion-->
 
     <!--region 根据编码查询单个字典类型-->
-    <select id="selectByCode" resultType="com.xci.sys.entity.SysDicCategory">
+    <select id="selectByCode" resultType="com.github.lvyanyang.sys.entity.SysDicCategory">
         <include refid="select"/>
         where code = #{code}
     </select>
     <!--endregion-->
 
     <!--region 查询字典类型列表-->
-    <select id="selectList" resultType="com.xci.sys.entity.SysDicCategory">
+    <select id="selectList" resultType="com.github.lvyanyang.sys.entity.SysDicCategory">
         <include refid="list"/>
     </select>
     <!--endregion-->

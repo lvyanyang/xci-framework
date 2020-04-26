@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="entity" type="com.xci.sys.entity.SysDic" -->
+<#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.entity.SysDic" -->
 <#include "/sys/_inc/_layout.ftlh">
 <#include "/sys/_inc/_history.ftlh">
 <@header/>

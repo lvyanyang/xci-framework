@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="entity" type="com.xci.sys.entity.SysSeq" -->
+<#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.entity.SysSeq" -->
 <#include "/_inc/_layout.ftlh">
 <#assign url=xci.saveUrl("/sys/seq/","createSave","updateSave")/>
 <@header/>

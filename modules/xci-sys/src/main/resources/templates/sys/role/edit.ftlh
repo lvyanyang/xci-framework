@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="entity" type="com.xci.sys.entity.SysRole" -->
+<#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.entity.SysRole" -->
 <#include "/sys/_inc/_layout.ftlh">
 <#assign url=xci.saveUrl("/sys/role/","createSave","updateSave")/>
 <@header/>

@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="currentUser" type="com.xci.sys.entity.SysUser" -->
+<#-- @ftlvariable name="currentUser" type="com.github.lvyanyang.sys.entity.SysUser" -->
 <#-- @ftlvariable name="systemTitle" type="java.lang.String" -->
 <#-- @ftlvariable name="systemTitleColor" type="java.lang.String" -->
 <#-- @ftlvariable name="systemCopyright" type="java.lang.String" -->

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xci.sys.dao.AppDao">
+<mapper namespace="com.github.lvyanyang.sys.dao.AppDao">
     <!--region 公共代码段-->
 
     <!--公共查询列-->
@@ -32,7 +32,7 @@
 
     <!--region 是否存在指定主键的应用-->
     <select id="existById" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_app"/>
             <property name="where" value="existByIdWhere"/>
         </include>
@@ -45,7 +45,7 @@
 
     <!--region 检查是否存在指定的应用名称-->
     <select id="existByName" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_app"/>
             <property name="where" value="existByNameWhere"/>
         </include>
@@ -95,7 +95,7 @@
     <!--endregion-->
 
     <!--region 根据主键查询单个应用-->
-    <select id="selectById" resultType="com.xci.sys.entity.SysApp">
+    <select id="selectById" resultType="com.github.lvyanyang.sys.entity.SysApp">
         select
         <include refid="columns"/>
         from sys_app
@@ -104,13 +104,13 @@
     <!--endregion-->
 
     <!--region 查询应用列表-->
-    <select id="selectList" resultType="com.xci.sys.entity.SysApp">
+    <select id="selectList" resultType="com.github.lvyanyang.sys.entity.SysApp">
         <include refid="list"/>
     </select>
     <!--endregion-->
 
     <!--region 查询应用分页列表-->
-    <select id="selectPageList" resultType="com.xci.sys.entity.SysApp">
+    <select id="selectPageList" resultType="com.github.lvyanyang.sys.entity.SysApp">
         <include refid="list"/>
     </select>
     <!--endregion-->

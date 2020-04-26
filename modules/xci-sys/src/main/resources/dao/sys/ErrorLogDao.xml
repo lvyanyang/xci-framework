@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xci.sys.dao.ErrorLogDao">
+<mapper namespace="com.github.lvyanyang.sys.dao.ErrorLogDao">
     <!--region 公共代码段-->
 
     <!--公共查询列-->
@@ -78,7 +78,7 @@
     <!--endregion-->
 
     <!--region 根据主键查询单个错误日志-->
-    <select id="selectById" resultType="com.xci.sys.entity.SysErrorLog">
+    <select id="selectById" resultType="com.github.lvyanyang.sys.entity.SysErrorLog">
         select<include refid="columns"/>,req_param,msg,details
         from sys_error_log
         where id = #{id}
@@ -86,7 +86,7 @@
     <!--endregion-->
 
     <!--region 查询错误日志分页列表-->
-    <select id="selectPageList" resultType="com.xci.sys.entity.SysErrorLog">
+    <select id="selectPageList" resultType="com.github.lvyanyang.sys.entity.SysErrorLog">
         <include refid="list"/>
     </select>
     <!--endregion-->

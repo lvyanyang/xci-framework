@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xci.sys.dao.DicDao">
+<mapper namespace="com.github.lvyanyang.sys.dao.DicDao">
     <!--region 公共代码段-->
 
     <!--公共查询列-->
@@ -31,7 +31,7 @@
 
     <!--region 是否存在指定主键的字典-->
     <select id="existById" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_dic"/>
             <property name="where" value="existByIdWhere"/>
         </include>
@@ -44,7 +44,7 @@
 
     <!--region 检查字典类型编码是否存在-->
     <select id="existByCategoryCode" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_dic"/>
             <property name="where" value="existByCodeWhere"/>
         </include>
@@ -57,7 +57,7 @@
 
     <!--region 检查是否存在指定的字典名称-->
     <select id="existByName" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_dic"/>
             <property name="where" value="existByNameWhere"/>
         </include>
@@ -150,14 +150,14 @@
     <!--endregion-->
 
     <!--region 根据主键查询单个字典-->
-    <select id="selectById" resultType="com.xci.sys.entity.SysDic">
+    <select id="selectById" resultType="com.github.lvyanyang.sys.entity.SysDic">
         <include refid="select"/>
         where id = #{id}
     </select>
     <!--endregion-->
 
     <!--region 查询字典列表-->
-    <select id="selectList" resultType="com.xci.sys.entity.SysDic">
+    <select id="selectList" resultType="com.github.lvyanyang.sys.entity.SysDic">
         <include refid="list"/>
     </select>
     <!--endregion-->

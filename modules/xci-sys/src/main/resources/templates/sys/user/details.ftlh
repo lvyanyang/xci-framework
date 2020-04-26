@@ -1,6 +1,6 @@
-<#-- @ftlvariable name="roles" type="java.util.List<com.xci.sys.entity.SysRole>" -->
-<#-- @ftlvariable name="modules" type="java.util.List<com.xci.sys.entity.SysModule>" -->
-<#-- @ftlvariable name="entity" type="com.xci.sys.entity.SysUser" -->
+<#-- @ftlvariable name="roles" type="java.util.List<com.github.lvyanyang.sys.entity.SysRole>" -->
+<#-- @ftlvariable name="modules" type="java.util.List<com.github.lvyanyang.sys.entity.SysModule>" -->
+<#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.entity.SysUser" -->
 <#-- @ftlvariable name="selfDataMessage" type="java.lang.String" -->
 <#-- @ftlvariable name="dataMessage" type="java.lang.String" -->
 <#include "/sys/_inc/_layout.ftlh">

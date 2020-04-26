@@ -14,11 +14,11 @@
         <module>tests/xci-test-sys</module>
         <module>tests/xci-test-upload</module>
     </modules>
-    <groupId>com.xci</groupId>
+    <groupId>com.github.lvyanyang</groupId>
     <artifactId>xci-framework</artifactId>
     <version>2.0.1</version>
     <name>xci-framework</name>
-    <description>西安交通信息业务软件开发框架</description>
+    <description>西交投业务软件开发框架</description>
     <url>https://github.com/lvyanyang/xci-framework</url>
 
     <properties>
@@ -402,37 +402,37 @@
 
             <!--xci-core-->
             <dependency>
-                <groupId>com.xci</groupId>
+                <groupId>com.github.lvyanyang</groupId>
                 <artifactId>xci-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <!--xci-sys-->
             <dependency>
-                <groupId>com.xci</groupId>
+                <groupId>com.github.lvyanyang</groupId>
                 <artifactId>xci-sys</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <!--xci-upload-->
             <dependency>
-                <groupId>com.xci</groupId>
+                <groupId>com.github.lvyanyang</groupId>
                 <artifactId>xci-upload</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.xci</groupId>
+                <groupId>com.github.lvyanyang</groupId>
                 <artifactId>xci-web-spring-boot-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.xci</groupId>
+                <groupId>com.github.lvyanyang</groupId>
                 <artifactId>xci-sys-spring-boot-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.xci</groupId>
+                <groupId>com.github.lvyanyang</groupId>
                 <artifactId>xci-upload-spring-boot-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -455,19 +455,27 @@
         </repository>
     </repositories>
 
-    <!-- 设置发布地址 -->
-    <distributionManagement>
-        <repository>
-            <id>nexus-releases</id>
-            <name>Nexus Release Repository</name>
-            <url>http://192.168.1.239:8081/repository/maven-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>nexus-snapshots</id>
-            <name>Nexus Snapshot Repository</name>
-            <url>http://192.168.1.239:8081/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+    <licenses>
+        <license>
+            <name>The MIT License</name>
+            <url>http://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>lvyanyang</name>
+            <email>81738042@qq.com</email>
+            <organization>xci</organization>
+            <url>https://github.com/lvyanyang</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/lvyanyang/xci-framework.git</connection>
+        <developerConnection>scm:git:https://github.com/lvyanyang/xci-framework.git</developerConnection>
+        <url>https://github.com/lvyanyang/xci-framework</url>
+    </scm>
 
     <!--生成配置-->
     <build>
@@ -482,21 +490,92 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
-            <!--源码上传插件-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
+
+    <!--发布命令:mvn clean deploy -P release-->
+    <profiles>
+        <profile>
+            <id>release</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>oss</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+                </snapshotRepository>
+                <repository>
+                    <id>oss</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <!--源码插件-->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Javadoc -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.1.1</version>
+                        <configuration>
+                            <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- <additionalparam>-Xdoclint:none</additionalparam>  -->
+                                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Gpg Signature -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>oss</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!--<plugin>-->
+                    <!--    <groupId>org.sonatype.plugins</groupId>-->
+                    <!--    <artifactId>nexus-staging-maven-plugin</artifactId>-->
+                    <!--    <version>1.6.8</version>-->
+                    <!--    <extensions>true</extensions>-->
+                    <!--    <configuration>-->
+                    <!--        <serverId>oss</serverId>-->
+                    <!--        <nexusUrl>https://oss.sonatype.org/</nexusUrl>-->
+                    <!--        <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
+                    <!--    </configuration>-->
+                    <!--</plugin>-->
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
+
+

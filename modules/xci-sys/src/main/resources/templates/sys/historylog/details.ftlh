@@ -1,5 +1,5 @@
 <#--<#ftl output_format="undefined">-->
-<#-- @ftlvariable name="entity" type="com.xci.sys.entity.SysHistoryLog" -->
+<#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.entity.SysHistoryLog" -->
 <#include "/_inc/_layout.ftlh">
 <@header/>
 <div class="jxpanel winpanel" data-fit="true">

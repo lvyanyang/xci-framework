@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="entity" type="com.xci.sys.entity.SysModule" -->
+<#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.entity.SysModule" -->
 <#-- @ftlvariable name="parentName" type="java.lang.String" -->
 <#include "/sys/_inc/_layout.ftlh">
 <#assign url=xci.saveUrl("/sys/module/","createSave","updateSave")/>

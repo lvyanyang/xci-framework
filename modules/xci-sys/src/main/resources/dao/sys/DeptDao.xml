@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xci.sys.dao.DeptDao">
+<mapper namespace="com.github.lvyanyang.sys.dao.DeptDao">
     <!--region 公共代码段-->
 
     <!--公共查询列-->
@@ -15,7 +15,7 @@
         <where>
             <if test="filter.status != null">d.status = #{filter.status}</if>
             <if test="filter.dataScope != null and filter.dataScope == true">
-                <include refid="com.xci.internal.FrameworkDao.dataScope"/>
+                <include refid="com.github.lvyanyang.internal.FrameworkDao.dataScope"/>
             </if>
         </where>
     </sql>
@@ -31,7 +31,7 @@
 
     <!--region 是否存在指定主键的机构-->
     <select id="existById" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_dept"/>
             <property name="where" value="existByIdWhere"/>
         </include>
@@ -44,7 +44,7 @@
 
     <!--region 是否存在指定编码的机构-->
     <select id="existByCode" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_dept"/>
             <property name="where" value="existByCodeWhere"/>
         </include>
@@ -58,7 +58,7 @@
 
     <!--region 检查是否存在指定的机构名称-->
     <select id="existByName" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_dept"/>
             <property name="where" value="existByNameWhere"/>
         </include>
@@ -140,21 +140,21 @@
     <!--endregion-->
 
     <!--region 根据主键查询单个机构-->
-    <select id="selectById" resultType="com.xci.sys.entity.SysDept">
+    <select id="selectById" resultType="com.github.lvyanyang.sys.entity.SysDept">
         <include refid="select"/>
         where d.id = #{id}
     </select>
     <!--endregion-->
 
     <!--region 根据编码查询单个机构-->
-    <select id="selectByCode" resultType="com.xci.sys.entity.SysDept">
+    <select id="selectByCode" resultType="com.github.lvyanyang.sys.entity.SysDept">
         <include refid="select"/>
         where d.code = #{code}
     </select>
     <!--endregion-->
 
     <!--region 查询机构列表-->
-    <select id="selectList" resultType="com.xci.sys.entity.SysDept">
+    <select id="selectList" resultType="com.github.lvyanyang.sys.entity.SysDept">
         <include refid="list"/>
     </select>
     <!--endregion-->

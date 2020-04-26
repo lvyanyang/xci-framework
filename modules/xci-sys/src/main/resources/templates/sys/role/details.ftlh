@@ -1,5 +1,5 @@
-<#-- @ftlvariable name="entity" type="com.xci.sys.entity.SysRole" -->
-<#-- @ftlvariable name="users" type="java.util.List<com.xci.sys.entity.SysUser>" -->
+<#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.entity.SysRole" -->
+<#-- @ftlvariable name="users" type="java.util.List<com.github.lvyanyang.sys.entity.SysUser>" -->
 <#include "/_inc/_layout.ftlh">
 <#include "/_inc/_history.ftlh">
 <#--<#include "/sys/urmap/role-details.ftl">-->

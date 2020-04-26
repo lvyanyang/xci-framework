@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xci.sys.dao.HistoryLogDao">
+<mapper namespace="com.github.lvyanyang.sys.dao.HistoryLogDao">
     <!--region 公共代码段-->
 
     <!--公共查询列-->
@@ -71,7 +71,7 @@
     <!--endregion-->
 
     <!--region 根据主键查询单个历史日志-->
-    <select id="selectById" resultType="com.xci.sys.entity.SysHistoryLog">
+    <select id="selectById" resultType="com.github.lvyanyang.sys.entity.SysHistoryLog">
         select
         <include refid="columns"/>,before_data,after_data,diff
         from sys_history_log
@@ -80,7 +80,7 @@
     <!--endregion-->
 
     <!--region 查询历史日志分页列表-->
-    <select id="selectPageList" resultType="com.xci.sys.entity.SysHistoryLog">
+    <select id="selectPageList" resultType="com.github.lvyanyang.sys.entity.SysHistoryLog">
         <include refid="list"/>
     </select>
     <!--endregion-->

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xci.sys.dao.SeqDao">
+<mapper namespace="com.github.lvyanyang.sys.dao.SeqDao">
     <!--region 公共代码段-->
 
     <!--公共查询列-->
@@ -30,7 +30,7 @@
 
     <!--region 是否存在指定主键的序列-->
     <select id="existById" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_seq"/>
             <property name="where" value="existByIdWhere"/>
         </include>
@@ -43,7 +43,7 @@
 
     <!--region 是否存在指定编码的序列-->
     <select id="existByCode" resultType="java.lang.Boolean">
-        <include refid="com.xci.internal.FrameworkDao.exists">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
             <property name="table" value="sys_seq"/>
             <property name="where" value="existByCodeWhere"/>
         </include>
@@ -92,7 +92,7 @@
     <!--endregion-->
 
     <!--region 根据主键查询单个序列-->
-    <select id="selectById" resultType="com.xci.sys.entity.SysSeq">
+    <select id="selectById" resultType="com.github.lvyanyang.sys.entity.SysSeq">
         select
         <include refid="columns"/>
         from sys_seq
@@ -101,7 +101,7 @@
     <!--endregion-->
 
     <!--region 根据编码查询单个序列-->
-    <select id="selectByCode" resultType="com.xci.sys.entity.SysSeq">
+    <select id="selectByCode" resultType="com.github.lvyanyang.sys.entity.SysSeq">
         select
         <include refid="columns"/>
         from sys_seq
@@ -126,13 +126,13 @@
     <!--endregion-->
 
     <!--region 查询序列列表-->
-    <select id="selectList" resultType="com.xci.sys.entity.SysSeq">
+    <select id="selectList" resultType="com.github.lvyanyang.sys.entity.SysSeq">
         <include refid="list"/>
     </select>
     <!--endregion-->
 
     <!--region 查询序列分页列表-->
-    <select id="selectPageList" resultType="com.xci.sys.entity.SysSeq">
+    <select id="selectPageList" resultType="com.github.lvyanyang.sys.entity.SysSeq">
         <include refid="list"/>
     </select>
     <!--endregion-->

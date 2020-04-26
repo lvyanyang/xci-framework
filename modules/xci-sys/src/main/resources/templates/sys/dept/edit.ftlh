@@ -1,5 +1,5 @@
-<#-- @ftlvariable name="entity" type="com.xci.sys.entity.SysDept" -->
-<#-- @ftlvariable name="managerUserList" type="java.util.List<com.xci.sys.entity.SysUser>" -->
+<#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.entity.SysDept" -->
+<#-- @ftlvariable name="managerUserList" type="java.util.List<com.github.lvyanyang.sys.entity.SysUser>" -->
 <#-- @ftlvariable name="parentName" type="java.lang.String" -->
 <#include "/_inc/_layout.ftlh">
 <#assign url=xci.saveUrl("/sys/dept/","createSave","updateSave")/>
