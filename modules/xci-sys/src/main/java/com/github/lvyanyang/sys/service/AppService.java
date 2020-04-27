@@ -44,12 +44,12 @@ public class AppService extends BaseService {
 
     /**
      * 是否存在指定名称的应用
-     * @param code      应用编码
+     * @param name      应用名称
      * @param excludeId 排除的主键,可为空
      * @return 如果存在返回true
      */
-    public boolean existByName(@NotBlank(message = "请指定应用编码") String code, Long excludeId) {
-        return appDao.existByName(code, excludeId);
+    public boolean existByName(@NotBlank(message = "请指定应用编码") String name, Long excludeId) {
+        return appDao.existByName(name, excludeId);
     }
 
     /**
@@ -155,7 +155,7 @@ public class AppService extends BaseService {
     }
 
     /**
-     * 内部新建应用,由_save方法调用
+     * 内部新建应用,由save方法调用
      * @param entity 应用实体
      */
     @OperateLog(tag = R.Module.App, msg = "新增应用", param = true)

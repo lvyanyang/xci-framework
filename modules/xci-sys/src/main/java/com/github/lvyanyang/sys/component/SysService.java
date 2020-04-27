@@ -175,22 +175,34 @@ public class SysService {
     }
 
     /**
+     * 获取当前应用
+     */
+    public SysApp getCurrentApp() {
+        HttpServletRequest request = XCI.getRequest();
+        Object appObj = request.getAttribute(R.CURRENT_APP_API_KEY);
+        if (appObj != null) {
+            return (SysApp) appObj;
+        }
+        String appId = request.getHeader(R.HEADER_APPID_KEY);
+        if (XCI.isBlank(appId)) return null;
+        return appService.selectById(Long.valueOf(appId));
+    }
+
+    /**
      * 当前操作用户
      */
     public SysUser getCurrentUser() {
         HttpServletRequest request = XCI.getRequest();
-        Object userObj;
-        if (XCI.isApiRequest(request)) {
-            userObj = request.getAttribute(R.CURRENT_USER_API_KEY);
-            if (userObj == null) {
-                String tokenStr = request.getHeader(R.HEADER_TOKEN_KEY);
-                var userResult = getUserByToken(tokenStr);
-                if (userResult.isFail()) {
-                    XCI.appThrow(userResult.getMsg());
-                }
-                userObj = userResult.getData();
-                request.setAttribute(R.CURRENT_USER_API_KEY, userObj);
+        Object userObj = request.getAttribute(R.CURRENT_USER_API_KEY);
+        if (XCI.isApiRequest() && userObj == null) {
+            String tokenStr = request.getHeader(R.HEADER_TOKEN_KEY);
+            if (XCI.isBlank(tokenStr)) return null;
+            var userResult = getUserByToken(tokenStr);
+            if (userResult.isFail()) {
+                XCI.appThrow(userResult.getMsg());
             }
+            userObj = userResult.getData();
+            request.setAttribute(R.CURRENT_USER_API_KEY, userObj);
         } else {
             userObj = request.getSession().getAttribute(R.CURRENT_USER_Session_KEY);
         }
@@ -220,30 +232,6 @@ public class SysService {
      */
     public boolean isAuthorize(SysUser user, String codes) {
         return userService.isAuthorize(user, codes);
-    }
-
-    /**
-     * 获取当前应用
-     */
-    public SysApp getCurrentApp() {
-        HttpServletRequest request = XCI.getRequest();
-        SysApp app;
-        Object appObj = request.getAttribute(R.CURRENT_APP_API_KEY);
-        if (appObj != null) {
-            app = (SysApp) appObj;
-        } else {
-            String appId = request.getHeader(R.HEADER_APPID_KEY);
-            app = getApp(appId);
-        }
-        return app;
-    }
-
-    /**
-     * 获取当前应用
-     */
-    public SysApp getApp(String appId) {
-        if (XCI.isBlank(appId)) return null;
-        return appService.selectById(Long.valueOf(appId));
     }
 
     /**
@@ -579,7 +567,7 @@ public class SysService {
 
     /**
      * 查询启用的角色列表
-     * @param deptId 机构主键
+     * @param deptId    机构主键
      * @param dataScope 是否启用数据权限过滤 [true-启用, false-禁用]
      */
     public List<SysRole> selectEnabledRoleList(Long deptId, boolean dataScope) {

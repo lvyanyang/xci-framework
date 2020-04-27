@@ -26,7 +26,7 @@
     <logger name="net.sf.ehcache" level="info"/>
     <logger name="springfox.documentation.spring.web" level="warn"/>
     <logger name="com.github.lvyanyang" level="debug"/>
-    <!--<logger name="com.github.lvyanyang.sys.dao" level="info"/>-->
+    <logger name="com.github.lvyanyang.sys.dao.ErrorLogDao" level="info"/>
 
     <!--root是默认的logger-->
     <root level="info">

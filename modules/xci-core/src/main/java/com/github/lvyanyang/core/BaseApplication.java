@@ -129,8 +129,7 @@ public class BaseApplication implements IApplication {
         if (XCI.isBlank(msg)) {
             msg = webProperties.getError500AjaxMessage();
         }
-        var request = XCI.getRequest();
-        if (XCI.isAjaxRequest(request)) {
+        if (XCI.isAjaxRequest()) {
             return RestResult.fail(msg);
         }
         String errorUrl = webProperties.getError500Url();

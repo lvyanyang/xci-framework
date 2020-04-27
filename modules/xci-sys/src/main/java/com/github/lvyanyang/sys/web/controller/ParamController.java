@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 系统参数控制器
+ * 系统参数Web控制器
  */
 @Authorize
 @Controller

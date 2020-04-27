@@ -63,6 +63,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.cache.Cache;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
+import org.springframework.http.MediaType;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.ObjectUtils;
@@ -2450,7 +2451,8 @@ public class XCI {
     /**
      * 判断请求是否为ajax请求
      */
-    public static boolean isAjaxRequest(HttpServletRequest request) {
+    public static boolean isAjaxRequest() {
+        HttpServletRequest request = getRequest();
         String type = request.getHeader("X-Requested-With");
         if (isBlank(type)) {
             type = request.getParameter("X-Requested-With");
@@ -2461,12 +2463,17 @@ public class XCI {
     /**
      * 判断请求是否为 api 请求
      */
-    public static boolean isApiRequest(HttpServletRequest request) {
+    public static boolean isApiRequest() {
+        HttpServletRequest request = getRequest();
         String type = request.getHeader("X-Requested-With");
         if (isBlank(type)) {
             type = request.getParameter("X-Requested-With");
         }
-        return isNotBlank(type) && "api".equals(type);
+
+        if (isNotBlank(type) && ("api".equals(type)||"AppHttpRequest".equals(type))){
+            return true;
+        }
+        return !request.getHeader("accept").contains(MediaType.TEXT_HTML_VALUE);
     }
 
     /**

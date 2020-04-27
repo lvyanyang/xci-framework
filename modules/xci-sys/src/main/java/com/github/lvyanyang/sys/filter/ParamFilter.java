@@ -11,12 +11,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 系统参数过滤条件
+ * 系统参数过滤对象
  * @author 吕艳阳
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(description = "系统参数过滤条件")
+@ApiModel(description = "系统参数过滤对象")
 public class ParamFilter extends BasePageFilter {
     /**
      * 参数名称/编码关键字

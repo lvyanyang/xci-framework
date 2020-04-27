@@ -35,7 +35,10 @@ public class SysApiApplication extends BaseApplication {
 
     @Override
     public RestResult apiValidAppId(String appId) {
-        SysApp app = SysService.me().getApp(appId);
+        if (XCI.isBlank(appId)) {
+            return RestResult.fail("无效的应用,请指定应用标识");
+        }
+        SysApp app = SysService.me().appService().selectById(Long.valueOf(appId));
         if (app == null) {
             return RestResult.fail("无效的应用,无效应用标识");
         } else if (!app.getStatus()) {

@@ -45,9 +45,9 @@ public class ApiProperties {
     private String unAuthorizedMsg = "您没有操作此Api权限";
 
     /**
-     * 是否启用404错误统一处理
+     * 是否启用自定义404错误统一处理
      */
-    private boolean enabledError404Handle = true;
+    private boolean enabledNotfoundErrorController = true;
 
     /**
      * 未找到请求路径

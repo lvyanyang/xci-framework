@@ -108,7 +108,7 @@
     </update>
     <!--endregion-->
 
-    <!--region 根据主键删除机构-->
+    <!--region 根据主键删除机构(软删除)-->
     <update id="deleteById">
         update sys_dept
         set deleted = #{deleteId}

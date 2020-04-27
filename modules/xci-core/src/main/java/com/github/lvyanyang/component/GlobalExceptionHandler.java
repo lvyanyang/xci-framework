@@ -6,11 +6,12 @@ package com.github.lvyanyang.component;
 
 import com.github.lvyanyang.core.IApplication;
 import com.github.lvyanyang.core.XCI;
-import com.github.lvyanyang.web.configuration.WebProperties;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 全局异常处理器
@@ -22,18 +23,11 @@ public class GlobalExceptionHandler {
 
     /** 全局异常拦截处理 */
     @ExceptionHandler(value = Exception.class)
-    public Object handler(Exception e) {
-        if (!XCI.containsBean(WebProperties.class)) {
-            //纯API站点
+    public Object handler(Exception e, HttpServletResponse response, HttpServletRequest request) {
+        if (XCI.isApiRequest()) {
             return application.apiGlobalExceptionHandler(e);
         } else {
-            //API和Web综合站点
-            var request = XCI.getRequest();
-            if (XCI.isApiRequest(request)) {
-                return application.apiGlobalExceptionHandler(e);
-            } else {
-                return application.webGlobalExceptionHandler(e);
-            }
+            return application.webGlobalExceptionHandler(e);
         }
     }
 }

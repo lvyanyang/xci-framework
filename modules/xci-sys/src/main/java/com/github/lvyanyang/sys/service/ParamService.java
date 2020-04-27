@@ -182,7 +182,7 @@ public class ParamService extends BaseService {
     }
 
     /**
-     * 内部新建参数,由_save方法调用
+     * 内部新建参数,由save方法调用
      * @param entity 参数实体
      */
     @OperateLog(tag = R.Module.Param, msg = "新增参数", param = true)

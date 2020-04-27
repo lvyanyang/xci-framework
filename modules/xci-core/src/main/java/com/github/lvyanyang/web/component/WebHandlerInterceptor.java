@@ -44,7 +44,7 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
 
         //region 超时检测
         String contextPath = request.getContextPath();
-        boolean isAjax = XCI.isAjaxRequest(request);
+        boolean isAjax = XCI.isAjaxRequest();
         boolean isLogin = iapp.webAutoLogin();
         if (!isLogin) {
             //登录超时

@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * 系统参数控制器
+ * 系统参数接口控制器
  * @author 吕艳阳
  */
 @Api(tags = "系统参数接口")
@@ -36,10 +36,13 @@ import java.util.List;
 public class ParamApiController extends SysApiController {
     @ApiOperation(value = "检查参数编码是否存在")
     @ApiOperationSupport(order = 1, author = R.LYY)
-    @ApiImplicitParam(name = "code", value = "编码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "code", value = "编码"),
+            @ApiImplicitParam(name = "excludeId", value = "排除的主键，如果为null则不指定排除的主键")
+    })
     @PostMapping(value = "/existByCode")
-    public RestResult existByCode(@SingleJson String code) {
-        return RestResult.ok(SysService.me().paramService().existByCode(code, null));
+    public RestResult existByCode(@SingleJson String code, @SingleJson Long excludeId) {
+        return RestResult.ok(SysService.me().paramService().existByCode(code, excludeId));
     }
 
     @ApiOperation(value = "新建参数")
@@ -121,6 +124,13 @@ public class ParamApiController extends SysApiController {
         XCI.exportExcel(SysService.me().paramService().selectList(filter), SysParam.class, "系统参数列表");
     }
 
+    @ApiOperation(value = "获取角色导出字段")
+    @ApiOperationSupport(order = 13, author = R.LYY)
+    @PostMapping(value = "/exportNames")
+    public RestResult<List<String>> exportNames() {
+        return RestResult.ok(XCI.getExcelFiledNames(SysParam.class));
+    }
+
     @ApiOperation(value = "刷新参数缓存")
     @ApiOperationSupport(order = 11, author = R.LYY)
     @PostMapping(value = "/refresh")
@@ -129,11 +139,10 @@ public class ParamApiController extends SysApiController {
         return RestResult.ok();
     }
 
-
     @Data
     @ApiModel(description = "根据编码查询参数值参数")
-    public static class ValueByCodeBody{
-        @ApiModelProperty(value = "参数编码",required = true)
+    public static class ValueByCodeBody {
+        @ApiModelProperty(value = "参数编码", required = true)
         private String code;
         @ApiModelProperty(value = "如果没有找到指定编码的参数,则返回此默认值")
         private String defaultValue;

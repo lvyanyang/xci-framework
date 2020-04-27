@@ -293,10 +293,13 @@ public class R {
     public static final String IG_FIELDNAMES = "filter.fieldNames";
 
     /**
-     * Api接口Url前缀
+     * 系统Api接口Url前缀
      */
     public static final String SysApiPrefix = "/api/v2/sys";
-
+    /**
+     * Api接口Url前缀
+     */
+    public static final String AppApiPrefix = "/api/v1";
     /**
      * 权限编码
      */
