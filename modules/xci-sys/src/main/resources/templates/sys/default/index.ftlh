@@ -9,9 +9,9 @@
 <#-- @ftlvariable name="systemEnableTabPage" type="java.lang.String" -->
 <#include "/_inc/_layout.ftlh">
 <@header title=systemTitle bodyCls="jxlayout">
-    <link href="${web.url('/sys/css/app.css')}" rel="stylesheet"/>
+    <link href="${web.url('/sys/css/main.css')}" rel="stylesheet"/>
 </@header>
-<div class="north-panel mini" data-options="region:'north'">
+<div class="north-panel" data-options="region:'north'">
     <div class="logo">
         <img src="${web.cdn('/img/logo.svg')}">
     </div>
@@ -69,7 +69,7 @@
     <div class="m-5">
         <input class="form-control input-sm jxtree-filter" placeholder="请输入关键字模糊查询">
     </div>
-    <ul class="jxtree" data-url="/sys/module"></ul>
+    <ul class="jxtree" data-url="${web.url('/sys/userModules')}"></ul>
 </div>
 <div class="center-panel" data-options="region:'center'" data-url="/sys/home" data-title="我的主页">
     <div id="tabs"></div>
@@ -105,5 +105,5 @@
     window.systemEnableOnlineUserRefresh = '1';
     window.systemEnableMessageRefresh = '0';
 </script>
-<script src="${web.url('/sys/js/app.js')}"></script>
+<script src="${web.url('/sys/js/main.js')}"></script>
 </@footer>

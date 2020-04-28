@@ -58,7 +58,7 @@
 
     <!--region 新建模块-->
     <insert id="insert">
-        insert into sys_module (id,parent_id,name,code,spell,param,web_url,web_cls,win_url,win_cls,web_setting,win_setting,menu,web,win,expand,publiced,path,status,remark)
+        insert into sys_module (id,parent_id,name,code,spell,param,web_url,web_cls,web_setting,win_setting,menu,web,win,expand,publiced,path,status,remark)
         values
         (
             #{entity.id},
@@ -69,8 +69,6 @@
             #{entity.param},
             #{entity.webUrl},
             #{entity.webCls},
-            #{entity.winUrl},
-            #{entity.winCls},
             #{entity.webSetting},
             #{entity.winSetting},
             #{entity.menu},
@@ -97,7 +95,7 @@
             web_url = #{entity.webUrl},
             web_cls = #{entity.webCls},
             win_url = #{entity.winUrl},
-            win_url = #{entity.winCls},
+            win_cls = #{entity.winCls},
             web_setting = #{entity.webSetting},
             win_setting = #{entity.winSetting},
             menu = #{entity.menu},
@@ -105,7 +103,6 @@
             win = #{entity.win},
             expand = #{entity.expand},
             publiced = #{entity.publiced},
-            path = #{entity.path},
             status = #{entity.status},
             remark = #{entity.remark}
         where id = #{entity.id}

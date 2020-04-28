@@ -101,7 +101,6 @@
             category      = #{entity.category},
             nature        = #{entity.nature},
             leader_id     = #{entity.leaderId},
-            path          = #{entity.path},
             status        = #{entity.status},
             remark        = #{entity.remark}
         where id = #{entity.id}

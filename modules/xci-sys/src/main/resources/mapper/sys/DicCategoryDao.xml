@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.lvyanyang.sys.dao.DicCategoryDao">
+    <!--region 公共代码段-->
+
+    <!--公共查询列-->
+    <sql id="select">
+        select id,parent_id,name,code,spell,path,remark from sys_dic_category
+    </sql>
+
+    <!--region 公共Where查询条件-->
+    <!--endregion-->
+
+    <!--查询List-->
+    <sql id="list">
+        <include refid="select"/>
+        order by parent_id asc,path asc
+    </sql>
+
+    <!--endregion-->
+
+    <!--region 是否存在指定主键的字典类型-->
+    <select id="existById" resultType="java.lang.Boolean">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
+            <property name="table" value="sys_dic_category"/>
+            <property name="where" value="existByIdWhere"/>
+        </include>
+    </select>
+    <!--existById Where-->
+    <sql id="existByIdWhere">
+        where id = #{id}
+    </sql>
+    <!--endregion-->
+
+    <!--region 是否存在指定编码的字典类型-->
+    <select id="existByCode" resultType="java.lang.Boolean">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
+            <property name="table" value="sys_dic_category"/>
+            <property name="where" value="existByCodeWhere"/>
+        </include>
+    </select>
+    <!--existByCode Where-->
+    <sql id="existByCodeWhere">
+        where code = #{code}
+        <if test="excludeId != null">and id != #{excludeId}</if>
+    </sql>
+    <!--endregion-->
+
+    <!--region 检查是否存在指定的字典类型名称-->
+    <select id="existByName" resultType="java.lang.Boolean">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
+            <property name="table" value="sys_dic_category"/>
+            <property name="where" value="existByNameWhere"/>
+        </include>
+    </select>
+    <!--existByNameWhere-->
+    <sql id="existByNameWhere">
+        where name = #{name}
+        <if test="excludeId != null">and id != #{excludeId}</if>
+    </sql>
+    <!--endregion-->
+
+    <!--region 新建字典类型-->
+    <insert id="insert">
+        insert into sys_dic_category (id,parent_id,name,code,spell,path,remark)
+        values
+        (
+            #{entity.id},
+            #{entity.parentId},
+            #{entity.name},
+            #{entity.code},
+            #{entity.spell},
+            #{entity.path},
+            #{entity.remark}
+        )
+    </insert>
+    <!--endregion-->
+
+    <!--region 修改字典类型-->
+    <update id="update">
+        update sys_dic_category
+        set
+            parent_id = #{entity.parentId},
+            name = #{entity.name},
+            code = #{entity.code},
+            spell= #{entity.spell},
+            remark = #{entity.remark}
+        where id = #{entity.id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键删除字典类型-->
+    <delete id="deleteById">
+        delete from sys_dic_category
+        where id = #{id}
+    </delete>
+    <!--endregion-->
+
+    <!--region 根据主键更新排序路径-->
+    <update id="updatePath">
+        update sys_dic_category
+        set path = #{path}
+        where id = #{id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键更新父节点-->
+    <update id="updateParentId">
+        update sys_dic_category
+        set parent_id = #{parentId}
+        where id = #{id}
+    </update>
+    <!--endregion-->
+
+    <!--region 根据主键查询单个字典类型-->
+    <select id="selectById" resultType="com.github.lvyanyang.sys.entity.SysDicCategory">
+        <include refid="select"/>
+        where id = #{id}
+    </select>
+    <!--endregion-->
+
+    <!--region 根据编码查询单个字典类型-->
+    <select id="selectByCode" resultType="com.github.lvyanyang.sys.entity.SysDicCategory">
+        <include refid="select"/>
+        where code = #{code}
+    </select>
+    <!--endregion-->
+
+    <!--region 查询字典类型列表-->
+    <select id="selectList" resultType="com.github.lvyanyang.sys.entity.SysDicCategory">
+        <include refid="list"/>
+    </select>
+    <!--endregion-->
+
+    <!--region 获取指定节点的直接子节点数-->
+    <select id="selectChildCount" resultType="java.lang.Integer">
+        select count(1)
+        from sys_dic_category
+        where parent_id = #{id}
+    </select>
+    <!--endregion-->
+</mapper>

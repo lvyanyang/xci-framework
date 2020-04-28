@@ -58,7 +58,7 @@ jx.auth = {
      * 详情对话框
      */
     iconDialog: function (ops) {
-        var url = '/sys/icon';
+        var url = jx.url('/sys/icon');
         if (ops.inputId) {
             var inputId = ops.inputId;
             url = jx.setUrlParam(url, 'inputId', inputId)

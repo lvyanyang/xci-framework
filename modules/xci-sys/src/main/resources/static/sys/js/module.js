@@ -1,42 +1,56 @@
 /*-----------------------------------------------------
- * 权限子系统-系统模块
+ * 权限子系统-系统模块模块
  * ---------------------------------------------------*/
 jx.ready(function () {
-    window.api = {
+    //region 私有变量
+    var api = {
         grid: '/sys/module/grid',
         create: '/sys/module/create',
         edit: '/sys/module/edit',
         delete: '/sys/module/delete',
         details: '/sys/module/details',
-        export: '/sys/module/export',
         status: '/sys/module/status',
+        expand: '/sys/module/expand',
         dnd: '/sys/module/dnd'
-    }
+    };
     //定义变量
-    var $grid = $('#grid'), $gridPanel, gridInstance;
-    var dialogWidth = $grid.data('dialogWidth');
-    var dialogHeight = $grid.data('dialogHeight');
-    var gridUrl = jx.apiUrl(api.grid);
-    var createUrl = jx.apiUrl(api.create);
-    var editUrl = jx.apiUrl(api.edit);
-    var deleteUrl = jx.apiUrl(api.delete);
-    var detailsUrl = jx.apiUrl(api.details);
-    var exportUrl = jx.apiUrl(api.export);
-    var statusUrl = jx.apiUrl(api.status);
-    var dndUrl = jx.apiUrl(api.dnd);
+    var gridInstance;
+    var dialogWidth = '1100px';
+    var dialogHeight = '600px';
+    //endregion
+
+    //region 公共方法
+
+    /**
+     * 展开状态格式化函数
+     */
+    jx.gf.expandStatus = function (v, row, index) {
+        var id = row.id;
+        var cls = v == '1' ? 'fa-toggle-on' : 'fa-toggle-off';
+        return jx.formatString('<i class="fa {0} grid-expand-status" data-id="{1}" data-val="{2}"></i>', cls, id, v);
+    };
+
+    //重新加载表格
+    jx.reloadGrid = function () {
+        gridInstance.reloadGridData();
+    }
+
+    //endregion
+
+    //region 私有方法
 
     //初始化表格
     var initGrid = function () {
-        gridInstance = $grid.jxtreegrid({
-            url: gridUrl,
-            dndUrl: dndUrl,
+        gridInstance = $('#grid').jxtreegrid({
+            url: jx.url(api.grid),
+            dndUrl: jx.url(api.dnd),
+            rowStyler: function (row) {
+                if (row && !row.status) {
+                    return 'color:#d9534f;';
+                }
+            },
             onDblClickRow: function (row) {
-                var id = gridInstance.getRowId(row);
-                jx.detailsDialog({
-                    title: '查看模块详细信息',
-                    url: detailsUrl,
-                    params: {id: id}
-                });
+                detailsData(row);
             },
             onLoadSuccess: function () {
                 gridInstance.getDataBodyPanel().contextmenu({target: '#gridcmenu'});
@@ -48,14 +62,10 @@ jx.ready(function () {
                 }
             }
         });
-        $gridPanel = gridInstance.getPanel();
     };
 
     //初始化事件
-    var initEvent = function () {
-        $('#btn-createroot,#btn-cmcreateroot').click(function () {
-            createRootData();
-        });
+    var bindEvent = function () {
         $('#btn-create,#btn-cmcreate').click(function () {
             createData();
         });
@@ -65,35 +75,18 @@ jx.ready(function () {
         $('#btn-delete,#btn-cmdelete').click(function () {
             deleteData();
         });
-        $('#btn-export').click(function () {
-            exportData();
-        });
-
-        // $('#foldingStatus').click(function () {
-        //     var checked = $(this).prop('checked');
-        //     if (checked) {
-        //         gridInstance.expandAll();
-        //     }
-        //     else {
-        //         gridInstance.collapseAll();
-        //     }
-        // });
 
         // 表格事件
-        $gridPanel.on('click', '.gridstatus', function () {
+        var panel = gridInstance.getPanel();
+        panel.on('click', '.gridstatus', function () {
             var id = $(this).data('id');
             var val = $(this).data('val');
             setStatus(id, val);
         });
-    };
-
-    //新增根节点数据
-    var createRootData = function () {
-        jx.dialog({
-            title: '新增根模块',
-            url: createUrl,
-            width: dialogWidth,
-            height: dialogHeight
+        panel.on('click', '.grid-expand-status', function () {
+            var id = $(this).data('id');
+            var val = $(this).data('val');
+            setExpandStatus(id, val);
         });
     };
 
@@ -102,7 +95,7 @@ jx.ready(function () {
         var parentId = gridInstance.getSelectedRowId() || 0;
         jx.dialog({
             title: '新增模块',
-            url: createUrl,
+            url: jx.url(api.create),
             params: {parentId: parentId},
             width: dialogWidth,
             height: dialogHeight
@@ -115,7 +108,7 @@ jx.ready(function () {
         var id = gridInstance.getSelectedRowId();
         jx.dialog({
             title: '修改模块',
-            url: editUrl,
+            url: jx.url(api.edit),
             params: {id: id},
             width: dialogWidth,
             height: dialogHeight
@@ -127,8 +120,8 @@ jx.ready(function () {
         if (!gridInstance.hasSelectedRow()) return;
         var id = gridInstance.getSelectedRowId();
         jx.delete({
-            confirm: '注：如果有子节点则都会被删除，并且无法撤销，您确定要删除吗？',
-            url: deleteUrl,
+            confirm: '注：您确定要删除当前选中节点吗？',
+            url: jx.url(api.delete),
             data: {id: id},
             success: function (result) {
                 gridInstance.reloadGridData();
@@ -136,16 +129,19 @@ jx.ready(function () {
         });
     };
 
-    //导出数据
-    var exportData = function () {
-        jx.auth.exportData(exportUrl, jx.serialize($('#gridform')));
-    };
+    //查看数据
+    var detailsData = function (row) {
+        jx.auth.detailsData(gridInstance, row, {
+            url: jx.url(api.details),
+            title: '查看系统模块'
+        });
+    }
 
-    //设置数据启用状态
+    //设置数据状态
     var setStatus = function (id, val) {
         var status = val == '1' ? 0 : 1;
         jx.ajax({
-            url: statusUrl,
+            url: jx.url(api.status),
             data: {id: id, status: status},
             maskMsg: '正在更新状态,请稍等...',
             success: function (result) {
@@ -155,15 +151,26 @@ jx.ready(function () {
         });
     };
 
-    //定义表格列格式化函数
-
-    //对外接口
-    //重新加载表格数据
-    window.reloadGridData = function () {
-        gridInstance.reloadGridData();
+    //设置数据展开状态
+    var setExpandStatus = function (id, val) {
+        var status = val == '1' ? 0 : 1;
+        jx.ajax({
+            url: jx.url(api.expand),
+            data: {id: id, expandStatus: status},
+            maskMsg: '正在更新展开状态,请稍等...',
+            success: function () {
+                gridInstance.reloadGridData();
+                jx.toastr.success('展开状态更新成功');
+            }
+        });
     };
 
-    //初始化
+    //endregion
+
+    //region 模块初始化
+
     initGrid();
-    initEvent();
+    bindEvent();
+
+    //endregion
 });

@@ -88,15 +88,13 @@ public class DeptController extends SysWebController {
 
     //region 数据处理
 
-    /**
-     *
-     */
+    /** 编辑时获取父节点列表 */
     @ResponseBody
     @GetMapping("/parentList")
-    public RestResult parentList(@RequestParam Long id, @RequestParam String created) {
+    public RestResult parentList(@RequestParam String id, @RequestParam String created) {
         List<SysDept> depts = SysWebService.me().selectEnabledDeptList(true);
         //如果是修改时移除当前记录以及所有下级
-        XCI.ifTrueAction(XCI.isBlank(created),()->XCI.removeTreeChildren(depts,id,true));
+        XCI.ifTrueAction(XCI.isBlank(created),()->XCI.removeTreeChildren(depts,Long.valueOf(id),true));
         return RestResult.ok(SysWebService.me().toDeptNodeList(depts));
     }
 

@@ -8,8 +8,6 @@
 <div class="jxpanel winpanel" data-fit="true">
     <form id="editform" class="jxform" method="post" action="${url}">
         <input name="id" value="${entity.id}" type="hidden">
-        <input name="parentId" value="${entity.parentId}" type="hidden">
-        <input name="path" value="${entity.path}" type="hidden">
         <table class="table jxtable-form">
             <tr>
                 <th>上级机构</th>

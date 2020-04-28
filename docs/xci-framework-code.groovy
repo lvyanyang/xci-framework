@@ -5,15 +5,15 @@
 //#region 定义变量
 
 //服务端基包名称
-basePackageName = "com.github.lvyanyang.test.sys.tbs"
+basePackageName = "com.github.lvyanyang"
 //客户端命名空间
 clientNamespace = "XCI.Win"
 //模块名称
-moduleName = "basic"
+moduleName = "sys"
 //作者
-author = "lyy"
+author = "吕艳阳"
 //联系方式
-contact = "lyy@xci96716.com"
+contact = "18049047588@qq.com"
 //数据类型映射
 typeMapping = [
         (~/(?i)bigint/)                          : "Long",
@@ -52,68 +52,78 @@ def generate(table, dir) {
 
     //服务端
     //region dao
-    File daoDir = new File(dir, "build/server/dao")
+    File daoDir = new File(dir, "generate/server/"+moduleName+"/dao")
     !daoDir.exists() && daoDir.mkdirs()
     new File(daoDir.getAbsolutePath(), t.className + "Dao.java").withPrintWriter("utf-8") { out -> generateDao(out, t) }
     //endregion
     //region mapper
-    File mapperDir = new File(dir, "/build/server/mapper")
+    File mapperDir = new File(dir, "/generate/server/"+moduleName+"/mapper")
     !mapperDir.exists() && mapperDir.mkdirs()
     new File(mapperDir.getAbsolutePath(), t.className + "Dao.xml").withPrintWriter("utf-8") { out -> generateMapper(out, t) }
     //endregion
     //region service
-    File serviceDir = new File(dir, "/build/server/service")
+    File serviceDir = new File(dir, "/generate/server/"+moduleName+"/service")
     !serviceDir.exists() && serviceDir.mkdirs()
     new File(serviceDir.getAbsolutePath(), t.className + "Service.java").withPrintWriter("utf-8") { out -> generateService(out, t) }
     //endregion
     //region apiController
-    File apiControllerDir = new File(dir, "/build/server/api")
+    File apiControllerDir = new File(dir, "/generate/server/"+moduleName+"/api")
     !apiControllerDir.exists() && apiControllerDir.mkdirs()
     new File(apiControllerDir.getAbsolutePath(), t.className + "ApiController.java").withPrintWriter("utf-8") { out -> generateApiController(out, t) }
-    //endregion
-    //region controller
-    File controllerDir = new File(dir, "/build/server/controller")
-    !controllerDir.exists() && controllerDir.mkdirs()
-    new File(controllerDir.getAbsolutePath(), t.className + "Controller.java").withPrintWriter("utf-8") { out -> generateController(out, t) }
     //endregion
     //表名,列名,多种形式
 
     //region entity
-    File entityDir = new File(dir, "/build/server/entity")
+    File entityDir = new File(dir, "/generate/server/"+moduleName+"/entity")
     !entityDir.exists() && entityDir.mkdirs()
     new File(entityDir.getAbsolutePath(), t.className + ".java").withPrintWriter("utf-8") { out -> generateEntity(out, t) }
     //endregion
     //region filter
-    File filterDir = new File(dir, "/build/server/filter")
+    File filterDir = new File(dir, "/generate/server/"+moduleName+"/filter")
     !filterDir.exists() && filterDir.mkdirs()
     new File(filterDir.getAbsolutePath(), t.className + "Filter.java").withPrintWriter("utf-8") { out -> generateFilter(out, t) }
     //endregion
 
     //region FreeMark
-    //new File(parentFile.getAbsolutePath(), "index.ftl").withPrintWriter { out -> generateIndex(out, className, fields, table.getComment(), table) }
-    //new File(parentFile.getAbsolutePath(), "edit.ftl").withPrintWriter { out -> generateEdit(out, className, fields, table.getComment(), table) }
-    //new File(parentFile.getAbsolutePath(), "details.ftl").withPrintWriter { out -> generateDetails(out, className, fields, table.getComment(), table) }
-    //new File(parentFile.getAbsolutePath(), (className.toLowerCase()) + ".js").withPrintWriter { out -> generateJs(out, className, fields, table.getComment(), table) }
+    //region controller
+    File controllerDir = new File(dir, "/generate/server/"+moduleName+"/controller")
+    !controllerDir.exists() && controllerDir.mkdirs()
+    new File(controllerDir.getAbsolutePath(), t.className + "Controller.java").withPrintWriter("utf-8") { out -> generateController(out, t) }
+    //endregion
+
+    def fileName = t.name.replace('_','-')
+
+    File ftlhDir = new File(dir, "/generate/web/ftlh/"+moduleName+"/"+fileName)
+    !ftlhDir.exists() && ftlhDir.mkdirs()
+
+    new File(ftlhDir.getAbsolutePath(), "index.ftlh").withPrintWriter("utf-8") { out -> generateIndex(out, t) }
+    new File(ftlhDir.getAbsolutePath(), "edit.ftlh").withPrintWriter("utf-8") { out -> generateEdit(out, t) }
+    new File(ftlhDir.getAbsolutePath(), "details.ftlh").withPrintWriter("utf-8") { out -> generateDetails(out, t) }
+
+    File jsDir = new File(dir, "/generate/web/js/"+moduleName)
+    !jsDir.exists() && jsDir.mkdirs()
+
+    new File(jsDir.getAbsolutePath(), fileName + ".js").withPrintWriter("utf-8") { out -> generateJs(out, t) }
     //endregion
 
     //region WinForm客户端
     //region Service
-    //File clientServiceDir = new File(dir, "/build/client/Service")
+    //File clientServiceDir = new File(dir, "/generate/winform/Service")
     //!clientServiceDir.exists() && clientServiceDir.mkdirs()
     //new File(clientServiceDir.getAbsolutePath(), t.className + "Service.cs").withPrintWriter("utf-8") { out -> generateClientService(out, t) }
     ////endregion
     ////region Filter
-    //File clientFilterDir = new File(dir, "/build/client/Filter")
+    //File clientFilterDir = new File(dir, "/generate/winform/Filter")
     //!clientFilterDir.exists() && clientFilterDir.mkdirs()
     //new File(clientFilterDir.getAbsolutePath(), t.className + "Filter.cs").withPrintWriter("utf-8") { out -> generateClientFilter(out, t) }
     ////endregion
     ////region Entity
-    //File clientEntityDir = new File(dir, "/build/client/Entity")
+    //File clientEntityDir = new File(dir, "/generate/winform/Entity")
     //!clientEntityDir.exists() && clientEntityDir.mkdirs()
     //new File(clientEntityDir.getAbsolutePath(), t.className + ".cs").withPrintWriter("utf-8") { out -> generateClientEntity(out, t) }
     ////endregion
     ////region Form
-    //File clientFormDir = new File(dir, "/build/client/Forms/" + t.className)
+    //File clientFormDir = new File(dir, "/generate/winform/Forms/" + t.className)
     //!clientFormDir.exists() && clientFormDir.mkdirs()
     //
     //new File(clientFormDir.getAbsolutePath(), "Frm" + t.className + "Manager.cs").withPrintWriter("utf-8") { out -> generateClientManagerForm(out, t) }
@@ -132,7 +142,7 @@ def generate(table, dir) {
 //#region 生成服务端代码
 
 def generateEntity(Writer out, DbTable t) {
-    out.println "package ${basePackageName}.entity;"
+    out.println "package ${basePackageName}.${moduleName}.entity;"
     out.println ""
     out.println "import cn.afterturn.easypoi.excel.annotation.Excel;"
     out.println "import cn.afterturn.easypoi.excel.annotation.ExcelIgnore;"
@@ -212,7 +222,7 @@ def generateEntity(Writer out, DbTable t) {
 }
 
 def generateFilter(Writer out, DbTable t) {
-    out.println "package ${basePackageName}.filter;"
+    out.println "package ${basePackageName}.${moduleName}.filter;"
     out.println ""
     out.println "import com.github.lvyanyang.core.BaseFilter;"
     out.println "import com.github.lvyanyang.core.BasePageFilter;"
@@ -249,12 +259,12 @@ def generateFilter(Writer out, DbTable t) {
 def generateApiController(Writer out, DbTable t) {
     def tFieldName = objectName(t.name, false);
     def serviceObjStr = tFieldName + "Service"
-    out.println "package ${basePackageName}.api;"
+    out.println "package ${basePackageName}.${moduleName}.api;"
     out.println ""
     out.println "import com.github.lvyanyang.base.ApiController;"
-    out.println "import ${basePackageName}.entity.${t.className};"
-    out.println "import ${basePackageName}.filter.${t.className}Filter;"
-    out.println "import ${basePackageName}.service.${t.className}Service;"
+    out.println "import ${basePackageName}.${moduleName}.entity.${t.className};"
+    out.println "import ${basePackageName}.${moduleName}.filter.${t.className}Filter;"
+    out.println "import ${basePackageName}.${moduleName}.service.${t.className}Service;"
     out.println "import com.github.lvyanyang.annotation.Authorize;"
     out.println "import com.github.lvyanyang.annotation.SingleJson;"
     out.println "import com.github.lvyanyang.model.PageList;"
@@ -399,126 +409,9 @@ def generateApiController(Writer out, DbTable t) {
     out.println "}"
 }
 
-def generateController(Writer out, DbTable t) {
-    def tFieldName = objectName(t.name, false);
-    def serviceObjStr = tFieldName + "Service"
-    out.println "package ${basePackageName}.controller;"
-    out.println ""
-    out.println "import com.github.lvyanyang.web.WebController;"
-    out.println "import ${basePackageName}.entity.${t.className};"
-    out.println "import ${basePackageName}.filter.${t.className}Filter;"
-    out.println "import ${basePackageName}.service.${t.className}Service;"
-    out.println "import com.github.lvyanyang.annotation.Authorize;"
-    out.println "import com.github.lvyanyang.exceptions.NotFoundException;"
-    out.println "import com.github.lvyanyang.core.RestResult;"
-    out.println "import com.github.lvyanyang.core.XCI;"
-    out.println "import com.github.lvyanyang.sys.web.model.JsonGrid;"
-    out.println "import org.springframework.stereotype.Controller;"
-    out.println "import org.springframework.ui.ModelMap;"
-    out.println "import org.springframework.web.bind.annotation.*;"
-    out.println ""
-    out.println "import javax.annotation.Resource;"
-    out.println ""
-    out.println "/**"
-    out.println " * ${t.comment}Web控制器"
-    out.println " * @author ${author} ${contact}"
-    out.println " * @since ${now()}"
-    out.println " */"
-    out.println "@Authorize"
-    out.println "@Controller"
-    out.println "@RequestMapping(value = \"/${moduleName}/${tFieldName}\")"
-    out.println "public class ${t.className}Controller extends WebController {"
-    out.println "    /** ${t.comment}服务 */"
-    out.println "    @Resource private ${t.className}Service ${serviceObjStr};"
-    out.println ""
-    out.println"    //region 页面视图"
-    out.println"    "
-    out.println"    /** 首页 */"
-    out.println"    @GetMapping"
-    out.println"    public String index() {"
-    out.println"        return \"${moduleName}/${tFieldName}/index\";"
-    out.println"    }"
-    out.println""
-    out.println"    /** 新建页 */"
-    out.println"    @GetMapping(\"/create\")"
-    out.println"    //@Authorize(code = \"${moduleName}.${tFieldName}.insert\")"
-    out.println"    public String create(ModelMap map) {"
-    out.println"        createMark(map);"
-    out.println"        var entity = new ${t.className}();"
-    out.println"        entity.set${objectName(t.keyName,true)}(XCI.nextId());"
-    out.println"        map.put(\"entity\", entity);"
-    out.println"        return \"${moduleName}/${tFieldName}/edit\";"
-    out.println"    }"
-    out.println""
-    out.println"    /** 编辑页 */"
-    out.println"    @GetMapping(\"/edit\")"
-    out.println"    //@Authorize(code = \"${moduleName}.${tFieldName}.update\")"
-    out.println"    public String edit(String id, ModelMap map) {"
-    out.println"        var entity = ${serviceObjStr}.selectById(Long.valueOf(id));"
-    out.println"        if (entity == null) throw new NotFoundException(id);"
-    out.println"        map.put(\"entity\", entity);"
-    out.println"        return \"${moduleName}/${tFieldName}/edit\";"
-    out.println"    }"
-    out.println""
-    out.println"    /** 详情页 */"
-    out.println"    @GetMapping(\"/details\")"
-    out.println"    public String details(String id, ModelMap map) {"
-    out.println"        var entity = ${serviceObjStr}.selectById(Long.valueOf(id));"
-    out.println"        if (entity == null) throw new NotFoundException(id);"
-    out.println"        map.put(\"entity\", entity);"
-    out.println"        return \"${moduleName}/${tFieldName}/details\";"
-    out.println"    }"
-    out.println""
-    out.println"    //endregion"
-    out.println""
-    out.println"    //region 数据处理"
-    out.println""
-    out.println"    /** 表格查询 */"
-    out.println"    @ResponseBody"
-    out.println"    @PostMapping(\"/grid\")"
-    out.println"    public JsonGrid grid(${t.className}Filter filter) {"
-    out.println"        return new JsonGrid(${serviceObjStr}.selectPageList(filter));"
-    out.println"    }"
-    out.println""
-    out.println"    /** 新增保存 */"
-    out.println"    @ResponseBody"
-    out.println"    @PostMapping(\"/createSave\")"
-    out.println"    //@Authorize(code = \"${moduleName}.${tFieldName}.insert\")"
-    out.println"    public RestResult createSave(@ModelAttribute ${t.className} entity) {"
-    out.println"        return ${serviceObjStr}.insert(entity);"
-    out.println"    }"
-    out.println""
-    out.println"    /** 修改保存 */"
-    out.println"    @ResponseBody"
-    out.println"    @PostMapping(\"/updateSave\")"
-    out.println"    //@Authorize(code = \"${moduleName}.${tFieldName}.update\")"
-    out.println"    public RestResult updateSave(@ModelAttribute ${t.className} entity) {"
-    out.println"        return ${serviceObjStr}.update(entity);"
-    out.println"    }"
-    out.println""
-    out.println"    /** 删除 */"
-    out.println"    @ResponseBody"
-    out.println"    @PostMapping(\"/delete\")"
-    out.println"    //@Authorize(code = \"${moduleName}.${tFieldName}.delete\")"
-    out.println"    public RestResult delete(String ids) {"
-    out.println"        ${serviceObjStr}.delete(ids);"
-    out.println"        return RestResult.ok();"
-    out.println"    }"
-    out.println""
-    out.println"    /** 导出 */"
-    out.println"    @GetMapping(\"/export\")"
-    out.println"    public void export(${t.className}Filter filter) {"
-    out.println"        XCI.exportExcel(${serviceObjStr}.selectList(filter), ${t.className}.class, \"${t.comment}列表\");"
-    out.println"    }"
-    out.println""
-    out.println"    //endregion"
-
-    out.println "}"
-}
-
 def generateService(Writer out, DbTable t) {
     def daoObjStr = objectName(t.name, false) + "Dao"
-    out.println "package ${basePackageName}.service;"
+    out.println "package ${basePackageName}.${moduleName}.service;"
     out.println ""
     out.println "import com.github.lvyanyang.annotation.OperateLog;"
     out.println "import com.github.lvyanyang.annotation.Valid;"
@@ -527,9 +420,9 @@ def generateService(Writer out, DbTable t) {
     out.println "import com.github.lvyanyang.core.XCI;"
     out.println "import com.github.lvyanyang.model.PageList;"
     out.println "import com.github.lvyanyang.sys.component.SysService;"
-    out.println "import ${basePackageName}.dao.${t.className}Dao;"
-    out.println "import ${basePackageName}.entity.${t.className};"
-    out.println "import ${basePackageName}.filter.${t.className}Filter;"
+    out.println "import ${basePackageName}.${moduleName}.dao.${t.className}Dao;"
+    out.println "import ${basePackageName}.${moduleName}.entity.${t.className};"
+    out.println "import ${basePackageName}.${moduleName}.filter.${t.className}Filter;"
     out.println "import org.springframework.stereotype.Service;"
     out.println "import org.springframework.transaction.annotation.Transactional;"
     out.println ""
@@ -734,11 +627,11 @@ def generateService(Writer out, DbTable t) {
 }
 
 def generateDao(Writer out, DbTable t) {
-    out.println "package ${basePackageName}.dao;"
+    out.println "package ${basePackageName}.${moduleName}.dao;"
     out.println ""
     out.println "import com.github.lvyanyang.annotation.Paging;"
-    out.println "import ${basePackageName}.entity.${t.className};"
-    out.println "import ${basePackageName}.filter.${t.className}Filter;"
+    out.println "import ${basePackageName}.${moduleName}.entity.${t.className};"
+    out.println "import ${basePackageName}.${moduleName}.filter.${t.className}Filter;"
     out.println "import org.apache.ibatis.annotations.Param;"
     out.println ""
     out.println "import java.util.List;"
@@ -834,10 +727,10 @@ def generateDao(Writer out, DbTable t) {
 }
 
 def generateMapper(Writer out, DbTable t) {
-    def fullClassName = basePackageName + ".entity." + t.className
+    def fullClassName = basePackageName+"."+moduleName + ".entity." + t.className
     out.println "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
     out.println "<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">"
-    out.println "<mapper namespace=\"${basePackageName}.dao.${t.className}Dao\">"
+    out.println "<mapper namespace=\"${basePackageName}.${moduleName}.dao.${t.className}Dao\">"
     out.println "\t<!--region 公共代码段-->"
     out.println ""
     out.println "\t<!--公共查询列-->"
@@ -1043,108 +936,232 @@ def generateMapper(Writer out, DbTable t) {
 
 //#region 生成FreeMark代码
 
-def generateIndex(out, className, fields, classComment, table) {
-    out.println "<#include \"/_inc/_layout.ftl\">"
-    out.println "<#import \"/auth/_inc/_dic.ftl\" as dic>"
-    out.println "<#assign allowCreate=auth.isAuthorize(\"${className}.Create\")/>"
-    out.println "<#assign allowEdit=auth.isAuthorize(\"${className}.Edit\")/>"
-    out.println "<#assign allowDelete=auth.isAuthorize(\"${className}.Delete\")/>"
-    out.println "<#assign allowExport=auth.isAuthorize(\"${className}.Export\")/>"
+def generateController(Writer out, DbTable t) {
+    def folder = t.name.replace('_','-')
+    def tFieldName = objectName(t.name, false);
+    def serviceObjStr = tFieldName + "Service"
+    out.println "package ${basePackageName}.${moduleName}.controller;"
+    out.println ""
+    out.println "import com.github.lvyanyang.web.WebController;"
+    out.println "import ${basePackageName}.${moduleName}.entity.${t.className};"
+    out.println "import ${basePackageName}.${moduleName}.filter.${t.className}Filter;"
+    out.println "import ${basePackageName}.${moduleName}.service.${t.className}Service;"
+    out.println "import com.github.lvyanyang.annotation.Authorize;"
+    out.println "import com.github.lvyanyang.exceptions.NotFoundException;"
+    out.println "import com.github.lvyanyang.core.RestResult;"
+    out.println "import com.github.lvyanyang.core.XCI;"
+    out.println "import com.github.lvyanyang.sys.web.model.JsonGrid;"
+    out.println "import org.springframework.stereotype.Controller;"
+    out.println "import org.springframework.ui.ModelMap;"
+    out.println "import org.springframework.web.bind.annotation.*;"
+    out.println ""
+    out.println "import javax.annotation.Resource;"
+    out.println ""
+    out.println "/**"
+    out.println " * ${t.comment}Web控制器"
+    out.println " * @author ${author} ${contact}"
+    out.println " * @since ${now()}"
+    out.println " */"
+    out.println "@Authorize"
+    out.println "@Controller"
+    out.println "@RequestMapping(value = \"/${moduleName}/${tFieldName}\")"
+    out.println "public class ${t.className}Controller extends WebController {"
+    out.println "    /** ${t.comment}服务 */"
+    out.println "    @Resource private ${t.className}Service ${serviceObjStr};"
+    out.println ""
+    out.println"    //region 页面视图"
+    out.println"    "
+    out.println"    /** 首页 */"
+    out.println"    @GetMapping"
+    out.println"    public String index() {"
+    out.println"        return \"${moduleName}/${folder}/index\";"
+    out.println"    }"
+    out.println""
+    out.println"    /** 新建页 */"
+    out.println"    @GetMapping(\"/create\")"
+    out.println"    //@Authorize(code = \"${moduleName}.${tFieldName}.insert\")"
+    out.println"    public String create(ModelMap map) {"
+    out.println"        createMark(map);"
+    out.println"        var entity = new ${t.className}();"
+    out.println"        entity.set${objectName(t.keyName,true)}(XCI.nextId());"
+    out.println"        map.put(\"entity\", entity);"
+    out.println"        return \"${moduleName}/${folder}/edit\";"
+    out.println"    }"
+    out.println""
+    out.println"    /** 编辑页 */"
+    out.println"    @GetMapping(\"/edit\")"
+    out.println"    //@Authorize(code = \"${moduleName}.${tFieldName}.update\")"
+    out.println"    public String edit(String id, ModelMap map) {"
+    out.println"        var entity = ${serviceObjStr}.selectById(Long.valueOf(id));"
+    out.println"        if (entity == null) throw new NotFoundException(id);"
+    out.println"        map.put(\"entity\", entity);"
+    out.println"        return \"${moduleName}/${folder}/edit\";"
+    out.println"    }"
+    out.println""
+    out.println"    /** 详情页 */"
+    out.println"    @GetMapping(\"/details\")"
+    out.println"    public String details(String id, ModelMap map) {"
+    out.println"        var entity = ${serviceObjStr}.selectById(Long.valueOf(id));"
+    out.println"        if (entity == null) throw new NotFoundException(id);"
+    out.println"        map.put(\"entity\", entity);"
+    out.println"        return \"${moduleName}/${folder}/details\";"
+    out.println"    }"
+    out.println""
+    out.println"    //endregion"
+    out.println""
+    out.println"    //region 数据处理"
+    out.println""
+    out.println"    /** 表格查询 */"
+    out.println"    @ResponseBody"
+    out.println"    @PostMapping(\"/grid\")"
+    out.println"    public JsonGrid grid(${t.className}Filter filter) {"
+    out.println"        return new JsonGrid(${serviceObjStr}.selectPageList(filter));"
+    out.println"    }"
+    out.println""
+    out.println"    /** 新增保存 */"
+    out.println"    @ResponseBody"
+    out.println"    @PostMapping(\"/createSave\")"
+    out.println"    //@Authorize(code = \"${moduleName}.${tFieldName}.insert\")"
+    out.println"    public RestResult createSave(@ModelAttribute ${t.className} entity) {"
+    out.println"        return ${serviceObjStr}.insert(entity);"
+    out.println"    }"
+    out.println""
+    out.println"    /** 修改保存 */"
+    out.println"    @ResponseBody"
+    out.println"    @PostMapping(\"/updateSave\")"
+    out.println"    //@Authorize(code = \"${moduleName}.${tFieldName}.update\")"
+    out.println"    public RestResult updateSave(@ModelAttribute ${t.className} entity) {"
+    out.println"        return ${serviceObjStr}.update(entity);"
+    out.println"    }"
+    out.println""
+    out.println"    /** 删除 */"
+    out.println"    @ResponseBody"
+    out.println"    @PostMapping(\"/delete\")"
+    out.println"    //@Authorize(code = \"${moduleName}.${tFieldName}.delete\")"
+    out.println"    public RestResult delete(String ids) {"
+    out.println"        ${serviceObjStr}.delete(ids);"
+    out.println"        return RestResult.ok();"
+    out.println"    }"
+    out.println""
+    out.println"    /** 导出 */"
+    out.println"    @GetMapping(\"/export\")"
+    out.println"    public void export(${t.className}Filter filter) {"
+    out.println"        XCI.exportExcel(${serviceObjStr}.selectList(filter), ${t.className}.class, \"${t.comment}列表\");"
+    out.println"    }"
+    out.println""
+    out.println"    //endregion"
+
+    out.println "}"
+}
+
+def generateIndex(Writer out, DbTable t) {
+    def tFieldName = objectName(t.name, false)
+    out.println "<#include \"/_inc/_layout.ftlh\">"
+    out.println "<#assign allowInsert=sys.auth(\"${moduleName}.${tFieldName}.insert\")/>"
+    out.println "<#assign allowUpdate=sys.auth(\"${moduleName}.${tFieldName}.update\")/>"
+    out.println "<#assign allowDelete=sys.auth(\"${moduleName}.${tFieldName}.delete\")/>"
     out.println "<@header/>"
     out.println "<div id=\"gridtoolbar\">"
     out.println "    <form id=\"gridform\" class=\"jxlayout-form form-inline jxform\">"
     out.println "        <div class=\"form-group\">"
-    out.println "            <input name=\"name\" class=\"form-control w-200px\" placeholder=\"please\" autocomplete=\"off\">"
+    out.println "            <input name=\"name\" class=\"form-control w-200px\" placeholder=\"请输入查询关键字\" autocomplete=\"off\">"
+    out.println "        </div>"
+    out.println "        <div class=\"form-group\">"
+    out.println "           <select name=\"category\" class=\"form-control jxselect\" data-select-submit=\"true\" data-allow-clear=\"false\" data-width=\"110\">"
+    out.println "                <option value=\" \">全部分类</option>"
+    out.println "                <#--<@dic.category selectedValue=''/>-->"
+    out.println "           </select>"
     out.println "        </div>"
     out.println "        <button class=\"btn btn-primary ml-5\" type=\"submit\">"
     out.println "            <i class=\"fa fa-search\"></i> 查询"
     out.println "        </button>"
     out.println "        <div class=\"btn-group\">"
-    out.println "            <@html.echo test=allowCreate>"
+    out.println "            <@xci.echo test=allowInsert>"
     out.println "                <a id=\"btn-create\" class=\"btn btn-default\">"
     out.println "                    <i class=\"icon-plus\"></i> 新增"
     out.println "                </a>"
-    out.println "            </@html.echo>"
-    out.println "            <@html.echo test=allowEdit>"
+    out.println "            </@xci.echo>"
+    out.println "            <@xci.echo test=allowUpdate>"
     out.println "                <a id=\"btn-edit\" class=\"btn btn-default\">"
     out.println "                    <i class=\"icon-pencil\"></i> 编辑"
     out.println "                </a>"
-    out.println "            </@html.echo>"
-    out.println "            <@html.echo test=allowDelete>"
+    out.println "            </@xci.echo>"
+    out.println "            <@xci.echo test=allowDelete>"
     out.println "                <a id=\"btn-delete\" class=\"btn btn-default\">"
     out.println "                    <i class=\"icon-trash\"></i> 删除"
     out.println "                </a>"
-    out.println "            </@html.echo>"
-    out.println "            <@html.echo test=allowExport>"
-    out.println "                <a id=\"btn-export\" class=\"btn btn-default\">"
-    out.println "                    <i class=\"icon-share-alt\"></i> 导出"
-    out.println "                </a>"
-    out.println "            </@html.echo>"
+    out.println "            </@xci.echo>"
+    out.println "            <a id=\"btn-export\""
+    out.println "               class=\"btn btn-default jxexport\""
+    out.println "               data-url=\"\${web.url('/${moduleName}/${tFieldName}/export')}\""
+    out.println "               data-param=\"jx.serialize(\$('#gridform'))\">"
+    out.println "                <i class=\"icon-share-alt\"></i> 导出"
+    out.println "            </a>"
     out.println "        </div>"
     out.println "    </form>"
     out.println "</div>"
     out.println "<div id=\"gridcmenu\">"
-    out.println "    <@html.echo test=(allowEdit||allowDelete)>"
+    out.println "    <@xci.echo test=(allowUpdate||allowDelete)>"
     out.println "        <ul class=\"dropdown-menu\">"
-    out.println "            <@html.echo test=allowEdit><li><a id=\"btn-cmedit\"><i class=\"icon-pencil\"></i> 编辑</a></li></@html.echo>"
-    out.println "            <@html.echo test=allowDelete><li><a id=\"btn-cmdelete\"><i class=\"icon-trash\"></i> 删除</a></li></@html.echo>"
+    out.println "            <@xci.echo test=allowUpdate><li><a id=\"btn-cmedit\"><i class=\"icon-pencil\"></i> 编辑</a></li></@xci.echo>"
+    out.println "            <@xci.echo test=allowDelete><li><a id=\"btn-cmdelete\"><i class=\"icon-trash\"></i> 删除</a></li></@xci.echo>"
     out.println "        </ul>"
-    out.println "    </@html.echo>"
+    out.println "    </@xci.echo>"
     out.println "</div>"
-    out.println "<table id=\"grid\" class=\"jxgrid\""
-    out.println "       data-options=\"form:'#gridform',toolbar:'#gridtoolbar'\""
-    out.println "       data-dialog-width=\"40%\" data-dialog-height=\"480px\">"
+    out.println "<table id=\"grid\" class=\"jxgrid\" data-options=\"form:'#gridform',toolbar:'#gridtoolbar',idField:'${t.keyName}'\">"
     out.println "    <thead>"
     out.println "    <tr>"
     out.println "        <th data-options=\"field:'ck',checkbox:true\"></th>"
-    fields.each() {
-        out.println "        <th data-options=\"title:'${it.comment}',field:'${it.name}',width:200,align:'left',sortable: true\"></th>"
+    t.fields.each() {
+        if(it.name=="name"){
+            out.println "        <th data-options=\"title:'${it.comment}',field:'${it.javaName}',width:250,align:'left',sortable: true,formatter: jx.gf.formatName\"></th>"
+        }
+        else{
+            out.println "        <th data-options=\"title:'${it.comment}',field:'${it.javaName}',width:200,align:'left',sortable: true\"></th>"
+        }
     }
     out.println "    </tr>"
     out.println "    </thead>"
     out.println "</table>"
     out.println "<@footer>"
-    out.println "    <script src=\"<@html.url '/${moduleName.toLowerCase()}/js/${className.toLowerCase()}.js'/>\"></script>"
+    out.println "    <script src=\"\${web.url('/js/${moduleName.toLowerCase()}/${t.name.replace('_','-')}.js')}\"></script>"
     out.println "</@footer>"
 }
 
-def generateEdit(out, className, fields, classComment, table) {
-    out.println "<#-- @ftlvariable name=\"entity\" type=\"com.xci.platform.auth.entity.ParamEntity\" -->"
-    out.println "<#include \"/_inc/_layout.ftl\">"
-    out.println "<#import \"/auth/_inc/_dic.ftl\" as dic>"
-    out.println "<#assign url=html.saveUrls(\"/${moduleName.toLowerCase()}/${className.toLowerCase()}/create-save\",\"/${moduleName.toLowerCase()}/${className.toLowerCase()}/edit-save\")/>"
+def generateEdit(Writer out, DbTable t) {
+    def tFieldName = objectName(t.name, false);
+    out.println "<#-- @ftlvariable name=\"entity\" type=\"${basePackageName}.${moduleName}.entity.${t.className}\" -->"
+    out.println "<#include \"/_inc/_layout.ftlh\">"
+    out.println "<#assign url=xci.saveUrl(\"/${moduleName.toLowerCase()}/${tFieldName}/\",\"createSave\",\"updateSave\")/>"
     out.println "<@header/>"
     out.println "<div class=\"jxpanel winpanel\" data-fit=\"true\">"
     out.println "    <form id=\"editform\" class=\"jxform\" method=\"post\" action=\"\${url}\">"
-    out.println "        <input name=\"id\" value=\"\${entity.id!}\" type=\"hidden\">"
+    out.println "        <input name=\"${t.keyName}\" value=\"\${entity.${t.keyName}}\" type=\"hidden\">"
     out.println "        <table class=\"table jxtable-form\">"
-    fields.each() {
+    t.fields.each() {
         out.println "            <tr>"
         out.println "                <th>${it.comment}</th>"
         out.println "                <td>"
-        out.println "                    <input class=\"form-control\" id=\"${it.name}\" name=\"${it.name}\" value=\"\${entity.${it.name}!}\" maxlength=\"50\""
-        out.println "                           data-validate=\"required: [true,'请输入${it.comment}'],maxlength: 50\" autocomplete=\"off\"/>"
+        out.println "                    <input class=\"form-control\" id=\"${it.javaName}\" name=\"${it.javaName}\" value=\"\${entity.${it.javaName}}\" maxlength=\"${it.size}\""
+        out.println "                           data-validate=\"required: [true,'请输入${it.comment}'],maxlength: ${it.size}\" autocomplete=\"off\"/>"
         out.println "                </td>"
         out.println "            </tr>"
     }
     out.println "        </table>"
     out.println "    </form>"
     out.println "    <div class=\"panel-footer text-right\">"
-    out.println "        <@html.editPanelFooter/>"
+    out.println "        <@xci.editPanelFooter/>"
     out.println "    </div>"
     out.println "</div>"
     out.println "<@footer>"
-    out.println "    <script>"
-    out.println "        jx.auth.bindEditFormSuccess();"
-    out.println "    </script>"
+    out.println "    <script>jx.auth.bindEditFormSuccess();</script>"
     out.println "</@footer>"
 }
 
-def generateDetails(out, className, fields, classComment, table) {
-    def tableName = table.getName()
-    out.println "<#-- @ftlvariable name=\"entity\" type=\"${packageName}${moduleName}.entity.${className}Entity\" -->"
-    out.println "<#include \"/_inc/_layout.ftl\">"
-    out.println "<#include \"/auth/history/_history.ftl\">"
+def generateDetails(Writer out, DbTable t) {
+    out.println "<#-- @ftlvariable name=\"entity\" type=\"${basePackageName}.${moduleName}.entity.${t.className}\" -->"
+    out.println "<#include \"/_inc/_layout.ftlh\">"
+    out.println "<#include \"/_inc/_historyLog.ftlh\">"
     out.println "<@header/>"
     out.println "<div class=\"jxpanel jx-overflow-no winpanel\" data-options=\"fit:true\">"
     out.println "    <div class=\"jxtabs jxtabs-line\" data-options=\"{fit:true}\">"
@@ -1155,20 +1172,20 @@ def generateDetails(out, className, fields, classComment, table) {
     out.println "        <div class=\"tab-content\">"
     out.println "            <div id=\"tab-basic\" class=\"tab-pane jx-overflow-auto fade in active\">"
     out.println "                <table id=\"basic\" class=\"table table-bordered jxtable-details\">"
-    fields.each() {
+    t.fields.each() {
         out.println "                    <tr>"
         out.println "                        <th>${it.comment}</th>"
         if (it.type == "Date") {
-            out.println "                    \t<td>\${helper.formatDateTime(entity.${it.name})}</td>"
+            out.println "                    \t<td>\${web.formatDateTime(entity.${it.javaName})}</td>"
         } else {
-            out.println "                    \t<td>\${entity.${it.name}!?html}</td>"
+            out.println "                    \t<td>\${entity.${it.javaName}}</td>"
         }
         out.println "                    </tr>"
     }
     out.println "                </table>"
     out.println "            </div>"
     out.println "            <div id=\"tab-history\" class=\"tab-pane jx-overflow-auto fade\">"
-    out.println "                <@histroy tableName=\"${tableName}\" keyValue=entity.id/>"
+    out.println "                <@histroyLog tableName=\"${t.className}\" primaryKey=entity.${t.keyName}/>"
     out.println "            </div>"
     out.println "        </div>"
     out.println "    </div>"
@@ -1180,111 +1197,121 @@ def generateDetails(out, className, fields, classComment, table) {
     out.println "</@footer>"
 }
 
-def generateJs(out, className, fields, classComment, table) {
-    out.println "/*-----------------------------------------------------"
-    out.println " * ${classComment}模块-子系统"
-    out.println " * ---------------------------------------------------*/"
-    out.println "jx.ready(function () {"
-    out.println "    //定义变量"
-    out.println "    var api = {"
-    out.println "        grid: '/${moduleName.toLowerCase()}/${className.toLowerCase()}/grid',"
-    out.println "        create: '/${moduleName.toLowerCase()}/${className.toLowerCase()}/create',"
-    out.println "        edit: '/${moduleName.toLowerCase()}/${className.toLowerCase()}/edit',"
-    out.println "        delete: '/${moduleName.toLowerCase()}/${className.toLowerCase()}/delete',"
-    out.println "        details: '/${moduleName.toLowerCase()}/${className.toLowerCase()}/details',"
-    out.println "        export: '/${moduleName.toLowerCase()}/${className.toLowerCase()}/export'"
-    out.println "    };"
-    out.println "    var \$grid = \$('#grid'), \$gridform = \$('#gridform');"
-    out.println "    var gridInstance;"
-    out.println "    var dialogWidth = \$grid.data('dialogWidth'),dialogHeight = \$grid.data('dialogHeight');"
-    out.println "    var createTitle = '新增${classComment}',editTitle = '修改${classComment}',detailsTitle = '查看${classComment}';"
-    out.println "    var gridUrl = jx.apiUrl(api.grid),createUrl = jx.apiUrl(api.create),"
-    out.println "        editUrl = jx.apiUrl(api.edit),deleteUrl = jx.apiUrl(api.delete),"
-    out.println "        detailsUrl = jx.apiUrl(api.details),exportUrl = jx.apiUrl(api.export);"
-    out.println ""
-    out.println "    //初始化表格"
-    out.println "    var initGrid = function () {"
-    out.println "        gridInstance = \$grid.jxgrid({"
-    out.println "            url: gridUrl,"
-    out.println "            onDblClickRow: function (index, row) {"
-    out.println "                detailsData(row);"
-    out.println "            },"
-    out.println "            onRowContextMenu: function (e, index, row) {"
-    out.println "                jx.auth.gridContextMenuHandle(gridInstance,e, index, row)"
-    out.println "            },"
-    out.println "            onLoadSuccess: function () {"
-    out.println "                jx.auth.showGridContextMenu(gridInstance,'#gridcmenu');"
-    out.println "            }"
-    out.println "        });"
-    out.println "    };"
-    out.println ""
-    out.println "    //初始化事件"
-    out.println "    var initEvent = function () {"
-    out.println "        \$('#btn-create').click(function () {"
-    out.println "            createData();"
-    out.println "        });"
-    out.println "        \$('#btn-edit,#btn-cmedit').click(function () {"
-    out.println "            editData();"
-    out.println "        });"
-    out.println "        \$('#btn-delete,#btn-cmdelete').click(function () {"
-    out.println "            deleteData();"
-    out.println "        });"
-    out.println "        \$('#btn-export').click(function () {"
-    out.println "            exportData();"
-    out.println "        });"
-    out.println "    };"
-    out.println ""
-    out.println "    //新建数据"
-    out.println "    var createData = function () {"
-    out.println "        jx.dialog({"
-    out.println "            title: createTitle,"
-    out.println "            url: createUrl,"
-    out.println "            width: dialogWidth,"
-    out.println "            height: dialogHeight"
-    out.println "        });"
-    out.println "    };"
-    out.println ""
-    out.println "    //编辑数据"
-    out.println "    var editData = function () {"
-    out.println "        jx.auth.editData(gridInstance, {"
-    out.println "            title: editTitle,"
-    out.println "            url: editUrl,"
-    out.println "            width: dialogWidth,"
-    out.println "            height: dialogHeight"
-    out.println "        });"
-    out.println "    };"
-    out.println ""
-    out.println "    //删除数据"
-    out.println "    var deleteData = function () {"
-    out.println "        jx.auth.deleteData(gridInstance, {"
-    out.println "            url: deleteUrl"
-    out.println "        });"
-    out.println "    };"
-    out.println ""
-    out.println "    //查看数据"
-    out.println "    var detailsData = function (row) {"
-    out.println "        jx.auth.detailsData(gridInstance,row,{"
-    out.println "            title: detailsTitle,"
-    out.println "            url: detailsUrl"
-    out.println "        });"
-    out.println "    };"
-    out.println ""
-    out.println "    //导出数据"
-    out.println "    var exportData = function () {"
-    out.println "        jx.auth.exportData(exportUrl, jx.serialize(\$gridform));"
-    out.println "    };"
-    out.println ""
-    out.println "    //定义表格列格式化函数"
-    out.println ""
-    out.println "    //对外接口 重新加载表格数据"
-    out.println "    window.reloadGridData = function () {"
-    out.println "        gridInstance.reloadGridData();"
-    out.println "    };"
-    out.println ""
-    out.println "    //初始化"
-    out.println "    initGrid();"
-    out.println "    initEvent();"
-    out.println "});"
+def generateJs(Writer out, DbTable t) {
+ def tFieldName = objectName(t.name, false);
+ out.println "/*-----------------------------------------------------"
+ out.println " * ${t.comment}模块"
+ out.println " * ---------------------------------------------------*/"
+ out.println "jx.ready(function () {"
+ out.println "    //region 私有变量"
+ out.println ""
+ out.println "    var api = {"
+ out.println "        grid: '/${moduleName.toLowerCase()}/${tFieldName}/grid',"
+ out.println "        create: '/${moduleName.toLowerCase()}/${tFieldName}/create',"
+ out.println "        edit: '/${moduleName.toLowerCase()}/${tFieldName}/edit',"
+ out.println "        delete: '/${moduleName.toLowerCase()}/${tFieldName}/delete',"
+ out.println "        details: '/${moduleName.toLowerCase()}/${tFieldName}/details'"
+ out.println "    };"
+ out.println "    var gridInstance;"
+ out.println "    var dialogWidth = '600px'"
+ out.println "    var dialogHeight = '600px';"
+ out.println ""
+ out.println "    //endregion"
+ out.println ""
+ out.println "    //region 公共方法"
+ out.println ""
+ out.println "    //重新加载表格"
+ out.println "    jx.reloadGrid = function () {"
+ out.println "        gridInstance.reloadGridData();"
+ out.println "    }"
+ out.println ""
+ out.println "    //格式化列名称"
+ out.println "    jx.gf.formatName = function (v, row) {"
+ out.println "        return jx.formatString('<a class=\"cmd-details\">{0}</a>', v);"
+ out.println "    }"
+ out.println ""
+ out.println "    //endregion"
+ out.println ""
+ out.println "    //region 私有方法"
+ out.println ""
+ out.println "    //初始化表格"
+ out.println "    var initGrid = function () {"
+ out.println "        gridInstance = \$('#grid').jxgrid({"
+ out.println "            url: jx.url(api.grid),"
+ out.println "            onDblClickRow: function (index, row) {"
+ out.println "                detailsData(row);"
+ out.println "            },"
+ out.println "            onRowContextMenu: function (e, index, row) {"
+ out.println "                jx.auth.gridContextMenuHandle(gridInstance, e, index, row)"
+ out.println "            },"
+ out.println "            onLoadSuccess: function () {"
+ out.println "                jx.auth.showGridContextMenu(gridInstance, '#gridcmenu');"
+ out.println "            }"
+ out.println "        });"
+ out.println "    }"
+ out.println ""
+ out.println "    //初始化事件"
+ out.println "    var bindEvent = function () {"
+ out.println "        \$('#btn-create').click(function () {"
+ out.println "            createData();"
+ out.println "        });"
+ out.println "        \$('#btn-edit,#btn-cmedit').click(function () {"
+ out.println "            editData();"
+ out.println "        });"
+ out.println "        \$('#btn-delete,#btn-cmdelete').click(function () {"
+ out.println "            deleteData();"
+ out.println "        });"
+ out.println ""
+ out.println "        //数据行详情事件"
+ out.println "        gridInstance.getPanel().on('click', '.cmd-details', function () {"
+ out.println "            detailsData(gridInstance.getSelected());"
+ out.println "        });"
+ out.println "    }"
+ out.println ""
+ out.println "    //新增数据"
+ out.println "    var createData = function () {"
+ out.println "        jx.dialog({"
+ out.println "            url: jx.url(api.create),"
+ out.println "            title: '新增${t.comment}',"
+ out.println "            width: dialogWidth,"
+ out.println "            height: dialogHeight"
+ out.println "        });"
+ out.println "    }"
+ out.println ""
+ out.println "    //编辑数据"
+ out.println "    var editData = function () {"
+ out.println "        jx.auth.editData(gridInstance, {"
+ out.println "            url: jx.url(api.edit),"
+ out.println "            title: '修改${t.comment}',"
+ out.println "            width: dialogWidth,"
+ out.println "            height: dialogHeight"
+ out.println "        });"
+ out.println "    }"
+ out.println ""
+ out.println "    //删除数据"
+ out.println "    var deleteData = function () {"
+ out.println "        jx.auth.deleteData(gridInstance, {"
+ out.println "            url: jx.url(api.delete)"
+ out.println "        });"
+ out.println "    }"
+ out.println ""
+ out.println "    //查看数据"
+ out.println "    var detailsData = function (row) {"
+ out.println "        jx.auth.detailsData(gridInstance, row, {"
+ out.println "            url: jx.url(api.details),"
+ out.println "            title: '查看${t.comment}'"
+ out.println "        });"
+ out.println "    }"
+ out.println ""
+ out.println "    //endregion"
+ out.println ""
+ out.println "    //region 模块初始化"
+ out.println ""
+ out.println "    initGrid();"
+ out.println "    bindEvent();"
+ out.println ""
+ out.println "    //endregion"
+ out.println "})"
 }
 
 //#endregion

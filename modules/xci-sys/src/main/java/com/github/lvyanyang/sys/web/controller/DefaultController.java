@@ -11,10 +11,11 @@ import com.github.lvyanyang.core.GMap;
 import com.github.lvyanyang.core.R;
 import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
+import com.github.lvyanyang.sys.component.SysService;
+import com.github.lvyanyang.sys.entity.SysDic;
 import com.github.lvyanyang.sys.entity.SysModule;
 import com.github.lvyanyang.sys.filter.HistoryLogFilter;
 import com.github.lvyanyang.sys.service.LockUserService;
-import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.service.UserService;
 import com.github.lvyanyang.sys.web.component.SysWebService;
 import com.github.lvyanyang.sys.web.model.JsonGrid;
@@ -28,14 +29,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * 权限子系统默认控制器
  */
 @Authorize
-@Controller("sysDefaultController")
+@Controller("sysWebDefaultController")
 @RequestMapping("/sys")
 public class DefaultController extends SysWebController {
     @Resource private WebProperties webProperties;
@@ -192,14 +192,24 @@ public class DefaultController extends SysWebController {
      * 模块Tree
      */
     @ResponseBody
-    @GetMapping("/module")
-    public RestResult module(@RequestParam Map<String, Object> params) {
+    @GetMapping("/userModules")
+    public RestResult userModules() {
         List<SysModule> list = SysService.me().userService().selectUserModuleCacheListByUser(getCurrentUser())
                 .stream().filter(p -> p.getMenu() && p.getWeb()).collect(Collectors.toList());
         List<TreeNode> nodes = SysWebService.me().toModuleNodeList(list);
         return RestResult.ok(nodes);
     }
 
+    /**
+     * 查询字典明细树列表
+     */
+    @ResponseBody
+    @GetMapping("/dics")
+    public Object dics(String categoryCode) {
+        XCI.ifBlankThrow(categoryCode, () -> RestResult.fail("请指定字典编码"));
+        List<SysDic> list = SysService.me().selectEnabledDicList(categoryCode);
+        return RestResult.ok(SysWebService.me().toDicNodeList(list));
+    }
 
     /**
      * 激活当前用户

@@ -2469,7 +2469,9 @@ public class XCI {
         if (isBlank(type)) {
             type = request.getParameter("X-Requested-With");
         }
-
+        if (isNotBlank(type) && "XMLHttpRequest".equals(type)){
+            return false;
+        }
         if (isNotBlank(type) && ("api".equals(type)||"AppHttpRequest".equals(type))){
             return true;
         }

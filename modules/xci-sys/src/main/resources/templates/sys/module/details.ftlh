@@ -1,6 +1,6 @@
 <#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.entity.SysModule" -->
-<#include "/sys/_inc/_layout.ftlh">
-<#include "/sys/_inc/_history.ftlh">
+<#include "/_inc/_layout.ftlh">
+<#include "/_inc/_historyLog.ftlh">
 <@header/>
 <div class="jxpanel jx-overflow-no winpanel" data-options="fit:true">
     <div class="jxtabs jxtabs-line" data-options="{fit:true}">
@@ -12,73 +12,84 @@
             <div id="tab-basic" class="tab-pane jx-overflow-auto fade in active">
                 <table id="basic" class="table table-bordered jxtable-details">
                     <tr>
-                        <th class="w-100px">名称</th>
+                        <th class="w-100px">模块主键</th>
+                        <td>${entity.id}</td>
+                    </tr>
+                    <tr>
+                        <th>上级主键</th>
+                        <td>${entity.parentId}</td>
+                    </tr>
+                    <tr>
+                        <th>模块名称</th>
                         <td>${entity.name}</td>
-                        <th class="w-100px">编码</th>
+                        </tr>
+                    <tr>
+                        <th>模块编码</th>
                         <td>${entity.code}</td>
                     </tr>
                     <tr>
-                        <th>图标样式</th>
-                        <td><i class="${entity.webCls} fa-lg"></i> ${entity.webCls}</td>
-                        <th>排序路径</th>
+                        <th>模块参数</th>
+                        <td>${entity.param}</td>
+                    </tr>
+                    <tr>
+                        <th>序号</th>
                         <td>${entity.path}</td>
                     </tr>
-                    <tr>
-                        <th>展开</th>
-                        <td>
-                            <@xci.yesnoLabel value=entity.isExpand/>
-                        </td>
-                        <th>公开</th>
-                        <td>
-                            <@xci.yesnoLabel value=entity.isPublic/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>菜单</th>
-                        <td>
-                            <@xci.yesnoLabel value=entity.isMenu/>
-                        </td>
-                        <th>状态</th>
-                        <td><@xci.boolLabel value=entity.status /></td>
-                    </tr>
-                    <#--<tr>-->
-                    <#--    <th>操作人</th>-->
-                    <#--    <td>${entity.operateUserName}</td>-->
-                    <#--    <th>操作时间</th>-->
-                    <#--    <td>${helper.formatDateTime(entity.operateDateTime)!}</td>-->
-                    </tr>
-                    <#if helper.isNotBlank(entity.param)>
+                    <#if entity.web>
                         <tr>
-                            <th>参数</th>
-                            <td colspan="3">
-
-                                <pre>${entity.param}</pre>
-
-                            </td>
+                            <th>Web图标</th>
+                            <td><i class="${entity.webCls} fa-lg"></i> ${entity.webCls}</td>
+                        </tr>
+                        <tr>
+                            <th>Web路径</th>
+                            <td>${entity.webUrl}</td>
+                        </tr>
+                        <tr>
+                            <th>Web配置</th>
+                            <td>${entity.webSetting}</td>
+                        </tr>
+                    </#if>
+                    <#if entity.win>
+                        <tr>
+                            <th>Win图标</th>
+                            <td>${entity.winCls}</td>
+                        </tr>
+                        <tr>
+                            <th>Win路径</th>
+                            <td>${entity.winUrl}</td>
+                        </tr>
+                        <tr>
+                            <th>Win配置</th>
+                            <td>${entity.winSetting}</td>
                         </tr>
                     </#if>
                     <tr>
-                        <th>地址</th>
-                        <td colspan="3">${entity.webUrl}</td>
-                    </tr>
-                    <tr>
-                        <th>窗口类</th>
-                        <td colspan="3">${entity.winProvider}</td>
+                        <th>选项</th>
+                        <td>
+                            <#--是否菜单-->
+                            <@xci.boolLabel value=entity.menu trueLable="菜单" falseLable="权限"/>
+                            <#--是否展开-->
+                            <@xci.boolLabel value=entity.expand trueLable="展开" falseLable="合上"/>
+                            <#--是否公开-->
+                            <@xci.boolLabel value=entity.publiced trueLable="公开" falseLable="不公开"/>
+                            <#--是否状态-->
+                            <@xci.boolLabel value=entity.status trueLable="启用" falseLable="禁用"/>
+                        </td>
                     </tr>
                     <tr>
                         <th>备注</th>
-                        <td colspan="3">${entity.remark}</td>
+                        <td>${entity.remark}</td>
                     </tr>
                 </table>
             </div>
             <div id="tab-history" class="tab-pane jx-overflow-auto fade">
-                <@histroy tableName="SysModule" primaryKey=entity.id/>
+                <@histroyLog tableName="SysModule" primaryKey=entity.id/>
             </div>
         </div>
     </div>
 </div>
 <@footer>
-<script>
-    jx.auth.tabsAuthInit();
-</script>
+    <script>
+        jx.auth.tabsAuthInit();
+    </script>
 </@footer>

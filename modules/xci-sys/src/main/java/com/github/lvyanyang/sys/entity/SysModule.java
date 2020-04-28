@@ -76,63 +76,63 @@ public class SysModule extends BaseEntity implements ITreeModel {
      * 模块参数
      */
     @Length(max = 4000, message = "模块参数不能超过{max}个字符")
-    @Excel(name = "模块参数")
+    @Excel(name = "模块参数", width = 30d)
     @ApiModelProperty(value = "模块参数", position = 6)
     private String param;
-
-    /**
-     * Web路径
-     */
-    @Length(max = 500, message = "Web路径不能超过{max}个字符")
-    @Excel(name = "Web路径")
-    @ApiModelProperty(value = "Web路径", position = 6)
-    private String webUrl;
 
     /**
      * Web图标
      */
     @Length(max = 500, message = "Web图标不能超过{max}个字符")
-    @Excel(name = "Web图标")
+    @Excel(name = "Web图标",width = 20d)
     @ApiModelProperty(value = "Web图标", position = 6)
     private String webCls;
 
     /**
-     * Win路径
+     * Web路径
      */
-    @Length(max = 500, message = "Win路径不能超过{max}个字符")
-    @Excel(name = "Win路径")
-    @ApiModelProperty(value = "Win路径", position = 6)
-    private String winUrl;
+    @Length(max = 500, message = "Web路径不能超过{max}个字符")
+    @Excel(name = "Web路径", width = 30d)
+    @ApiModelProperty(value = "Web路径", position = 6)
+    private String webUrl;
+
+    /**
+     * Web配置
+     */
+    @Length(max = 2000, message = "Web配置不能超过{max}个字符")
+    @Excel(name = "Web配置",width = 20d)
+    @ApiModelProperty(value = "Web配置", position = 7)
+    private String webSetting;
 
     /**
      * Win图标
      */
     @Length(max = 500, message = "Win图标不能超过{max}个字符")
-    @Excel(name = "Win图标")
+    @Excel(name = "Win图标",width = 20d)
     @ApiModelProperty(value = "Win图标", position = 6)
     private String winCls;
 
     /**
-     * Web配置选项
+     * Win路径
      */
-    @Length(max = 2000, message = "Web配置选项不能超过{max}个字符")
-    @Excel(name = "Web配置选项")
-    @ApiModelProperty(value = "Web配置选项", position = 7)
-    private String webSetting;
+    @Length(max = 500, message = "Win路径不能超过{max}个字符")
+    @Excel(name = "Win路径", width = 30d)
+    @ApiModelProperty(value = "Win路径", position = 6)
+    private String winUrl;
 
     /**
-     * Win配置选项
+     * Win配置
      */
-    @Length(max = 2000, message = "Win配置选项不能超过{max}个字符")
-    @Excel(name = "WinFrom窗口类")
-    @ApiModelProperty(value = "Win配置选项", position = 9)
+    @Length(max = 2000, message = "Win配置不能超过{max}个字符")
+    @Excel(name = "Win配置",width = 20d)
+    @ApiModelProperty(value = "Win配置", position = 9)
     private String winSetting;
 
     /**
      * 是否Web菜单 [true-是, false-否]
      */
     @NotNull(message = "请输入是否Web菜单")
-    @Excel(name = "是否Web菜单", width = 20d, replace = {R.YesStatusReplace, R.NoStatusReplace})
+    @Excel(name = "Web菜单", replace = {R.YesStatusReplace, R.NoStatusReplace})
     @ApiModelProperty(value = "是否Web菜单 [true-是, false-否]", required = true, position = 12)
     private Boolean web;
 
@@ -140,7 +140,7 @@ public class SysModule extends BaseEntity implements ITreeModel {
      * 是否WinForm菜单 [true-是, false-否]
      */
     @NotNull(message = "请输入是否WinForm菜单")
-    @Excel(name = "是否WinForm菜单", width = 20d, replace = {R.YesStatusReplace, R.NoStatusReplace})
+    @Excel(name = "Win菜单", replace = {R.YesStatusReplace, R.NoStatusReplace})
     @ApiModelProperty(value = "是否WinForm菜单 [true-是, false-否]", required = true, position = 13)
     private Boolean win;
 
@@ -148,7 +148,7 @@ public class SysModule extends BaseEntity implements ITreeModel {
      * 是否展开 [true-是, false-否]
      */
     @NotNull(message = "请输入是否展开")
-    @Excel(name = "是否展开", width = 20d, replace = {R.YesStatusReplace, R.NoStatusReplace})
+    @Excel(name = "展开", replace = {R.YesStatusReplace, R.NoStatusReplace})
     @ApiModelProperty(value = "是否展开 [是_1,否_0]", required = true, position = 14)
     private Boolean expand;
 
@@ -156,7 +156,7 @@ public class SysModule extends BaseEntity implements ITreeModel {
      * 是否公开 [true-是, false-否]
      */
     @NotNull(message = "请输入是否公开")
-    @Excel(name = "是否公开", width = 20d, replace = {R.YesStatusReplace, R.NoStatusReplace})
+    @Excel(name = "公开", replace = {R.YesStatusReplace, R.NoStatusReplace})
     @ApiModelProperty(value = "是否公开 [true-是, false-否]", required = true, position = 15)
     private Boolean publiced;
 
@@ -164,7 +164,7 @@ public class SysModule extends BaseEntity implements ITreeModel {
      * 是否菜单 [true-是, false-否]
      */
     @NotNull(message = "请输入是否菜单")
-    @Excel(name = "是否菜单", width = 20d, replace = {R.YesStatusReplace, R.NoStatusReplace})
+    @Excel(name = "菜单", replace = {R.YesStatusReplace, R.NoStatusReplace})
     @ApiModelProperty(value = "是否菜单 [true-是, false-否]", required = true, position = 16)
     private Boolean menu;
 
@@ -187,7 +187,7 @@ public class SysModule extends BaseEntity implements ITreeModel {
      * 备注
      */
     @Length(max = 500, message = "备注不能超过{max}个字符")
-    @Excel(name = "备注", width = 40d)
+    @Excel(name = "备注")
     @ApiModelProperty(value = "备注", position = 100)
     private String remark;
 }

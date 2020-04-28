@@ -1,8 +1,7 @@
 <#include "/_inc/_layout.ftlh">
-<#assign allowCreate=sys.auth("sys.seq.insert")/>
-<#assign allowEdit=sys.auth("sys.seq.edit")/>
+<#assign allowInsert=sys.auth("sys.seq.insert")/>
+<#assign allowUpdate=sys.auth("sys.seq.update")/>
 <#assign allowDelete=sys.auth("sys.seq.delete")/>
-<#assign allowExport=sys.auth("sys.seq.export")/>
 <@header/>
 <div id="gridtoolbar">
     <form id="gridform" class="jxlayout-form form-inline jxform">
@@ -13,12 +12,12 @@
             <i class="fa fa-search"></i> 查询
         </button>
         <div class="btn-group">
-            <@xci.echo test=allowCreate>
+            <@xci.echo test=allowInsert>
                 <a id="btn-create" class="btn btn-default">
                     <i class="icon-plus"></i> 新增
                 </a>
             </@xci.echo>
-            <@xci.echo test=allowEdit>
+            <@xci.echo test=allowUpdate>
                 <a id="btn-edit" class="btn btn-default">
                     <i class="icon-pencil"></i> 编辑
                 </a>
@@ -28,15 +27,13 @@
                     <i class="icon-trash"></i> 删除
                 </a>
             </@xci.echo>
-            <@xci.echo test=allowExport>
-                <a id="btn-export"
-                   class="btn btn-default jxexport"
-                   data-url="${web.url('/sys/seq/export')}"
-                   data-param="jx.serialize($('#gridform'))">
-                    <i class="icon-share-alt"></i>
-                    导出
-                </a>
-            </@xci.echo>
+            <a id="btn-export"
+               class="btn btn-default jxexport"
+               data-url="${web.url('/sys/seq/export')}"
+               data-param="jx.serialize($('#gridform'))">
+                <i class="icon-share-alt"></i>
+                导出
+            </a>
         </div>
     </form>
 </div>

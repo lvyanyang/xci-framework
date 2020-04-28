@@ -2279,6 +2279,6 @@
     </section>
 </script>
 <script src="${web.cdn('/jx.js')}"></script>
-<script src="${web.cdn('/sys/js/icon.js')}</script>
+<script src="${web.url('/sys/js/icon.js')}"></script>
 </body>
 </html>

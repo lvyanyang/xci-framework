@@ -1,18 +1,11 @@
 /*-----------------------------------------------------
- * 权限子系统-系统字典模块
+ * 系统字典模块
  * ---------------------------------------------------*/
 jx.ready(function () {
-    window.api = {
+    //region 私有变量
+
+    var api = {
         dic: {
-            tree: '/sys/dicCategory/tree',
-            create: '/sys/dicCategory/create',
-            edit: '/sys/dicCategory/edit',
-            delete: '/sys/dicCategory/delete',
-            details: '/sys/dicCategory/details',
-            export: '/sys/dicCategory/export',
-            dnd: '/sys/dicCategory/dnd'
-        },
-        dicDetails: {
             grid: '/sys/dic/grid',
             create: '/sys/dic/create',
             edit: '/sys/dic/edit',
@@ -21,41 +14,49 @@ jx.ready(function () {
             status: '/sys/dic/status',
             export: '/sys/dic/export',
             dnd: '/sys/dic/dnd'
+        },
+        category: {
+            tree: '/sys/dicCategory/tree',
+            create: '/sys/dicCategory/create',
+            edit: '/sys/dicCategory/edit',
+            delete: '/sys/dicCategory/delete',
+            details: '/sys/dicCategory/details',
+            export: '/sys/dicCategory/export',
+            dnd: '/sys/dicCategory/dnd'
         }
     };
-    //定义变量
     var $tree = $('#tree'), $grid = $('#grid');
-    var $gridPanel, treeInstance, gridInstance, lastSelectedId;
+    var treeInstance, gridInstance, lastSelectedId;
 
-    var treeDialogWidth = $tree.data('dialogWidth');
-    var treeDialogHeight = $tree.data('dialogHeight');
-    var gridDialogWidth = $grid.data('dialogWidth');
-    var gridDialogHeight = $grid.data('dialogHeight');
+    var treeDialogWidth = '600px';
+    var treeDialogHeight = '360px';
+    var gridDialogWidth = '600px';
+    var gridDialogHeight = '460px';
 
-    var treeUrl = jx.apiUrl(api.dic.tree);
-    var treeCreateUrl = jx.apiUrl(api.dic.create);
-    var treeEditUrl = jx.apiUrl(api.dic.edit);
-    var treeDeleteUrl = jx.apiUrl(api.dic.delete);
-    var treeDetailsUrl = jx.apiUrl(api.dic.details);
-    var treeExportUrl = jx.apiUrl(api.dic.export);
-    var treeDndUrl = jx.apiUrl(api.dic.dnd);
+    //endregion
 
-    var gridUrl = jx.apiUrl(api.dicDetails.grid);
-    var gridCreateUrl = jx.apiUrl(api.dicDetails.create);
-    var gridEditUrl = jx.apiUrl(api.dicDetails.edit);
-    var gridDeleteUrl = jx.apiUrl(api.dicDetails.delete);
-    var gridStatusUrl = jx.apiUrl(api.dicDetails.status);
-    var gridDetailsUrl = jx.apiUrl(api.dicDetails.details);
-    var gridExportUrl = jx.apiUrl(api.dicDetails.export);
-    var gridDndUrl = jx.apiUrl(api.dicDetails.dnd);
+    //region 公共方法
 
+    //重新加载树
+    jx.reloadTree = function () {
+        treeInstance.reload();
+    }
+
+    //重新加载表格
+    jx.reloadGrid = function () {
+        gridInstance.reloadGridData();
+    }
+
+    //endregion
+
+    //region 私有方法
 
     //初始化树控件
     var initTree = function () {
         //树控件初始化参数
         treeInstance = $tree.jxtree({
-            url: treeUrl,
-            dndUrl: treeDndUrl,
+            url: jx.url(api.category.tree),
+            dndUrl: jx.url(api.category.dnd),
             onContextMenu: function (e, node) {
                 treeInstance.expand(node.target);
                 treeInstance.select(node.target);
@@ -67,7 +68,7 @@ jx.ready(function () {
                 lastSelectedId = node.id;
                 gridInstance.reloadGridData();
                 //设置右边区域标题
-                $(document.body).layout('panel','center').panel('setTitle',node.text);
+                $(document.body).layout('panel', 'center').panel('setTitle', node.text);
             },
             onLoadSuccess: function () {
                 $tree.contextmenu({target: '#treecmenu'});
@@ -92,20 +93,11 @@ jx.ready(function () {
 
     //初始化树控件事件
     var initTreeEvent = function () {
-        $('#btn-tcmcreateroot').click(function () {
-            jx.dialog({
-                title: '新增根字典',
-                url: treeCreateUrl,
-                width: treeDialogWidth,
-                height: treeDialogHeight
-            });
-        });
-
         $('#btn-tcmcreate').click(function () {
             var parentId = treeInstance.getSelected().id || 0;
             jx.dialog({
-                title: '新增字典',
-                url: treeCreateUrl,
+                title: '新增字典类型',
+                url: jx.url(api.category.create),
                 params: {parentId: parentId},
                 width: treeDialogWidth,
                 height: treeDialogHeight
@@ -116,8 +108,8 @@ jx.ready(function () {
             if (!treeInstance.getSelected()) return;
             var id = treeInstance.getSelected().id;
             jx.dialog({
-                title: '修改字典',
-                url: treeEditUrl,
+                title: '修改字典类型',
+                url: jx.url(api.category.edit),
                 params: {id: id},
                 width: treeDialogWidth,
                 height: treeDialogHeight
@@ -128,10 +120,10 @@ jx.ready(function () {
             if (!treeInstance.getSelected()) return;
             var id = treeInstance.getSelected().id;
             jx.delete({
-                confirm: '注：如果有子节点则都会被删除，并且无法撤销，您确定要删除吗？',
-                url: treeDeleteUrl,
+                confirm: '注：您确定要删除当前选中节点吗？',
+                url: jx.url(api.category.delete),
                 data: {id: id},
-                success: function (result) {
+                success: function () {
                     treeInstance.reload();
                 }
             });
@@ -140,14 +132,14 @@ jx.ready(function () {
         $('#btn-tcmdetails').click(function () {
             var id = treeInstance.getSelected().id;
             jx.detailsDialog({
-                title: '查看字典详细信息',
-                url: treeDetailsUrl,
+                title: '查看字典类型',
+                url: jx.url(api.category.details),
                 params: {id: id}
             });
         });
 
         $('#btn-tcmexport').click(function () {
-            window.location.href = treeExportUrl;
+            jx.export(jx.url(api.category.export));
         });
     };
 
@@ -155,21 +147,19 @@ jx.ready(function () {
     var initGrid = function () {
         //表格控件初始化参数
         gridInstance = $grid.jxtreegrid({
-            url: gridUrl,
-            dndUrl: gridDndUrl,
+            url: jx.url(api.dic.grid),
+            dndUrl: jx.url(api.dic.dnd),
             onBeforeLoad: function (row, param) {
                 var item = treeInstance.getSelected();
                 if (!item) return false;
 
-                param.dicId = item.id;
+                param.categoryCode = item.code;
                 return true;
             },
             onDblClickRow: function (row) {
-                var id = gridInstance.getRowId(row);
-                jx.detailsDialog({
-                    title: '查看字典明细详细信息',
-                    url: gridDetailsUrl,
-                    params: {id: id}
+                jx.auth.detailsData(gridInstance, row, {
+                    url: jx.url(api.dic.details),
+                    title: '查看系统字典'
                 });
             },
             onLoadSuccess: function () {
@@ -182,36 +172,21 @@ jx.ready(function () {
                 }
             }
         });
-        $gridPanel = gridInstance.getPanel();
     };
 
     //初始化表格事件
     var initGridEvent = function () {
-        $('#btn-createroot,#btn-cmcreateroot').click(function () {
-            if (!treeInstance.getSelected()) {
-                jx.toastr.error('请先选择字典');
-                return;
-            }
-            var dicId = treeInstance.getSelected().id;
-            jx.dialog({
-                title: '新增根字典明细',
-                url: gridCreateUrl,
-                params: {dicId: dicId},
-                width: gridDialogWidth,
-                height: gridDialogHeight
-            });
-        });
         $('#btn-create,#btn-cmcreate').click(function () {
             if (!treeInstance.getSelected()) {
-                jx.toastr.error('请先选择字典');
+                jx.toastr.error('请先选择字典类型');
                 return;
             }
-            var dicId = treeInstance.getSelected().id;
+            var categoryCode = treeInstance.getSelected().code;
             var parentId = gridInstance.getSelectedRowId() || 0;
             jx.dialog({
-                title: '新增字典明细',
-                url: gridCreateUrl,
-                params: {dicId: dicId, parentId: parentId},
+                title: '新增字典',
+                url: jx.url(api.dic.create),
+                params: {categoryCode: categoryCode, parentId: parentId},
                 width: gridDialogWidth,
                 height: gridDialogHeight
             });
@@ -220,8 +195,8 @@ jx.ready(function () {
             if (!gridInstance.hasSelectedRow()) return;
             var id = gridInstance.getSelectedRowId();
             jx.dialog({
-                title: '修改字典明细',
-                url: gridEditUrl,
+                title: '修改字典',
+                url: jx.url(api.dic.edit),
                 params: {id: id},
                 width: gridDialogWidth,
                 height: gridDialogHeight
@@ -231,65 +206,51 @@ jx.ready(function () {
             if (!gridInstance.hasSelectedRow()) return;
             var id = gridInstance.getSelectedRowId();
             jx.delete({
-                confirm: '注：如果有子节点则都会被删除，并且无法撤销，您确定要删除吗？',
-                url: gridDeleteUrl,
+                confirm: '注：您确定要删除当前选中节点吗？',
+                url: jx.url(api.dic.delete),
                 data: {id: id},
-                success: function (result) {
+                success: function () {
                     gridInstance.reloadGridData();
                 }
             });
         });
         $('#btn-export').click(function () {
-            exportData();
+            if (!treeInstance.getSelected()) {
+                jx.toastr.error('请先选择字典类型');
+                return;
+            }
+            var code = treeInstance.getSelected().code;
+            jx.export(jx.url(api.dic.export), $.extend(jx.serialize($('#gridform')), {categoryCode: code}));
         });
 
-        $gridPanel.on('click', '.gridstatus', function () {
+        gridInstance.getPanel().on('click', '.gridstatus', function () {
             var id = $(this).data('id');
             var val = $(this).data('val');
-            setStatus(id, val);
+            var status = val == '1' ? 0 : 1;
+            jx.ajax({
+                url: jx.url(api.dic.status),
+                data: {id: id, status: status},
+                maskMsg: '正在更新状态,请稍等...',
+                success: function () {
+                    gridInstance.reloadGridData();
+                    jx.toastr.success('状态更新成功');
+                }
+            });
         });
     };
 
-    //导出数据
-    var exportData = function () {
-        if (!treeInstance.getSelected()) {
-            jx.toastr.error('请先选择字典');
-            return;
-        }
-        var dicId = treeInstance.getSelected().id;
-        jx.auth.exportData(gridExportUrl, $.extend(jx.serialize($('#gridform')), {dicId: dicId}));
-    };
+    //endregion
 
-    //设置数据状态
-    var setStatus = function (id, val) {
-        var status = val == '1' ? 0 : 1;
-        jx.ajax({
-            url: gridStatusUrl,
-            data: {id: id, status: status},
-            maskMsg: '正在更新状态,请稍等...',
-            success: function (result) {
-                gridInstance.reloadGridData();
-                jx.toastr.success('状态更新成功');
-            }
-        });
-    };
+    //region 模块初始化
 
-    //对外接口
-    //刷新树控件数据
-    window.reloadTreeData = function () {
-        treeInstance.reload();
-    };
-    //刷新表格数据
-    window.reloadGridData = function () {
-        gridInstance.reloadGridData();
-    };
-
-    //初始化
     initTree();
     initTreeEvent();
     initGrid();
     initGridEvent();
+
+    //endregion
 });
+
 jx.complete(function () {
-    jx.monitorLayoutPanel($(document.body), 'west', 'spring-sysdic');
+    jx.monitorLayoutPanel($(document.body), 'west', 'xci-sysdic');
 });

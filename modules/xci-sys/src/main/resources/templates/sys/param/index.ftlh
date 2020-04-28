@@ -1,8 +1,7 @@
 <#include "/_inc/_layout.ftlh">
-<#assign allowCreate=sys.auth("sys.param.insert")/>
-<#assign allowEdit=sys.auth("sys.param.edit")/>
+<#assign allowInsert=sys.auth("sys.param.insert")/>
+<#assign allowUpdate=sys.auth("sys.param.update")/>
 <#assign allowDelete=sys.auth("sys.param.delete")/>
-<#assign allowExport=sys.auth("sys.param.export")/>
 <@header/>
 <div id="gridtoolbar">
     <form id="gridform" class="jxlayout-form form-inline jxform">
@@ -13,19 +12,19 @@
             <select id="category" name="category" class="form-control jxselect"
                     data-select-submit="true" data-allow-clear="false" data-width="110">
                 <option value=" ">全部分类</option>
-                <@dic.sysParamCategory selectedValue=''/>
+                <#--<@dic.sysParamCategory selectedValue=''/>-->
             </select>
         </div>
         <button class="btn btn-primary ml-5" type="submit">
             <i class="fa fa-search"></i> 查询
         </button>
         <div class="btn-group">
-            <@xci.echo test=allowCreate>
+            <@xci.echo test=allowInsert>
                 <a id="btn-create" class="btn btn-default">
                     <i class="icon-plus"></i> 新增
                 </a>
             </@xci.echo>
-            <@xci.echo test=allowEdit>
+            <@xci.echo test=allowUpdate>
                 <a id="btn-edit" class="btn btn-default">
                     <i class="icon-pencil"></i> 编辑
                 </a>
@@ -35,22 +34,20 @@
                     <i class="icon-trash"></i> 删除
                 </a>
             </@xci.echo>
-            <@xci.echo test=allowExport>
-                <a id="btn-export"
-                   class="btn btn-default jxexport"
-                   data-url="${web.url('/sys/param/export')}"
-                   data-param="jx.serialize($('#gridform'))">
-                    <i class="icon-share-alt"></i>
-                    导出
-                </a>
-            </@xci.echo>
+            <a id="btn-export"
+               class="btn btn-default jxexport"
+               data-url="${web.url('/sys/param/export')}"
+               data-param="jx.serialize($('#gridform'))">
+                <i class="icon-share-alt"></i>
+                导出
+            </a>
         </div>
     </form>
 </div>
 <div id="gridcmenu">
-    <@xci.echo test=(allowEdit||allowDelete)>
+    <@xci.echo test=(allowUpdate||allowDelete)>
         <ul class="dropdown-menu">
-            <@xci.echo test=allowEdit>
+            <@xci.echo test=allowUpdate>
                 <li><a id="btn-cmedit"><i class="icon-pencil"></i> 编辑</a></li></@xci.echo>
             <@xci.echo test=allowDelete>
                 <li><a id="btn-cmdelete"><i class="icon-trash"></i> 删除</a></li></@xci.echo>

@@ -13,6 +13,7 @@ import com.github.lvyanyang.core.XCI;
 import com.github.lvyanyang.model.IdValue;
 import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.dao.ModuleDao;
+import com.github.lvyanyang.sys.entity.SysDept;
 import com.github.lvyanyang.sys.entity.SysModule;
 import com.github.lvyanyang.sys.filter.ModuleFilter;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 系统模块服务
@@ -195,7 +198,18 @@ public class ModuleService extends BaseService {
      * @return 返回模块列表
      */
     public List<SysModule> selectList(ModuleFilter filter) {
-        return moduleDao.selectList(filter);
+        List<SysModule> list = moduleDao.selectList(filter);
+        if (XCI.isBlank(filter.getName())) {
+            return list;
+        }
+
+        //如果指定了按名称过滤,那么先按状态和权限查询出所有记录,然后用stream进行过滤,过滤之后调用filterTree,把每个匹配项的所有父节点都查询出来
+        String name = filter.getName();
+        var result = list.stream().filter(p -> p.getName().toLowerCase().contains(name)
+                || (p.getCode() != null && p.getCode().toLowerCase().contains(name))
+                || (p.getSpell() != null && p.getSpell().toLowerCase().contains(name)))
+                .sorted(Comparator.comparing(SysModule::getPath)).collect(Collectors.toList());
+        return (List<SysModule>) XCI.filterTree(list, result);
     }
 
     /**

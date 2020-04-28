@@ -16,9 +16,7 @@ import com.github.lvyanyang.model.HistoryInfo;
 import com.github.lvyanyang.model.HistoryOperateType;
 import com.github.lvyanyang.model.OperateLogInfo;
 import com.github.lvyanyang.sys.entity.*;
-import com.github.lvyanyang.sys.filter.DeptFilter;
-import com.github.lvyanyang.sys.filter.RoleFilter;
-import com.github.lvyanyang.sys.filter.UserFilter;
+import com.github.lvyanyang.sys.filter.*;
 import com.github.lvyanyang.sys.model.BaseOperateUserEntity;
 import com.github.lvyanyang.sys.model.BaseUserEntity;
 import com.github.lvyanyang.sys.service.*;
@@ -193,16 +191,19 @@ public class SysService {
      */
     public SysUser getCurrentUser() {
         HttpServletRequest request = XCI.getRequest();
-        Object userObj = request.getAttribute(R.CURRENT_USER_API_KEY);
-        if (XCI.isApiRequest() && userObj == null) {
-            String tokenStr = request.getHeader(R.HEADER_TOKEN_KEY);
-            if (XCI.isBlank(tokenStr)) return null;
-            var userResult = getUserByToken(tokenStr);
-            if (userResult.isFail()) {
-                XCI.appThrow(userResult.getMsg());
+        Object userObj;
+        if (XCI.isApiRequest()) {
+            userObj = request.getAttribute(R.CURRENT_USER_API_KEY);
+            if (userObj == null) {
+                String tokenStr = request.getHeader(R.HEADER_TOKEN_KEY);
+                if (XCI.isBlank(tokenStr)) return null;
+                var userResult = getUserByToken(tokenStr);
+                if (userResult.isFail()) {
+                    XCI.appThrow(userResult.getMsg());
+                }
+                userObj = userResult.getData();
+                request.setAttribute(R.CURRENT_USER_API_KEY, userObj);
             }
-            userObj = userResult.getData();
-            request.setAttribute(R.CURRENT_USER_API_KEY, userObj);
         } else {
             userObj = request.getSession().getAttribute(R.CURRENT_USER_Session_KEY);
         }
@@ -576,6 +577,24 @@ public class SysService {
         filter.setDeptId(deptId);
         filter.setDataScope(dataScope);
         return roleService().selectList(filter);
+    }
+
+    /**
+     * 查询启用的模块列表
+     */
+    public List<SysModule> selectEnabledModuleList() {
+        var filter = new ModuleFilter();
+        return moduleService().selectList(filter);
+    }
+
+    /**
+     * 查询启用的字典列表
+     */
+    public List<SysDic> selectEnabledDicList(String categoryCode) {
+        var filter = new DicFilter();
+        filter.setCategoryCode(categoryCode);
+        filter.setStatus(true);
+        return dicService().selectList(filter);
     }
 
     //endregion
