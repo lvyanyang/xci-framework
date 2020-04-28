@@ -28,30 +28,30 @@
                     <i class="icon-home"></i><br>我的主页
                 </a>
             </li>
-            <li>
-                <span id="unMessageCountBadge" class="badge" style="background-color: red;margin-left: -15px;"></span>
-                <a id="user_message" title="我的消息" class="jxpage" href="/sys/message?receiveUserId=${currentUser.id}">
-                    <i class="icon-bubbles"></i><br>我的消息
-                </a>
-            </li>
-            <li>
-                <a id="sys_feedback" title="我要反馈" class="jxdialog"
-                   data-options="width: '75%',height: '80%',shadeClose: true,maxmin: true,title: '我要反馈',url: '/sys/feedback/feedback'">
-                    <i class="icon-note"></i><br>我要反馈
-                </a>
-            </li>
+<#--            <li>-->
+<#--                <span id="unMessageCountBadge" class="badge" style="background-color: red;margin-left: -15px;"></span>-->
+<#--                <a id="user_message" title="我的消息" class="jxpage" href="/sys/message?receiveUserId=${currentUser.id}">-->
+<#--                    <i class="icon-bubbles"></i><br>我的消息-->
+<#--                </a>-->
+<#--            </li>-->
+<#--            <li>-->
+<#--                <a id="sys_feedback" title="我要反馈" class="jxdialog"-->
+<#--                   data-options="width: '75%',height: '80%',shadeClose: true,maxmin: true,title: '我要反馈',url: '/sys/feedback/feedback'">-->
+<#--                    <i class="icon-note"></i><br>我要反馈-->
+<#--                </a>-->
+<#--            </li>-->
             <li>
                 <a title="修改密码" class="jxdialog"
-                   data-options="width: '30%',height: '280px',shadeClose: true,title: '修改密码',url: '/sys/user/modify-password'">
+                   data-options="width: '30%',height: '280px',shadeClose: true,title: '修改密码',url: '${web.url('/sys/user/modifyPassword')}'">
                     <i class="icon-key"></i><br>修改密码
                 </a>
             </li>
-            <li>
-                <a title="关于" class="jxdialog"
-                   data-options="width: '60%',height: '100%',closeBtn:0,shadeClose:true,title: false,url: '/sys/about'">
-                    <i class="icon-bulb"></i><br>关于
-                </a>
-            </li>
+<#--            <li>-->
+<#--                <a title="关于" class="jxdialog"-->
+<#--                   data-options="width: '60%',height: '100%',closeBtn:0,shadeClose:true,title: false,url: '/sys/about'">-->
+<#--                    <i class="icon-bulb"></i><br>关于-->
+<#--                </a>-->
+<#--            </li>-->
             <li>
                 <a id="nav_fullscreen" title="浏览器全屏">
                     <i class="icon-size-fullscreen"></i><br><span>全屏</span>

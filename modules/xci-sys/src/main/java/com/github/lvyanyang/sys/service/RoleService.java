@@ -163,21 +163,45 @@ public class RoleService extends BaseService {
     }
 
     /**
+     * 查询指定用户关联的角色主键列表
+     * @param userId 用户主键
+     */
+    public List<String> selectIdsByUserId(@NotNull(message = "请指定用户主键") Long userId) {
+        return roleDao.selectIdsByUserId(userId);
+    }
+
+    /**
      * 获取用户所属角色列表
      * @param userId 用户主键
      */
-    public List<SysRole> selectByUserId(@NotNull(message = "请指定用户主键") Long userId) {
+    public List<SysRole> selectListByUserId(@NotNull(message = "请指定用户主键") Long userId) {
         SysUser user = SysService.me().userService().selectById(userId);
-        return selectByUserId(user);
+        return selectListByUserId(user);
     }
 
     /**
      * 获取用户所属角色列表
      * @param user 用户对象
      */
-    public List<SysRole> selectByUserId(SysUser user) {
+    public List<SysRole> selectListByUserId(SysUser user) {
         if (user == null) return Lists.newArrayList();
         return roleDao.selectListByUserId(user.getId());
+    }
+
+    /**
+     * 查询指定用户未关联的角色主键列表
+     * @param userId 用户主键
+     */
+    public List<String> selectUnIdsByUserId(@NotNull(message = "请指定用户主键") Long userId) {
+        return roleDao.selectUnIdsByUserId(userId);
+    }
+
+    /**
+     * 查询指定用户未关联的角色列表
+     * @param userId 用户主键
+     */
+    public List<SysRole> selectUnListByUserId(@NotNull(message = "请指定用户主键") Long userId) {
+        return roleDao.selectUnListByUserId(userId);
     }
 
     /**
@@ -326,6 +350,7 @@ public class RoleService extends BaseService {
         //如果简拼为空,设置简拼
         XCI.ifBlankAction(entity.getSpell(), () -> entity.setSpell(XCI.getSpell(entity.getName())));
 
+        XCI.ifNullAction(entity.getPath(), () -> entity.setPath(0));
         XCI.ifNullAction(entity.getDeptScope(), () -> entity.setDeptScope(5));
 
         // var currentUser = SysService.me().getCurrentUser();

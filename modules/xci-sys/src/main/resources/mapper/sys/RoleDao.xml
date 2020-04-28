@@ -12,7 +12,7 @@
     <!--公共Where查询条件-->
     <sql id="where">
         <where>
-            <if test="filter.status != null">and r.status = #{filter.status}</if>
+            <if test="filter.status != null">r.status = #{filter.status}</if>
             <if test="filter.deptId != null">and r.dept_id = #{filter.deptId}</if>
             <if test="filter.name != null and filter.name != ''">
                 <bind name="sname" value="'%' + filter.name + '%'"/>
@@ -69,7 +69,7 @@
     <!--existByCodeWhere Where-->
     <sql id="existByCodeWhere">
         where code = #{code}
-        <if test="id != null">and id != #{excludeId}</if>
+        <if test="excludeId != null">and id != #{excludeId}</if>
     </sql>
     <!--endregion-->
 
@@ -111,7 +111,6 @@
             spell = #{entity.spell},
             code = #{entity.code},
             dept_id = #{entity.deptId},
-            dept_scope = #{entity.deptScope},
             path = #{entity.path},
             status = #{entity.status},
             remark = #{entity.remark}
@@ -168,10 +167,28 @@
     </select>
     <!--endregion-->
 
+    <!--region 查询指定用户关联的角色主键列表-->
+    <select id="selectIdsByUserId" resultType="string">
+        select r.id from sys_role r
+        where r.status=1 and exists (
+            select 1 from sys_user_role_map map where map.user_id = #{userId} and map.role_id = r.id
+        )
+    </select>
+    <!--endregion-->
+
     <!--region 查询指定用户关联的角色列表-->
     <select id="selectListByUserId" resultType="com.github.lvyanyang.sys.entity.SysRole">
         <include refid="select"/>
             where r.status=1 and exists (
+            select 1 from sys_user_role_map map where map.user_id = #{userId} and map.role_id = r.id
+        )
+    </select>
+    <!--endregion-->
+
+    <!--region 查询指定用户未关联的角色主键列表-->
+    <select id="selectUnIdsByUserId" resultType="string">
+        select r.id from sys_role r
+        where r.status=1 and not exists (
             select 1 from sys_user_role_map map where map.user_id = #{userId} and map.role_id = r.id
         )
     </select>

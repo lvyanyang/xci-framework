@@ -5,6 +5,7 @@
 package com.github.lvyanyang.sys.entity;
 
 import cn.afterturn.easypoi.excel.annotation.ExcelIgnore;
+import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -24,4 +25,10 @@ public class SysUserSave extends SysUserSecurity {
     @ExcelIgnore
     @ApiModelProperty(value = "角色主键字符串,多个逗号隔开", position = 200)
     private String roleIds;
+
+    public static SysUserSave from(SysUser user) {
+        var userSave = new SysUserSave();
+        BeanUtil.copyProperties(user, userSave);
+        return userSave;
+    }
 }

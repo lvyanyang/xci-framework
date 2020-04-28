@@ -116,10 +116,22 @@ public interface RoleDao {
     List<SysRole> selectPageList(@Param("filter") RoleFilter filter);
 
     /**
+     * 查询指定用户关联的角色主键列表
+     * @param userId 用户主键
+     */
+    List<String> selectIdsByUserId(@Param("userId") Long userId);
+
+    /**
      * 查询指定用户关联的角色列表
      * @param userId 用户主键
      */
     List<SysRole> selectListByUserId(@Param("userId") Long userId);
+
+    /**
+     * 查询指定用户未关联的角色主键列表
+     * @param userId 用户主键
+     */
+    List<String> selectUnIdsByUserId(@Param("userId") Long userId);
 
     /**
      * 查询指定用户未关联的角色列表

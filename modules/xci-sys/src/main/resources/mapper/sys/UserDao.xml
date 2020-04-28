@@ -9,7 +9,7 @@
                 u.pwd_never_expire,u.pwd_expire_time,u.allow_start_time,u.allow_end_time,u.admin,
                 u.mobile,u.email,u.post,u.login_times,u.first_visit_time,u.last_visit_time,
                 u.ent_id,u.ent_name,u.visible,u.status,u.remark, d.id dept_id,d.name dept_name
-        from sys_user u left join sys_dept d on u.dept_id=d.id and d.status=1
+        from sys_user u left join sys_dept d on u.dept_id=d.id
     </sql>
 
     <!--公共Where查询条件-->
@@ -101,15 +101,11 @@
 
     <!--region 是否存在指定角色主键的用户-->
     <select id="existByRoleId" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_user"/>
-            <property name="where" value="existByRoleIdWhere"/>
-        </include>
+        select count(id) from sys_user u
+        where u.deleted=0 and u.status = 1 and exists (
+                select 1 from sys_user_role_map map where map.role_id = #{roleId} and map.user_id = u.id
+            )
     </select>
-    <!--existByRoleId Where-->
-    <sql id="existByRoleIdWhere">
-        where role_id = #{roleId} and deleted = 0
-    </sql>
     <!--endregion-->
 
     <!--region 是否存在指定账号的用户-->
@@ -291,11 +287,29 @@
     <!--endregion -->
 
     <!--region 用户角色关联 -->
-    
+
+    <!--region 查询指定角色关联的用户主键列表-->
+    <select id="selectIdsByRoleId" resultType="string">
+        select id from sys_user u
+        where u.deleted=0 and u.status = 1 and exists (
+            select 1 from sys_user_role_map map where map.role_id = #{roleId} and map.user_id = u.id
+        )
+    </select>
+    <!--endregion-->
+
     <!--region 查询指定角色关联的用户列表-->
     <select id="selectListByRoleId" resultType="com.github.lvyanyang.sys.entity.SysUser">
         <include refid="select"/>
         where u.deleted=0 and u.status = 1 and exists (
+            select 1 from sys_user_role_map map where map.role_id = #{roleId} and map.user_id = u.id
+        )
+    </select>
+    <!--endregion-->
+
+    <!--region 查询指定角色未关联的用户主键列表-->
+    <select id="selectUnIdsByRoleId" resultType="string">
+        select id from sys_user u
+        where u.deleted=0 and u.status = 1 and not exists (
             select 1 from sys_user_role_map map where map.role_id = #{roleId} and map.user_id = u.id
         )
     </select>

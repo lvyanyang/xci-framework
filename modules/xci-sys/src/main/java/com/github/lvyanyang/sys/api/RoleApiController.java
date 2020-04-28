@@ -118,7 +118,7 @@ public class RoleApiController extends SysApiController {
     @ApiImplicitParam(name = "userId", value = "用户主键")
     @PostMapping("/selectByUserId")
     public RestResult<List<SysRole>> selectByUserId(@SingleJson Long userId) {
-        return RestResult.ok(SysService.me().roleService().selectByUserId(userId));
+        return RestResult.ok(SysService.me().roleService().selectListByUserId(userId));
     }
 
     @ApiOperation(value = "查询角色列表")

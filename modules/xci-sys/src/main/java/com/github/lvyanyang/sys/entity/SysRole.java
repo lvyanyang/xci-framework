@@ -76,23 +76,42 @@ public class SysRole extends BaseEntity {
     /**
      * 机构名称
      */
-    @Excel(name = "机构名称")
+    @Excel(name = "机构名称", width = 30d)
     @ApiModelProperty(value = "机构名称", required = true, position = 6)
     private String deptName;
 
     /**
-     * 机构数据权限 [1-全部, 2-自定义, 3-所在部门, 4-所在部门及所有下级, 5-仅本人]
+     * 机构权限 [1-全部, 2-自定义, 3-所在部门, 4-所在部门及所有下级, 5-仅本人]
      */
-    @NotNull(message = "机构数据权限不能为空")
-    @Excel(name = "机构数据权限", replace = {"全部_1", "自定义_2", "所在部门_3", "所在部门及所有下级_4", "仅本人_5"})
-    @ApiModelProperty(value = "机构数据权限 [1-全部, 2-自定义, 3-所在部门, 4-所在部门及所有下级, 5-仅本人]", required = true, position = 6)
+    @Excel(name = "机构权限", replace = {"全部_1", "自定义_2", "所在部门_3", "所在部门及所有下级_4", "仅本人_5"})
+    @ApiModelProperty(value = "机构权限 [1-全部, 2-自定义, 3-所在部门, 4-所在部门及所有下级, 5-仅本人]", required = true, position = 6)
     private Integer deptScope;
+
+    /**
+     * 机构数据权限名称
+     */
+    @ApiModelProperty(value = "机构数据权限名称")
+    public String getDeptScopeName() {
+        switch (deptScope) {
+            case 1:
+                return "全部";
+            case 2:
+                return "自定义";
+            case 3:
+                return "所在部门";
+            case 4:
+                return "所在部门及所有下级";
+            case 5:
+                return "仅本人";
+        }
+        return R.Empty;
+    }
 
     /**
      * 排序路径
      */
-    @Excel(name = "排序路径")
-    @ApiModelProperty(value = "排序路径", position = 8)
+    @Excel(name = "排序")
+    @ApiModelProperty(value = "排序", position = 8)
     private Integer path;
 
     /**
@@ -107,7 +126,7 @@ public class SysRole extends BaseEntity {
      * 备注
      */
     @Length(max = 500, message = "备注不能超过{max}个字符")
-    @Excel(name = "备注", width = 40d)
+    @Excel(name = "备注")
     @ApiModelProperty(value = "备注", position = 100)
     private String remark;
 }

@@ -1,40 +1,33 @@
 <#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.entity.SysRole" -->
-<#include "/sys/_inc/_layout.ftlh">
+<#include "/_inc/_layout.ftlh">
 <#assign url=xci.saveUrl("/sys/role/","createSave","updateSave")/>
 <@header/>
 <div class="jxpanel winpanel" data-fit="true">
     <form id="editform" class="jxform" method="post" action="${url}">
-        <input name="id" value="${entity.id!}" type="hidden">
+        <input name="id" value="${entity.id}" type="hidden">
+        <input name="path" value="${entity.path}" type="hidden">
         <table class="table jxtable-form">
+            <tr>
+                <th class="w-100px">所属机构</th>
+                <td>
+                    <input name="deptName" class='form-control jxcombotree'
+                           data-value="${entity.deptId}" data-validate="required: [true,'请选择所属机构']"
+                           data-options="editable: false,showClear: false,hiddenField: 'deptId',panelHeight: '250px',
+                                        treeOptions: {url: '${web.url('/sys/role/ownDeptList')}',defaultIconCls: 'icon-users'}"/>
+                </td>
+            </tr>
             <tr class="w-100px">
-                <th>名称</th>
+                <th>角色名称</th>
                 <td>
                     <input class="form-control" name="name" value="${entity.name}" maxlength="50"
                            data-validate="required: [true,'请输入角色名称']" autocomplete="off"/>
                 </td>
             </tr>
             <tr>
-                <th>编码</th>
+                <th>角色编码</th>
                 <td>
                     <input class="form-control" name="code" value="${entity.code}" maxlength="50"
                            data-validate="required: [true,'请输入角色编码']" autocomplete="off"/>
-                </td>
-            </tr>
-            <tr>
-                <th>所属机构</th>
-                <td>
-                    <input name="deptName" class='form-control jxcombotree'
-                           data-value="${entity.deptId}" data-validate="required: [true,'请选择所属机构']"
-                           data-options="editable: false,showClear: false,hiddenField: 'deptId',panelHeight: '250px',
-                                        treeOptions: {url: '<@xci.url "/sys/dept/user-own-departments"/>',defaultIconCls: 'icon-users'}"/>
-                </td>
-            </tr>
-            <tr>
-                <th>序号</th>
-                <td>
-                    <input name="path" class="jxnumber" type="number" value="${entity.path!0}"
-                           data-min="-1000" data-max="9999999" data-step="1" data-decimals="0" data-verticalbuttons="true"
-                           data-validate="required: [true,'请输入序号']" style="border-radius: 4px 0 0 4px" autocomplete="off">
                 </td>
             </tr>
             <tr>
@@ -49,8 +42,8 @@
             <tr>
                 <th>备注</th>
                 <td>
-                    <textarea class="form-control" name="remark" maxlength="1000" data-validate="maxlength: 1000"
-                              rows="3" style="resize: none">${entity.remark}</textarea>
+                    <textarea class="form-control" name="remark" maxlength="500" data-validate="maxlength: 500"
+                              rows="3" style="resize: vertical">${entity.remark}</textarea>
                 </td>
             </tr>
         </table>

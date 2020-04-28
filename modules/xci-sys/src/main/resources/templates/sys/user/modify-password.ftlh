@@ -1,7 +1,7 @@
-<#include "/sys/_inc/_layout.ftlh">
+<#include "/_inc/_layout.ftlh">
 <@header/>
 <div class="jxpanel winpanel" data-fit="true">
-    <form id="editform" class="jxform" method="post" action="<@xci.url "/auth/user/modify-password"/>" data-msgtip="false">
+    <form id="editform" class="jxform" method="post" action="${web.url('/sys/user/modifyPasswordSave')}" data-msgtip="false">
         <table class="table jxtable-form">
             <tr>
                 <th class='w-100px'>当前密码</th>

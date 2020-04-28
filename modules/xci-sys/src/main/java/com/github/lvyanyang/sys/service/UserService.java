@@ -206,12 +206,30 @@ public class UserService extends BaseService {
     }
 
     /**
+     * 查询指定角色关联的用户主键列表
+     * @param roleId 角色主键
+     * @return 返回用户主键列表
+     */
+    public List<String> selectIdsByRoleId(@NotNull(message = "请指定角色主键") Long roleId) {
+        return userDao.selectIdsByRoleId(roleId);
+    }
+
+    /**
      * 根据角色查询用户成员列表
      * @param roleId 角色主键
      * @return 返回用户对象列表
      */
     public List<SysUser> selectListByRoleId(@NotNull(message = "请指定角色主键") Long roleId) {
         return userDao.selectListByRoleId(roleId);
+    }
+
+    /**
+     * 查询指定角色未关联的用户主键列表
+     * @param roleId 角色主键
+     * @return 返回用户主键列表
+     */
+    public List<String> selectUnIdsByRoleId(@NotNull(message = "请指定角色主键") Long roleId){
+        return userDao.selectUnIdsByRoleId(roleId);
     }
 
     /**
@@ -532,7 +550,7 @@ public class UserService extends BaseService {
         if (user.getAdmin()) {
             return 1;
         }
-        List<SysRole> roles = SysService.me().roleService().selectByUserId(user.getId());
+        List<SysRole> roles = SysService.me().roleService().selectListByUserId(user.getId());
         var deptScopes = roles.stream().map(SysRole::getDeptScope).collect(Collectors.toList());
         return mergeDeptScope(deptScopes);
     }

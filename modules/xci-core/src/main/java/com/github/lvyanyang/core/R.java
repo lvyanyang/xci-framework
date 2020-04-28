@@ -309,6 +309,7 @@ public class R {
         public static final String SysUserUpdate = "sys.user.update";
         public static final String SysUserSave = "sys.user.insert,sys.user.update";
         public static final String SysUserDelete = "sys.user.delete";
+        public static final String SysUserRevisePassword = "sys.user.revisePassword";
 
         public static final String SysDeptSelect = "sys.dept.select";
         public static final String SysDeptInsert = "sys.dept.insert";

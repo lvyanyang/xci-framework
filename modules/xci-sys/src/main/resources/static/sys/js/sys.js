@@ -519,7 +519,9 @@ var JXEditForm = (function () {
                 switch (self.mode) {
                     case 1://对话框模式
                         jx.closeDialog();
-                        if (pwin && pwin.reloadGridData) {
+                        if (pwin && pwin.jx.reloadGrid) {
+                            pwin.jx.reloadGrid();
+                        } else if (pwin && pwin.reloadGridData){
                             pwin.reloadGridData();
                         }
                         break;

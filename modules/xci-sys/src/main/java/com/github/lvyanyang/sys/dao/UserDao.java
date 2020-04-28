@@ -152,11 +152,25 @@ public interface UserDao {
     //region 用户角色关联
 
     /**
+     * 查询指定角色关联的用户主键列表
+     * @param roleId 角色主键
+     * @return 返回用户主键列表
+     */
+    List<String> selectIdsByRoleId(@Param("roleId") Long roleId);
+
+    /**
      * 查询指定角色关联的用户列表
      * @param roleId 角色主键
      * @return 返回用户对象列表
      */
     List<SysUser> selectListByRoleId(@Param("roleId") Long roleId);
+
+    /**
+     * 查询指定角色未关联的用户主键列表
+     * @param roleId 角色主键
+     * @return 返回用户主键列表
+     */
+    List<String> selectUnIdsByRoleId(@Param("roleId") Long roleId);
 
     /**
      * 查询指定角色未关联的用户列表

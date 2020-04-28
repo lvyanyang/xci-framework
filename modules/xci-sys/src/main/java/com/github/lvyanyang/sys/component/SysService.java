@@ -222,7 +222,7 @@ public class SysService {
             return "系统管理员";
         }
         // return roleService.selectByUserId(user.getId()).getName();
-        List<SysRole> roleList = roleService.selectByUserId(user.getId());
+        List<SysRole> roleList = roleService.selectListByUserId(user.getId());
         return roleList.stream().map(SysRole::getName).collect(Collectors.joining(","));
     }
 
