@@ -132,7 +132,6 @@ CREATE TABLE dbo.sys_user
     account          NVARCHAR(100) NOT NULL,
     category         TINYINT       NOT NULL DEFAULT 0,
     dept_id          BIGINT        NOT NULL,
-    role_id          BIGINT        NULL,
     pwd              NVARCHAR(500) NOT NULL,
     pwd_salt         NVARCHAR(100) NOT NULL,
     pwd_must_modify  TINYINT       NOT NULL DEFAULT 0,
@@ -211,8 +210,6 @@ GO
 EXEC sp_addextendedproperty N'MS_Description', N'密码盐', 'SCHEMA', N'dbo', 'TABLE', N'sys_user', 'COLUMN', N'pwd_salt'
 GO
 EXEC sp_addextendedproperty N'MS_Description', N'备注', 'SCHEMA', N'dbo', 'TABLE', N'sys_user', 'COLUMN', N'remark'
-GO
-EXEC sp_addextendedproperty N'MS_Description', N'角色主键', 'SCHEMA', N'dbo', 'TABLE', N'sys_user', 'COLUMN', N'role_id'
 GO
 EXEC sp_addextendedproperty N'MS_Description', N'用户简拼', 'SCHEMA', N'dbo', 'TABLE', N'sys_user', 'COLUMN', N'spell'
 GO

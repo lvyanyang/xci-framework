@@ -1,7 +1,7 @@
 <div id="gridtoolbar">
     <form id="gridform" class="jxform jxlayout-form form-inline">
         <div class="form-group">
-            <input name="name" class="form-control w-200px" placeholder="请输入选项名称/简拼" autocomplete="off">
+            <input name="name" class="form-control w-200px" placeholder="请输入字典名称/简拼" autocomplete="off">
         </div>
         <div class="form-group">
             <select name="status" class="jxselect form-control"

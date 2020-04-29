@@ -12,7 +12,7 @@
             <div id="tab-basic" class="tab-pane jx-overflow-auto fade in active">
                 <table id="basic" class="table table-bordered jxtable-details">
                     <tr>
-                        <th>主键</th>
+                        <th class="w-120px">主键</th>
                         <td>${entity.id}</td>
                     </tr>
                     <tr>

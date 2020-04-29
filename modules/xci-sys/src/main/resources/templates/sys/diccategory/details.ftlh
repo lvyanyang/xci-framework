@@ -12,13 +12,14 @@
             <div id="tab-basic" class="tab-pane jx-overflow-auto fade in active">
                 <table id="basic" class="table table-bordered jxtable-details">
                     <tr>
-                        <th class="w-100px">字典类型主键</th>
-                        <td>${entity.id}</td>
-                    </tr>
-                    <tr>
-                        <th>上级主键</th>
+                        <th class="w-120px">上级主键</th>
                         <td>${entity.parentId}</td>
                     </tr>
+                    <tr>
+                        <th>字典类型主键</th>
+                        <td>${entity.id}</td>
+                    </tr>
+
                     <tr>
                         <th>字典类型名称</th>
                         <td>${entity.name}</td>

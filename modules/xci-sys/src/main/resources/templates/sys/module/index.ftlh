@@ -48,6 +48,7 @@
             <@xci.echo test=allowInsert>
                 <#--<li><a id="btn-cmcreateroot"><i class="icon-vector"></i> 新增根节点</a></li>-->
                 <li><a id="btn-cmcreate"><i class="icon-plus"></i> 新增</a></li>
+                <li><a id="btn-cmcopy"><i class="fa fa-copy"></i> 复制</a></li>
             </@xci.echo>
             <@xci.echo test=allowUpdate><li><a id="btn-cmedit"><i class="icon-pencil"></i> 编辑</a></li></@xci.echo>
             <@xci.echo test=allowDelete><li><a id="btn-cmdelete"><i class="icon-trash"></i> 删除</a></li></@xci.echo>

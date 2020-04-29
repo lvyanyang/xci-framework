@@ -31,6 +31,15 @@ public interface ModuleDao {
     boolean existByCode(@Param("code") String code, @Param("excludeId") Long excludeId);
 
     /**
+     * 是否存在指定名称的模块
+     * @param name 模块名称
+     * @param parentId 上级主键
+     * @param excludeId 排除的主键，如果为null则不指定排除的主键
+     * @return 如果存在返回true
+     */
+    boolean existByName(@Param("name") String name, @Param("parentId") Long parentId, @Param("excludeId") Long excludeId);
+
+    /**
      * 新建模块
      * @param entity 模块实体
      * @return 返回影响的行数

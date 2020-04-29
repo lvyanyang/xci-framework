@@ -51,23 +51,25 @@
             <tr>
                 <th>机构类型</th>
                 <td>
-                    <select class="form-control jxselect" name="category"
-                            <#--data-validate="required: [true,'请选择机构类型']"-->
-                            data-allow-clear="true">
-                        <option></option>
-                        <@dic.systemDeptCategory selectedValue=entity.category />
-                    </select>
+                    <@dic.systemDeptCategory selectedValue=entity.category nameField="category"/>
+                    <#--<select class="form-control jxselect" name="category"-->
+                    <#--        &lt;#&ndash;data-validate="required: [true,'请选择机构类型']"&ndash;&gt;-->
+                    <#--        data-allow-clear="true">-->
+                    <#--    <option></option>-->
+                    <#--    <@dic.systemDeptCategory selectedValue=entity.category />-->
+                    <#--</select>-->
                 </td>
             </tr>
             <tr>
                 <th>机构性质</th>
                 <td>
-                    <select class="form-control jxselect" name="nature"
-                            <#--data-validate="required: [true,'请选择机构性质']"-->
-                            data-allow-clear="true">
-                        <option></option>
-                        <@dic.systemDeptNature selectedValue=entity.nature />
-                    </select>
+                    <@dic.systemDeptNatureTree selectedValue=entity.nature nameField="nature"/>
+                    <#--<select class="form-control jxselect" name="nature"-->
+                    <#--        &lt;#&ndash;data-validate="required: [true,'请选择机构性质']"&ndash;&gt;-->
+                    <#--        data-allow-clear="true">-->
+                    <#--    <option></option>-->
+                    <#--    <@dic.systemDeptNature selectedValue=entity.nature />-->
+                    <#--</select>-->
                 </td>
             </tr>
             <tr>

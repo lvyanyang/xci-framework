@@ -168,7 +168,6 @@
             spell = #{entity.spell},
             account = #{entity.account},
             dept_id = #{entity.deptId},
-            role_id = #{entity.roleId},
             pwd_must_modify = #{entity.pwdMustModify},
             pwd_allow_modify = #{entity.pwdAllowModify},
             pwd_never_expire = #{entity.pwdNeverExpire},

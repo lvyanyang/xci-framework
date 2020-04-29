@@ -209,7 +209,18 @@ public class DicService extends BaseService {
      * @return 返回字典列表
      */
     public List<SysDic> selectList(DicFilter filter) {
-        return dicDao.selectList(filter);
+        List<SysDic> list = dicDao.selectList(filter);
+        if (XCI.isBlank(filter.getName())) {
+            return list;
+        }
+
+        //如果指定了按名称过滤,那么先按状态和权限查询出所有记录,然后用stream进行过滤,过滤之后调用filterTree,把每个匹配项的所有父节点都查询出来
+        String name = filter.getName();
+        var result = list.stream().filter(p -> p.getName().toLowerCase().contains(name)
+                || (p.getValue() != null && p.getValue().toLowerCase().contains(name))
+                || (p.getSpell() != null && p.getSpell().toLowerCase().contains(name)))
+                .sorted(Comparator.comparing(SysDic::getPath)).collect(Collectors.toList());
+        return (List<SysDic>) XCI.filterTree(list, result);
     }
 
     /**

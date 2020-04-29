@@ -20,7 +20,7 @@ public class FreemarkerExceptionHandler implements TemplateExceptionHandler {
         try {
             writer.write("<pre>"+e.getMessage()+"</pre>");
         } catch (IOException e1) {
-            e1.printStackTrace();
+            log.error("Freemarker解析异常:"+e1.getMessage());
         }
     }
 }

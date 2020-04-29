@@ -13,7 +13,6 @@ import com.github.lvyanyang.core.XCI;
 import com.github.lvyanyang.model.IdValue;
 import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.dao.ModuleDao;
-import com.github.lvyanyang.sys.entity.SysDept;
 import com.github.lvyanyang.sys.entity.SysModule;
 import com.github.lvyanyang.sys.filter.ModuleFilter;
 import org.springframework.stereotype.Service;
@@ -43,6 +42,17 @@ public class ModuleService extends BaseService {
      */
     public boolean existByCode(@NotBlank(message = "请指定模块编码") String code, Long excludeId) {
         return moduleDao.existByCode(code, excludeId);
+    }
+
+    /**
+     * 是否存在指定名称的模块
+     * @param name      模块名称
+     * @param parentId  上级主键
+     * @param excludeId 排除的主键，如果为null则不指定排除的主键
+     * @return 如果存在返回true
+     */
+    public boolean existByName(@NotBlank(message = "请指定模块名称") String name, @NotBlank(message = "请指定模块上级主键") Long parentId, Long excludeId) {
+        return moduleDao.existByName(name, parentId, excludeId);
     }
 
     /**
@@ -136,7 +146,7 @@ public class ModuleService extends BaseService {
     @OperateLog(tag = R.Module.Module, msg = "修改模块公共状态")
     @Transactional(rollbackFor = Exception.class)
     public RestResult updatePublicStatus(@NotBlank(message = "请指定模块主键") String ids,
-                                          @NotNull(message = "请指定模块公共状态") Boolean publicStatus) {
+                                         @NotNull(message = "请指定模块公共状态") Boolean publicStatus) {
         String[] idList = XCI.splitToArray(ids);
         for (String idStr : idList) {
             var id = Long.valueOf(idStr);
@@ -154,7 +164,7 @@ public class ModuleService extends BaseService {
     @OperateLog(tag = R.Module.Module, msg = "修改模块展开状态")
     @Transactional(rollbackFor = Exception.class)
     public RestResult updateExpandStatus(@NotBlank(message = "请指定模块主键字符串") String ids,
-                                          @NotNull(message = "请指定模块展开状态") Boolean expandStatus) {
+                                         @NotNull(message = "请指定模块展开状态") Boolean expandStatus) {
         String[] idList = XCI.splitToArray(ids);
         for (String idStr : idList) {
             var id = Long.valueOf(idStr);
@@ -244,6 +254,11 @@ public class ModuleService extends BaseService {
         //检查模块编码是否存在
         if (moduleDao.existByCode(entity.getCode(), XCI.excludeId(created, entity.getId()))) {
             return RestResult.fail(XCI.format("模块编码[{}]已经存在", entity.getCode()));
+        }
+
+        //检查模块名称是否存在
+        if (moduleDao.existByName(entity.getName(), entity.getParentId(), XCI.excludeId(created, entity.getId()))) {
+            return RestResult.fail(XCI.format("模块名称[{}]已经存在", entity.getName()));
         }
 
         //更新数据库

@@ -46,6 +46,7 @@ public class SysWebService extends SysService {
             TreeNode node = new TreeNode();
             node.setId(item.getId().toString());
             node.setPid(item.getParentId().toString());
+            node.setCode(item.getCode());
             node.setText(item.getName());
             node.setSpell(item.getSpell());
             node.setLeaf(hasChild ? 0 : 1);
@@ -74,6 +75,7 @@ public class SysWebService extends SysService {
             TreeNode node = new TreeNode();
             node.setId(item.getId().toString());
             node.setPid(item.getParentId().toString());
+            node.setCode(item.getCode());
             node.setText(item.getName());
             node.setSpell(item.getSpell());
             node.setLeaf(hasChild ? 0 : 1);
@@ -95,6 +97,7 @@ public class SysWebService extends SysService {
             TreeNode node = new TreeNode();
             node.setId(item.getId().toString());
             node.setPid(item.getParentId().toString());
+            node.setCode(item.getCategoryCode());
             node.setText(item.getName());
             node.setSpell(item.getSpell());
             node.setLeaf(hasChild ? 0 : 1);
@@ -116,6 +119,7 @@ public class SysWebService extends SysService {
             TreeNode node = new TreeNode();
             node.setId(item.getId().toString());
             node.setPid(item.getParentId().toString());
+            node.setCode(item.getCode());
             node.setText(item.getName());
             node.setSpell(XCI.getSpell(item.getName()));
             node.setLeaf(hasChild ? 0 : 1);

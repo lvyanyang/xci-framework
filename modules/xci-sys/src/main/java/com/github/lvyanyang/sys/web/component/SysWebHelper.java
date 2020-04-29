@@ -30,6 +30,13 @@ public class SysWebHelper {
     }
 
     /**
+     * 获取当前登录用户
+     */
+    public SysUser currentUser(){
+        return SysService.me().getCurrentUser();
+    }
+
+    /**
      * 根据参数编码获取参数值
      * @param code 参数编码
      * @return 返回参数编码对应的参数值, 如果找不到指定的参数则返回空字符串

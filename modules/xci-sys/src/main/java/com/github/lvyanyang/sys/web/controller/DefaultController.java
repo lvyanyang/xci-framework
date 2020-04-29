@@ -189,11 +189,11 @@ public class DefaultController extends SysWebController {
     }
 
     /**
-     * 模块Tree
+     * 用户菜单树
      */
     @ResponseBody
-    @GetMapping("/userModules")
-    public RestResult userModules() {
+    @GetMapping("/userModuleTree")
+    public RestResult userModuleTree() {
         List<SysModule> list = SysService.me().userService().selectUserModuleCacheListByUser(getCurrentUser())
                 .stream().filter(p -> p.getMenu() && p.getWeb()).collect(Collectors.toList());
         List<TreeNode> nodes = SysWebService.me().toModuleNodeList(list);
@@ -201,11 +201,22 @@ public class DefaultController extends SysWebController {
     }
 
     /**
-     * 查询字典明细树列表
+     * 清除用户菜单树缓存
      */
     @ResponseBody
-    @GetMapping("/dics")
-    public Object dics(String categoryCode) {
+    @PostMapping("/clearUserModuleTree")
+    public RestResult clearUserModuleTree() {
+        var currentUser = getCurrentUser();
+        SysService.me().userService().clearUserModuleCache(currentUser.getId());
+        return RestResult.ok();
+    }
+
+    /**
+     * 查询字典树
+     */
+    @ResponseBody
+    @GetMapping("/dicTree")
+    public Object dicTree(String categoryCode) {
         XCI.ifBlankThrow(categoryCode, () -> RestResult.fail("请指定字典编码"));
         List<SysDic> list = SysService.me().selectEnabledDicList(categoryCode);
         return RestResult.ok(SysWebService.me().toDicNodeList(list));

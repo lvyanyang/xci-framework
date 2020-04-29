@@ -206,6 +206,21 @@ public class UserService extends BaseService {
     }
 
     /**
+     * 根据机构主键查询用户列表
+     * @param deptId 机构主键
+     * @return 返回用户对象列表
+     */
+    public List<SysUser> selectListByDeptId(@NotNull(message = "请指定机构主键") Long deptId) {
+        var filter = new UserFilter();
+        filter.setDataScope(false);
+        filter.setDeptId(deptId);
+        filter.setDeptAllLower(false);
+        filter.setVisible(true);
+        filter.setStatus(true);
+        return userDao.selectList(filter);
+    }
+
+    /**
      * 查询指定角色关联的用户主键列表
      * @param roleId 角色主键
      * @return 返回用户主键列表

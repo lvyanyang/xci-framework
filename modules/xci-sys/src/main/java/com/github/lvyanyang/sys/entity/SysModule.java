@@ -19,6 +19,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * 系统模块
@@ -27,7 +28,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(description = "系统模块")
-public class SysModule extends BaseEntity implements ITreeModel {
+public class SysModule extends BaseEntity implements ITreeModel, Serializable {
     /**
      * 模块主键
      */

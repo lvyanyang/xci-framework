@@ -149,8 +149,8 @@ jx.auth = {
             } else if (id == 'tab-role') {
                 $('#jx-owner-role-grid').jxgrid();
             }*/
-                // else if (id == 'tab-data') {
-                //     $('#jxAuthDataDetails').jxtree();
+              // else if (id == 'tab-data') {
+              //     $('#jxAuthDataDetails').jxtree();
             // }
             else if (callback) {
                 callback(id);
@@ -362,7 +362,11 @@ jx.auth = {
             } else {
                 top.jx.toastr.success('保存成功');
                 jx.closeDialog();
-                pwin.reloadTreeData();
+                if (pwin.jx.reloadTree) {
+                    pwin.jx.reloadTree();
+                } else {
+                    pwin.reloadTreeData();
+                }
             }
         });
     },
@@ -385,7 +389,7 @@ jx.auth = {
      * @param parentId 父节点 Id
      * @returns {boolean}
      */
-    hasParentNode : function (rows, parentId) {
+    hasParentNode: function (rows, parentId) {
         for (var i = 0; i < rows.length; i++) {
             if (rows[i].id == parentId) return true;
         }
@@ -461,12 +465,12 @@ jx.gf.fileEditOperateType = function (v, row) {
 jx.__extends = (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
-            ({__proto__: []} instanceof Array && function (d, b) {
-                d.__proto__ = b;
-            }) ||
-            function (d, b) {
-                for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-            };
+          ({__proto__: []} instanceof Array && function (d, b) {
+              d.__proto__ = b;
+          }) ||
+          function (d, b) {
+              for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+          };
         return extendStatics(d, b);
     }
     return function (d, b) {
@@ -521,7 +525,7 @@ var JXEditForm = (function () {
                         jx.closeDialog();
                         if (pwin && pwin.jx.reloadGrid) {
                             pwin.jx.reloadGrid();
-                        } else if (pwin && pwin.reloadGridData){
+                        } else if (pwin && pwin.reloadGridData) {
                             pwin.reloadGridData();
                         }
                         break;
@@ -615,7 +619,7 @@ var JXDataItemSelect = (function () {
     var self;
 
     var $element, $view, $toolbar, $section, $sectionTitle, $hr, $box, $summary,
-        $page, $btnSelectAll, $btnInverseAll, $btnCleanAll;
+      $page, $btnSelectAll, $btnInverseAll, $btnCleanAll;
 
     var clsOps = {maxSection: 500, pageSize: 100};
 

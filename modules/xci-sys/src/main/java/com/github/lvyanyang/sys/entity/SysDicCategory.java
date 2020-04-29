@@ -57,6 +57,7 @@ public class SysDicCategory extends BaseEntity implements ITreeModel {
      * 字典类型简拼
      */
     @Length(max = 100, message = "字典类型简拼不能超过{max}个字符")
+    @ExcelIgnore
     @Excel(name = "字典类型简拼")
     @ApiModelProperty(value = "字典类型简拼", position = 5)
     private String spell;

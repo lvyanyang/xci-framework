@@ -11,8 +11,7 @@ import com.github.lvyanyang.core.XCI;
 import com.github.lvyanyang.exceptions.NotFoundException;
 import com.github.lvyanyang.model.TreeNodeIndex;
 import com.github.lvyanyang.sys.component.SysService;
-import com.github.lvyanyang.sys.entity.SysDept;
-import com.github.lvyanyang.sys.filter.DeptFilter;
+import com.github.lvyanyang.sys.entity.SysDicCategory;
 import com.github.lvyanyang.sys.web.component.SysWebService;
 import com.github.lvyanyang.sys.web.model.JsonGrid;
 import lombok.extern.slf4j.Slf4j;
@@ -23,61 +22,52 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 系统组织机构控制器
+ * 系统字典类型控制器
  * @author 吕艳阳
  */
 @Authorize
 @Slf4j
 @Controller
-@RequestMapping("/sys/dept")
-public class DeptController extends SysWebController {
+@RequestMapping("/sys/dicCategory")
+public class DicCategoryController extends SysWebController {
     // region 页面视图
 
     /** 首页 */
     @GetMapping
     public String index() {
-        return "sys/dept/index";
+        return "sys/diccategory/index";
     }
 
     /** 新建页 */
     @GetMapping("/create")
-    @Authorize(code = R.Permission.SysDeptInsert)
+    @Authorize(code = R.Permission.SysDicCategoryInsert)
     public String create(String parentId, ModelMap map) {
         createMark(map);
-        SysDept entity = new SysDept();
+        SysDicCategory entity = new SysDicCategory();
         entity.setId(XCI.nextId());
         entity.setParentId(Long.valueOf(parentId));
-        entity.setStatus(true);
         map.put("entity", entity);
-        //查询负责人列表
-        map.put("managerUserList", SysWebService.me().selectEnabledUserList(true));
-        return "sys/dept/edit";
+        return "sys/diccategory/edit";
     }
 
     /** 编辑页 */
     @GetMapping("/edit")
-    @Authorize(code = R.Permission.SysDeptUpdate)
+    @Authorize(code = R.Permission.SysDicCategoryUpdate)
     public String edit(String id, ModelMap map) {
-        SysDept entity = SysService.me().deptService().selectById(Long.valueOf(id));
+        SysDicCategory entity = SysService.me().dicCategoryService().selectById(Long.valueOf(id));
         if (entity == null) throw new NotFoundException(id);
-
         map.put("entity", entity);
-        //查询负责人列表
-        map.put("managerUserList", SysWebService.me().selectEnabledUserList(true));
-        return "sys/dept/edit";
+        return "sys/diccategory/edit";
     }
 
     /** 详情页 */
     @GetMapping("/details")
     public String details(String id, ModelMap map) {
         var longId = Long.valueOf(id);
-        SysDept entity = SysService.me().deptService().selectById(longId);
+        SysDicCategory entity = SysService.me().dicCategoryService().selectById(longId);
         if (entity == null) throw new NotFoundException(id);
-
         map.put("entity", entity);
-        //查询当前机构成员列表
-        map.put("users", SysService.me().userService().selectListByDeptId(longId));
-        return "sys/dept/details";
+        return "sys/diccategory/details";
     }
 
     //endregion
@@ -88,10 +78,20 @@ public class DeptController extends SysWebController {
     @ResponseBody
     @GetMapping("/parentList")
     public RestResult parentList(@RequestParam String id, @RequestParam String created) {
-        List<SysDept> depts = SysWebService.me().selectEnabledDeptList(true);
+        List<SysDicCategory> list = SysWebService.me().dicCategoryService().selectList();
         //如果是修改时移除当前记录以及所有下级
-        XCI.ifTrueAction(XCI.isBlank(created),()->XCI.removeTreeChildren(depts,Long.valueOf(id),true));
-        return RestResult.ok(SysWebService.me().toDeptNodeList(depts));
+        XCI.ifTrueAction(XCI.isBlank(created), () -> XCI.removeTreeChildren(list, Long.valueOf(id), true));
+        return RestResult.ok(SysWebService.me().toDicCategoryNodeList(list));
+    }
+
+    /**
+     * 字典类型Tree
+     */
+    @ResponseBody
+    @GetMapping("/tree")
+    public Object tree() {
+        var list = SysService.me().dicCategoryService().selectList();
+        return RestResult.ok(SysWebService.me().toDicCategoryNodeList(list));
     }
 
     /**
@@ -99,57 +99,49 @@ public class DeptController extends SysWebController {
      */
     @ResponseBody
     @GetMapping("/grid")
-    public JsonGrid grid(DeptFilter filter) {
-        return new JsonGrid(SysService.me().deptService().selectList(filter));
+    public JsonGrid grid() {
+        return new JsonGrid(SysService.me().dicCategoryService().selectList());
     }
 
     /** 新增保存 */
     @ResponseBody
     @PostMapping("/createSave")
-    @Authorize(code = R.Permission.SysDeptInsert)
-    public RestResult createSave(@ModelAttribute SysDept entity) {
-        return SysService.me().deptService().insert(entity);
+    @Authorize(code = R.Permission.SysDicCategoryInsert)
+    public RestResult createSave(@ModelAttribute SysDicCategory entity) {
+        return SysService.me().dicCategoryService().insert(entity);
     }
 
     /** 修改保存 */
     @ResponseBody
     @PostMapping("/updateSave")
-    @Authorize(code = R.Permission.SysDeptUpdate)
-    public RestResult editSave(@ModelAttribute SysDept entity) {
-        return SysService.me().deptService().update(entity);
+    @Authorize(code = R.Permission.SysDicCategoryUpdate)
+    public RestResult editSave(@ModelAttribute SysDicCategory entity) {
+        return SysService.me().dicCategoryService().update(entity);
     }
 
     /** 保存拖拽数据(父节点和路径) */
     @ResponseBody
     @PostMapping("/dnd")
-    @Authorize(code = R.Permission.SysDeptUpdate)
+    @Authorize(code = R.Permission.SysDicCategoryUpdate)
     public RestResult dnd(@RequestBody List<TreeNodeIndex> nodeIndexs) {
-        SysService.me().deptService().updateParentId(XCI.toParentIdValues(nodeIndexs));
-        SysService.me().deptService().updatePath(XCI.toPathIdValues(nodeIndexs));
+        SysService.me().dicCategoryService().updateParentId(XCI.toParentIdValues(nodeIndexs));
+        SysService.me().dicCategoryService().updatePath(XCI.toPathIdValues(nodeIndexs));
         return RestResult.ok();
-    }
-
-    /** 修改状态 */
-    @ResponseBody
-    @PostMapping("/status")
-    @Authorize(code = R.Permission.SysDeptUpdate)
-    public RestResult status(String id, Integer status) {
-        return SysService.me().deptService().updateStatus(id, XCI.toBool(status));
     }
 
     /** 删除 */
     @ResponseBody
     @PostMapping("/delete")
-    @Authorize(code = R.Permission.SysDeptDelete)
+    @Authorize(code = R.Permission.SysDicCategoryDelete)
     public RestResult delete(String id) {
-        SysService.me().deptService().delete(id);
+        SysService.me().dicCategoryService().delete(id);
         return RestResult.ok();
     }
 
     /** 导出 */
     @GetMapping("/export")
-    public void export(DeptFilter filter) {
-        XCI.exportExcel(SysService.me().deptService().selectList(filter), SysDept.class, "系统机构列表");
+    public void export() {
+        XCI.exportExcel(SysService.me().dicCategoryService().selectList(), SysDicCategory.class, "系统字典类型列表");
     }
 
     //endregion

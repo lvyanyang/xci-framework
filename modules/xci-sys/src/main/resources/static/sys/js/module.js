@@ -9,6 +9,7 @@ jx.ready(function () {
         edit: '/sys/module/edit',
         delete: '/sys/module/delete',
         details: '/sys/module/details',
+        copy: '/sys/module/copy',
         status: '/sys/module/status',
         expand: '/sys/module/expand',
         dnd: '/sys/module/dnd'
@@ -75,6 +76,10 @@ jx.ready(function () {
         $('#btn-delete,#btn-cmdelete').click(function () {
             deleteData();
         });
+        $('#btn-cmcopy').click(function () {
+            var id = gridInstance.getSelectedRowId();
+            copy(id);
+        });
 
         // 表格事件
         var panel = gridInstance.getPanel();
@@ -136,6 +141,19 @@ jx.ready(function () {
             title: '查看系统模块'
         });
     }
+
+    //复制数据
+    var copy = function (id) {
+        jx.ajax({
+            url: jx.url(api.copy),
+            data: {id: id},
+            maskMsg: '正在复制,请稍等...',
+            success: function () {
+                gridInstance.reloadGridData();
+                jx.toastr.success('复制成功');
+            }
+        });
+    };
 
     //设置数据状态
     var setStatus = function (id, val) {

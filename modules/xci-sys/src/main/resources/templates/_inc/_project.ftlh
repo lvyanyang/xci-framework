@@ -18,6 +18,14 @@
 </#function>
 
 <#--状态标签-->
+<#macro boolAllLabel value allLable>
+    <#if (value?is_number && value == 1) || (value?is_boolean && value == true)>
+        <span class="label label-success">${allLable}</span>
+    <#else>
+        <span class="label label-danger">${allLable}</span>
+    </#if>
+</#macro>
+
 <#macro boolLabel value trueLable = "启用" falseLable = "禁用">
     <#if (value?is_number && value == 1) || (value?is_boolean && value == true)>
         <span class="label label-success">${trueLable!}</span>

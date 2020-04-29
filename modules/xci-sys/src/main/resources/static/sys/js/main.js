@@ -42,7 +42,7 @@ jx.ready(function () {
             var id = getCurrentPageId();
             closePage(id);
         },
-        getCurrentPageId:function(){
+        getCurrentPageId: function () {
             return getCurrentPageId();
         },
         /**
@@ -191,7 +191,7 @@ jx.ready(function () {
     };
 
     var getCharCode = function (id) {
-        var sz = id.split('')||[];
+        var sz = id.split('') || [];
         var result = '';
         var len = sz.length >= 32 ? 16 : sz.length;
         for (var i = 0; i < len; i++) {
@@ -254,6 +254,16 @@ jx.ready(function () {
         if ($menuFilter.length > 0) {
             treeOps.filterBox = $menuFilter;
         }
+        //刷新用户菜单(不从缓存读取)
+        $menuFilter.parent().find('button').click(function () {
+            jx.ajax({
+                url: jx.url('sys/clearUserModuleTree'),
+                type: 'post',
+                success: function () {
+                    $tree.tree('reload');
+                }
+            });
+        });
         $tree.options(treeOps);
     };
 
@@ -432,7 +442,7 @@ jx.ready(function () {
                 content: jx.createIframe(_url),
                 onOpen: function () {
                     $(this).parent().find('.panel-header>.panel-icon')
-                        .css('cursor', 'pointer').click(function () {
+                      .css('cursor', 'pointer').click(function () {
                         top.app.toggleFullPage();
                         // var $this = $(this);
                         // var isfs = localStorage.getItem('appPageFull');
@@ -458,7 +468,7 @@ jx.ready(function () {
         return currentTab.panel('options').mid;
     };
 
-    var closePage = function (id){
+    var closePage = function (id) {
         if (!id) return null;
         if (window.systemEnableTabPage === '1') {
             var win = null;
@@ -558,7 +568,7 @@ jx.ready(function () {
      * 模块初始化
      * @private
      */
-    var init = function(){
+    var init = function () {
         initCurrentDateTimeRefresh();
         initMessageRefresh();
         initOnlineUserRefresh();

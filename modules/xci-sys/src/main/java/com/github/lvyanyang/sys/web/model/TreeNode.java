@@ -27,6 +27,11 @@ public class TreeNode {
     private String pid;
 
     /**
+     * 节点编码
+     */
+    private String code;
+
+    /**
      * 节点文本
      */
     private String text;

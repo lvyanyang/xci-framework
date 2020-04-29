@@ -11,15 +11,15 @@
             <tr>
                 <th class="w-120px">字典类型</th>
                 <td>
-                    <p class="form-control-static">${category.name}(${category.code})</p>
+                    <p class="form-control-static">${category.name}-(${category.code})</p>
                 </td>
             </tr>
             <tr>
-                <th>上级字典</th>
+                <th>上级</th>
                 <td>
                     <input name="parentName" class='form-control jxcombotree' data-value="${entity.parentId}"
-                           data-options="editable: false,showClear: false,hiddenField: 'parentId',panelHeight: '250px',defaultIconCls: 'icon-badge',loadEmptyMessage: '无',
-                                 treeOptions: {url: '${web.url("/sys/dic/parentList?id="+entity.id+"&categoryCode="+entity.categoryCode+"&created="+_create_)}'}"/>
+                           data-options="editable: false,showClear: true,hiddenField: 'parentId',panelHeight: '250px',
+                                 treeOptions: {url: '${web.url("/sys/dic/parentList?id="+entity.id+"&categoryCode="+entity.categoryCode+"&created="+_create_)}',defaultIconCls: 'icon-badge',loadEmptyMessage: '无'}"/>
                 </td>
             </tr>
             <tr>

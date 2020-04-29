@@ -19,16 +19,10 @@
         <div class="tab-content">
             <div id="tab-basic" class="tab-pane jx-overflow-auto fade in active">
                 <table class="table table-bordered jxtable-details">
-                    <tr class="w-100px">
-                        <th>角色主键</th>
-                        <td>${entity.id}</td>
-                    </tr>
                     <tr>
-                        <th>角色名称</th>
+                        <th class="w-100px">角色名称</th>
                         <td>${entity.name}</td>
-                    </tr>
-                    <tr>
-                        <th>角色编码</th>
+                        <th class="w-100px">角色编码</th>
                         <td>${entity.code}</td>
                     </tr>
                     <tr>
@@ -36,22 +30,18 @@
                         <td>
                             <a href="#" onclick="jx.auth.showDepartmentDetails('${entity.deptId}');">${entity.deptName}</a>
                         </td>
-                    </tr>
-                    <tr>
-                        <th>机构数据权限</th>
+                        <th>机构权限</th>
                         <td>${entity.deptScopeName}</td>
                     </tr>
                     <tr>
                         <th>状态</th>
                         <td><@xci.boolLabel value=entity.status /></td>
-                    </tr>
-                    <tr>
                         <th>序号</th>
                         <td>${entity.path}</td>
                     </tr>
                     <tr>
                         <th>备注</th>
-                        <td>${entity.remark}</td>
+                        <td colspan="3">${entity.remark}</td>
                     </tr>
                 </table>
             </div>

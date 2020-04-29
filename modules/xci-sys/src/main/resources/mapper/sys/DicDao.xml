@@ -13,10 +13,6 @@
         <where>
             <if test="filter.status != null">status = #{filter.status}</if>
             <if test="filter.categoryCode != null and filter.categoryCode != ''">and category_code = #{filter.categoryCode}</if>
-            <if test="filter.name != null and filter.name != ''">
-                <bind name="sname" value="'%' + filter.name + '%'"/>
-                and ( name like #{sname} or spell like #{sname} or value like #{sname} )
-            </if>
         </where>
     </sql>
     <!--endregion-->
@@ -24,6 +20,7 @@
     <!--查询List-->
     <sql id="list">
         <include refid="select"/>
+        <include refid="where"/>
         order by parent_id asc,path asc
     </sql>
 
@@ -165,7 +162,7 @@
     <select id="selectChildCount" resultType="java.lang.Integer">
         select count(1)
         from sys_dic
-        where code = #{categoryCode} and parent_id = #{id}
+        where category_code = #{categoryCode} and parent_id = #{id}
     </select>
     <!--endregion-->
 </mapper>

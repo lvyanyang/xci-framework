@@ -9,6 +9,7 @@ import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.entity.SysUser;
 import com.github.lvyanyang.sys.entity.SysUserSave;
 import com.github.lvyanyang.sys.filter.UserFilter;
+import com.github.lvyanyang.sys.web.component.SysWebService;
 import com.github.lvyanyang.sys.web.model.JsonGrid;
 import com.github.lvyanyang.web.WebController;
 import org.springframework.stereotype.Controller;
@@ -138,8 +139,8 @@ public class UserController extends WebController {
     @ResponseBody
     @PostMapping("/revisePasswordSave")
     @Authorize(code = R.Permission.SysUserRevisePassword)
-    public RestResult revisePassword(String ids, String password) {
-        return SysService.me().userService().revisePassword(ids, password);
+    public RestResult revisePassword(String userIds, String password) {
+        return SysService.me().userService().revisePassword(userIds, password);
     }
 
     /** 导出 */
@@ -148,29 +149,17 @@ public class UserController extends WebController {
         XCI.exportExcel(SysService.me().userService().selectList(filter), SysUser.class, "系统用户列表");
     }
 
-    // /**
-    //  * 用户拥有的模块 tree 节点
-    //  * @param id 用户主键
-    //  */
-    // @ResponseBody
-    // @GetMapping("/user-own-modules")
-    // public RestMessage userOwnModules(String id) {
-    //     SysUser user = userService.selectById(id);
-    //     List<SysModule> modules = moduleService.selectUserModuleList(user);
-    //     return RestMessage.tree(moduleService.convertToNodeList(modules));
-    // }
-    //
-    // /**
-    //  * 用户拥有的部门 tree 节点
-    //  * @param id 用户主键
-    //  */
-    // @ResponseBody
-    // @GetMapping("/user-own-departments")
-    // public RestMessage userOwnDepartments(String id) {
-    //     SysUser user = userService.selectById(id);
-    //     List<SysDept> departments = roleService.selectDeptMapList(user.getDeptId());
-    //     return RestMessage.tree(deptService.convertToNodeList(departments));
-    // }
-
+    /**
+     * 用户拥有的模块节点
+     * @param userId 用户主键
+     */
+    @ResponseBody
+    @GetMapping("/userOwnModules")
+    public RestResult userOwnModules(String userId) {
+        var currentUser = SysService.me().userService().selectById(Long.valueOf(userId));
+        var modules = SysService.me().userService().selectUserModuleListByUser(currentUser);
+        var nodes = SysWebService.me().toModuleNodeList(modules);
+        return RestResult.ok(nodes);
+    }
     //endregion
 }

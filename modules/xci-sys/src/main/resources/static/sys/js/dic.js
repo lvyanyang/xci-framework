@@ -31,7 +31,7 @@ jx.ready(function () {
     var treeDialogWidth = '600px';
     var treeDialogHeight = '360px';
     var gridDialogWidth = '600px';
-    var gridDialogHeight = '460px';
+    var gridDialogHeight = '480px';
 
     //endregion
 
@@ -60,6 +60,9 @@ jx.ready(function () {
             onContextMenu: function (e, node) {
                 treeInstance.expand(node.target);
                 treeInstance.select(node.target);
+            },
+            onDblClick: function (node) {
+                treeDetails(node.id);
             },
             onSelect: function (node) {
                 if (lastSelectedId === node.id) {
@@ -131,11 +134,7 @@ jx.ready(function () {
 
         $('#btn-tcmdetails').click(function () {
             var id = treeInstance.getSelected().id;
-            jx.detailsDialog({
-                title: '查看字典类型',
-                url: jx.url(api.category.details),
-                params: {id: id}
-            });
+            treeDetails(id);
         });
 
         $('#btn-tcmexport').click(function () {
@@ -238,6 +237,14 @@ jx.ready(function () {
             });
         });
     };
+
+    function treeDetails(id) {
+        jx.detailsDialog({
+            title: '查看字典类型',
+            url: jx.url(api.category.details),
+            params: {id: id}
+        });
+    }
 
     //endregion
 

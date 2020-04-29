@@ -56,6 +56,20 @@
     </sql>
     <!--endregion-->
 
+    <!--region 是否存在指定名称的模块-->
+    <select id="existByName" resultType="java.lang.Boolean">
+        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
+            <property name="table" value="sys_module"/>
+            <property name="where" value="existByNameWhere"/>
+        </include>
+    </select>
+    <!--existByNameWhere Where-->
+    <sql id="existByNameWhere">
+        where name = #{name} and parent_id = #{parentId}
+        <if test="excludeId != null">and id != #{excludeId}</if>
+    </sql>
+    <!--endregion-->
+
     <!--region 新建模块-->
     <insert id="insert">
         insert into sys_module (id,parent_id,name,code,spell,param,web_url,web_cls,web_setting,win_setting,menu,web,win,expand,publiced,path,status,remark)

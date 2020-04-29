@@ -47,11 +47,20 @@ public class SysDic extends BaseEntity implements ITreeModel {
     private Long parentId;
 
     /**
+     * 字典类型编码
+     */
+    @NotBlank(message = "字典类型编码不能为空")
+    @Length(max = 100, message = "字典类型编码不能超过{max}个字符")
+    @Excel(name = "字典类型编码", width = 20d)
+    @ApiModelProperty(value = "字典类型编码", required = true, position = 3)
+    private String categoryCode;
+
+    /**
      * 字典名称
      */
     @NotBlank(message = "字典名称不能为空")
     @Length(max = 100, message = "字典名称不能超过{max}个字符")
-    @Excel(name = "字典名称", width = 30d)
+    @Excel(name = "字典名称", width = 20d)
     @ApiModelProperty(value = "字典名称", required = true, position = 4)
     private String name;
 
@@ -59,33 +68,25 @@ public class SysDic extends BaseEntity implements ITreeModel {
      * 字典简拼
      */
     @Length(max = 100, message = "字典简拼不能超过{max}个字符")
-    @ExcelIgnore@Excel(name = "字典简拼")
+    @ExcelIgnore
+    @Excel(name = "字典简拼")
     @ApiModelProperty(value = "字典简拼", position = 6)
     private String spell;
-
-    /**
-     * 字典类型编码
-     */
-    @NotBlank(message = "字典类型编码不能为空")
-    @Length(max = 100, message = "字典类型编码不能超过{max}个字符")
-    @Excel(name = "字典类型编码", width = 30d)
-    @ApiModelProperty(value = "字典类型编码", required = true, position = 3)
-    private String categoryCode;
 
     /**
      * 字典值
      */
     @NotNull(message = "字典值不能为空")
     @Length(max = 500, message = "字典值不能超过{max}个字符")
-    @Excel(name = "字典值", width = 30d)
+    @Excel(name = "字典值", width = 20d)
     @ApiModelProperty(value = "字典值", required = true, position = 5)
     private String value;
 
     /**
-     * 排序路径
+     * 排序
      */
-    @Excel(name = "排序路径")
-    @ApiModelProperty(value = "排序路径", position = 7)
+    @Excel(name = "排序")
+    @ApiModelProperty(value = "排序", position = 7)
     private Integer path;
 
     /**
@@ -99,7 +100,7 @@ public class SysDic extends BaseEntity implements ITreeModel {
      * 备注
      */
     @Length(max = 500, message = "备注不能超过{max}个字符")
-    @Excel(name = "备注", width = 40d)
+    @Excel(name = "备注")
     @ApiModelProperty(value = "备注", position = 100)
     private String remark;
 }

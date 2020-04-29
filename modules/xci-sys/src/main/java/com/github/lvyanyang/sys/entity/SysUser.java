@@ -75,20 +75,34 @@ public class SysUser extends BaseEntity {
     private Integer category;
 
     /**
-     * 机构主键
+     * 账号类型名称
      */
-    @NotNull(message = "请选择机构")
+    @ApiModelProperty(value = "账号类型")
+    public String getCategoryName() {
+        switch (category) {
+            case 0:
+                return "系统账号";
+            case 1:
+                return "企业账号";
+        }
+        return R.Empty;
+    }
+
+    /**
+     * 所属机构主键
+     */
+    @NotNull(message = "请选择所属机构")
     @ExcelIgnore
-    @Excel(name = "机构主键")
+    @Excel(name = "所属机构主键")
     @JsonSerialize(using = ToStringSerializer.class)
-    @ApiModelProperty(value = "机构主键", position = 5)
+    @ApiModelProperty(value = "所属机构主键", position = 5)
     private Long deptId;
 
     /**
-     * 机构名称
+     * 所属机构名称
      */
-    @Excel(name = "机构名称")
-    @ApiModelProperty(value = "机构名称", position = 6)
+    @Excel(name = "所属机构")
+    @ApiModelProperty(value = "所属机构", position = 6)
     private String deptName;
 
     /**

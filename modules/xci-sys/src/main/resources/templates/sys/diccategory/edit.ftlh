@@ -10,7 +10,7 @@
                 <th class="w-120px">上级字典类型</th>
                 <td>
                     <input name="parentName" class='form-control jxcombotree' data-value="${entity.parentId}"
-                           data-options="editable: false,showClear: false,hiddenField: 'parentId',panelHeight: '250px',
+                           data-options="editable: false,showClear: true,hiddenField: 'parentId',panelHeight: '200px',
                                                     treeOptions: {url: '${web.url("/sys/dicCategory/parentList?id="+entity.id+"&created="+_create_)}',defaultIconCls: 'icon-notebook',loadEmptyMessage: '无'}"/>
                 </td>
             </tr>
@@ -42,5 +42,5 @@
     </div>
 </div>
 <@footer>
-    <script>jx.auth.bindEditFormSuccess();</script>
+    <script>jx.auth.bindEditFormTreeSuccess();</script>
 </@footer>
