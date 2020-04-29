@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2007-2020 西安交通信息投资营运有限公司 版权所有
+  -->
+
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.github.lvyanyang.sys.dao.UserDao">
     <!--region 公共代码段-->
@@ -339,7 +343,7 @@
 
     <!--endregion -->
 
-    <!--region 用户拥有的模块 -->
+    <!--region 用户拥有的模块权限 -->
     <select id="selectUserModuleListByUserId" resultType="com.github.lvyanyang.sys.entity.SysModule">
         select <include refid="com.github.lvyanyang.sys.dao.ModuleDao.columns"/>
         from (
@@ -365,4 +369,24 @@
         order by x.parent_id asc, x.path asc
     </select>
     <!--endregion -->
+
+    <!--region 用户拥有的机构权限 -->
+    <select id="selectUserDeptListByUserId" resultType="com.github.lvyanyang.sys.entity.SysDept">
+        select <include refid="com.github.lvyanyang.sys.dao.DeptDao.select"/>
+        where d.id in (
+            select distinct target_id
+            from sys_object_map
+            where object_name = 'role'
+              and object_id in
+                  (
+                      select r.id role_id
+                      from sys_role r join sys_user_role_map urmap
+                          on r.status = 1 and urmap.user_id = ${userId}
+                                 and urmap.role_id = r.id
+                  )
+              and target_name = 'dept'
+        )
+    </select>
+    <!--endregion -->
+
 </mapper>

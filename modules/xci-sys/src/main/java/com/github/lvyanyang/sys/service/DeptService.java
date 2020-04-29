@@ -172,9 +172,10 @@ public class DeptService extends BaseService {
 
     /**
      * 获取用户所属机构
-     * @param user 用户对象
+     * @param userId 用户主键
      */
-    public SysDept selectByUserId(SysUser user) {
+    public SysDept selectByUserId(Long userId) {
+        var user = SysService.me().userService().selectById(userId);
         if (user != null && XCI.validLong(user.getDeptId())) {
             return selectById(user.getDeptId());
         }

@@ -94,6 +94,15 @@ public class DeptController extends SysWebController {
         return RestResult.ok(SysWebService.me().toDeptNodeList(depts));
     }
 
+    /** 获取当前用户拥有的机构树 */
+    @ResponseBody
+    @GetMapping("/currentUserDeptTree")
+    public RestResult currentUserDeptTree() {
+        var depts = SysWebService.me().selectEnabledDeptList(true);
+        var nodes = SysWebService.me().toDeptNodeList(depts);
+        return RestResult.ok(nodes);
+    }
+
     /**
      * 表格数据
      */

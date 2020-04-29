@@ -77,7 +77,7 @@
         <tr>
             <th data-options="field: 'ck',checkbox:true"></th>
             <th data-options="title: '操作',field:'id',align:'center',formatter:jx.gf.command"></th>
-            <th data-options="title: '姓名', field: 'name', width: 100, align: 'center',sortable: true"></th>
+            <th data-options="title: '姓名', field: 'name', width: 100, align: 'center',sortable: true,formatter:jx.gf.formatName"></th>
             <th data-options="title: '账号', field: 'account', width: 150, sortable: true, align: 'center'"></th>
             <th data-options="title: '机构', field: 'deptName', width: 150, align: 'center'"></th>
             <th data-options="title: '状态', field: 'status', width: 50, align: 'center',formatter:jx.gf.status"></th>

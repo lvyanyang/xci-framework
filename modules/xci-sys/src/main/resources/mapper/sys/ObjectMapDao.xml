@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2007-2020 西安交通信息投资营运有限公司 版权所有
+  -->
+
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.github.lvyanyang.sys.dao.ObjectMapDao">
     <!--region 新建对象关联-->
@@ -18,6 +22,16 @@
     </delete>
     <!--endregion-->
 
+    <!--region 获取目标列表-->
+    <select id="selectByObject" resultType="string">
+        select target_id
+        from sys_object_map
+        where object_name = #{objectName}
+          and object_id = #{objectId}
+          and target_name = #{targetName}
+    </select>
+    <!--endregion-->
+
     <!--region 根据目标删除-->
     <delete id="deleteByTarget">
         delete
@@ -28,18 +42,8 @@
     </delete>
     <!--endregion-->
 
-    <!--region 获取目标列表-->
-    <select id="selectTargetList" resultType="string">
-        select target_id
-        from sys_object_map
-        where object_name = #{objectName}
-          and object_id = #{objectId}
-          and target_name = #{targetName}
-    </select>
-    <!--endregion-->
-
     <!--region 获取对象列表-->
-    <select id="selectObjectList" resultType="string">
+    <select id="selectByTarget" resultType="string">
         select object_id
         from sys_object_map
         where target_name = #{targetName}

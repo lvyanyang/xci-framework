@@ -15,7 +15,7 @@
         <input name="category" value="0" type="hidden">
         <table class="table jxtable-form">
             <tr>
-                <th>账号</th>
+                <th class="w-100px">账号</th>
                 <td>
                     <input class="form-control" name="account" value="${entity.account}" autofocus maxlength="20"
                            data-validate="required:[true,'请输入账号'],maxlength: 20" autocomplete="off"/>
@@ -46,12 +46,12 @@
                 </tr>
             </@xci.isCreate>
             <tr>
-                <th class="w-120px">机构</th>
+                <th>机构</th>
                 <td>
-                    <input id="deptName" name="deptName" class='form-control jxcombotree'
+                    <input name="deptName" class='form-control jxcombotree'
                            data-value="${entity.deptId}" data-validate="required: [true,'请选择机构']"
                            data-options="editable: false,showClear: false,hiddenField: 'deptId',panelHeight: '250px',
-                                        treeOptions: {url: '${web.url('/sys/dept/user-own-departments')}',defaultIconCls: 'icon-users'}"/>
+                                        treeOptions: {url: '${web.url('/sys/dept/currentUserDeptTree')}',defaultIconCls: 'icon-users'}"/>
                 </td>
             </tr>
             <tr>

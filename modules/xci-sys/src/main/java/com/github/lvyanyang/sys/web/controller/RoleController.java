@@ -1,12 +1,15 @@
+/*
+ * Copyright (c) 2007-2020 西安交通信息投资营运有限公司 版权所有
+ */
+
 package com.github.lvyanyang.sys.web.controller;
 
 import com.github.lvyanyang.core.R;
+import com.github.lvyanyang.model.PermissionBody;
 import com.github.lvyanyang.sys.component.SysService;
-import com.github.lvyanyang.sys.entity.SysDept;
-import com.github.lvyanyang.sys.entity.SysModule;
 import com.github.lvyanyang.sys.filter.RoleFilter;
 import com.github.lvyanyang.sys.web.component.SysWebService;
-import com.github.lvyanyang.web.WebController;
+import com.github.lvyanyang.sys.web.model.TreeNode;
 import com.github.lvyanyang.sys.entity.SysRole;
 import com.github.lvyanyang.annotation.Authorize;
 import com.github.lvyanyang.exceptions.NotFoundException;
@@ -17,7 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 系统角色Web控制器
@@ -27,9 +30,9 @@ import java.util.List;
 @Authorize
 @Controller
 @RequestMapping(value = "/sys/role")
-public class RoleController extends WebController {
+public class RoleController extends SysWebController {
     //region 页面视图
-    
+
     /** 首页 */
     @GetMapping
     public String index() {
@@ -75,12 +78,26 @@ public class RoleController extends WebController {
 
     //region 数据处理
 
-    /** 编辑时获取机构列表 */
+    /**
+     * 角色拥有的模块权限
+     */
     @ResponseBody
-    @GetMapping("/ownDeptList")
-    public RestResult ownDeptList() {
-        List<SysDept> depts = SysWebService.me().selectEnabledDeptList(true);
-        return RestResult.ok(SysWebService.me().toDeptNodeList(depts));
+    @GetMapping("/roleOwnModules")
+    public RestResult roleOwnModules(String roleId) {
+        var modules = SysService.me().roleService().selectModuleMapList(Long.valueOf(roleId));
+        var nodes = SysWebService.me().toModuleNodeList(modules);
+        return RestResult.ok(nodes);
+    }
+
+    /**
+     * 角色拥有的部门权限
+     */
+    @ResponseBody
+    @GetMapping("/roleOwnDepts")
+    public RestResult roleOwnDepts(String roleId) {
+        var depts = SysService.me().roleService().selectDeptDataMapList(Long.valueOf(roleId));
+        var nodes = SysWebService.me().toDeptNodeList(depts);
+        return RestResult.ok(nodes);
     }
 
     /** 表格查询 */
@@ -129,28 +146,74 @@ public class RoleController extends WebController {
         XCI.exportExcel(SysService.me().roleService().selectList(filter), SysRole.class, "系统角色列表");
     }
 
-    // /**
-    //  * 角色拥有的模块 tree 节点
-    //  * @param id 角色主键
-    //  */
-    // @ResponseBody
-    // @GetMapping("/role-own-modules")
-    // public RestMessage roleOwnModules(String id) {
-    //     List<SysModule> list = roleService.selectModuleMapList(id);
-    //     List<TreeNode> models = moduleService.convertToNodeList(list);
-    //     return RestMessage.tree(models);
-    // }
-    //
-    // /**
-    //  * 角色拥有的部门 tree 节点
-    //  * @param id 角色主键
-    //  */
-    // @ResponseBody
-    // @GetMapping("/role-own-departments")
-    // public RestMessage roleOwnDepartments(String id) {
-    //     List<SysDept> departments = roleService.selectDeptMapList(id);
-    //     return RestMessage.tree(deptService.convertToNodeList(departments));
-    // }
+    //endregion
+
+    //region 角色授权
+
+    /** 授权页 */
+    @GetMapping("/authorize")
+    public String authorize(String roleIds, ModelMap map) {
+        SysRole role = new SysRole();
+        role.setDeptScope(5);
+        var ids = XCI.splitToArray(roleIds);
+        if (ids.length == 1) {
+            role = SysService.me().roleService().selectById(Long.valueOf(ids[0]));
+            if (role == null) throw new NotFoundException(roleIds);
+        }
+        map.put("role", role);
+        map.put("roleIds", roleIds);
+        return "sys/role/authorize";
+    }
+
+    /** 保存角色授权 */
+    @ResponseBody
+    @PostMapping("/authorizeSave")
+    @Authorize(code = R.Permission.SysRoleAuthorize)
+    public RestResult authorizeSave(PermissionBody permissionModel) {
+        return SysWebService.me().roleService().savePermission(permissionModel);
+    }
+
+    /**
+     * 当前用户可分配模块权限
+     */
+    @ResponseBody
+    @GetMapping("/authorizeModules")
+    public RestResult authorizeModules(String roleId) {
+        var modules = SysWebService.me().userService().selectUserModuleListByUser(getCurrentUser());
+        Consumer<TreeNode> checkNodeCallback = null;
+        if (XCI.isNotBlank(roleId)) {
+            var moduleIds = SysService.me().roleService().selectModuleMapArray(Long.valueOf(roleId));
+            checkNodeCallback = node -> {
+                if (moduleIds.stream().anyMatch(p -> p.equals(node.getId()))) {
+                    node.setChecked(true);
+                }
+            };
+        }
+
+        var nodes = SysWebService.me().toModuleNodeList(modules, checkNodeCallback);
+        return RestResult.ok(nodes);
+    }
+
+    /**
+     * 当前用户可分配部门权限
+     */
+    @ResponseBody
+    @GetMapping("/authorizeDepts")
+    public RestResult authorizeDepts(String roleId) {
+        var depts = SysService.me().userService().selectUserDeptDataListByUserId(getCurrentUser());
+        Consumer<TreeNode> checkNodeCallback = null;
+        if (XCI.isNotBlank(roleId)) {
+            var deptIds = SysService.me().roleService().selectDeptDataMapArray(Long.valueOf(roleId));
+            checkNodeCallback = node -> {
+                if (deptIds.stream().anyMatch(p -> p.equals(node.getId()))) {
+                    node.setChecked(true);
+                }
+            };
+        }
+
+        var nodes = SysWebService.me().toDeptNodeList(depts, checkNodeCallback);
+        return RestResult.ok(nodes);
+    }
 
     //endregion
 }

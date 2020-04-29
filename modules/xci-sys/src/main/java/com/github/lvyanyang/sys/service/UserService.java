@@ -17,6 +17,7 @@ import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.core.Params;
 import com.github.lvyanyang.sys.dao.UserDao;
 import com.github.lvyanyang.sys.entity.*;
+import com.github.lvyanyang.sys.filter.DeptFilter;
 import com.github.lvyanyang.sys.filter.ModuleFilter;
 import com.github.lvyanyang.sys.filter.UserFilter;
 import com.github.lvyanyang.sys.model.LockUserModel;
@@ -486,7 +487,23 @@ public class UserService extends BaseService {
     }
 
     /**
-     * 根据用户主键查询用户拥有的模块列表
+     * 根据用户主键查询用户拥有的机构权限列表
+     * @param user 用户对象
+     * @return 返回机构权限列表
+     */
+    public List<SysDept> selectUserDeptDataListByUserId(SysUser user) {
+        if (user == null) return Lists.newArrayList();
+        if (user.getAdmin()) {
+            var filter = new DeptFilter();
+            filter.setStatus(true);
+            filter.setDataScope(false);
+            return SysService.me().deptService().selectList(filter);
+        }
+        return userDao.selectUserDeptListByUserId(user.getId());
+    }
+
+    /**
+     * 根据用户主键查询用户拥有的模块权限列表
      * @param user 用户对象
      * @return 返回模块列表
      */
@@ -499,7 +516,7 @@ public class UserService extends BaseService {
     }
 
     /**
-     * 根据用户主键查询用户拥有的模块列表
+     * 根据用户主键查询用户拥有的模块权限列表(从缓存)
      * @param user 用户对象
      * @return 返回模块列表
      */

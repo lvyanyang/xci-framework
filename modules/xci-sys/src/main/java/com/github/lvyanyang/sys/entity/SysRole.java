@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.github.lvyanyang.core.BaseEntity;
 import com.github.lvyanyang.core.R;
+import com.github.lvyanyang.core.XCI;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -92,19 +93,7 @@ public class SysRole extends BaseEntity {
      */
     @ApiModelProperty(value = "机构数据权限名称")
     public String getDeptScopeName() {
-        switch (deptScope) {
-            case 1:
-                return "全部";
-            case 2:
-                return "自定义";
-            case 3:
-                return "所在部门";
-            case 4:
-                return "所在部门及所有下级";
-            case 5:
-                return "仅本人";
-        }
-        return R.Empty;
+       return XCI.getDeptScopeNameByValue(deptScope);
     }
 
     /**

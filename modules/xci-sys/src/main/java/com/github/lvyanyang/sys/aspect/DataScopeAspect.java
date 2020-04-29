@@ -54,7 +54,7 @@ public class DataScopeAspect {
         if(user.getAdmin()) {// 如果是超级管理员，则不过滤数据
             return;
         }
-        var dept = SysService.me().deptService().selectByUserId(user);
+        var dept = SysService.me().deptService().selectByUserId(user.getId());
         if(dept == null || !dept.getStatus()) {
             throw new AppException(XCI.format("请给用户[{}][{}]指定机构", user.getAccount(), user.getId()));
         }

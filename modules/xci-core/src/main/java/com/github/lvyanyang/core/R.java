@@ -322,6 +322,7 @@ public class R {
         public static final String SysRoleUpdate = "sys.role.update";
         public static final String SysRoleSave = "sys.role.insert,sys.role.update";
         public static final String SysRoleDelete = "sys.role.delete";
+        public static final String SysRoleAuthorize = "sys.role.authorize";
 
         public static final String SysDicSelect = "sys.dic.select";
         public static final String SysDicInsert = "sys.dic.insert";

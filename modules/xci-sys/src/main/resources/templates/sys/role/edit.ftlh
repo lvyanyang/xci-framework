@@ -13,7 +13,7 @@
                     <input name="deptName" class='form-control jxcombotree'
                            data-value="${entity.deptId}" data-validate="required: [true,'请选择所属机构']"
                            data-options="editable: false,showClear: false,hiddenField: 'deptId',panelHeight: '250px',
-                                        treeOptions: {url: '${web.url('/sys/role/ownDeptList')}',defaultIconCls: 'icon-users'}"/>
+                                        treeOptions: {url: '${web.url('/sys/dept/currentUserDeptTree')}',defaultIconCls: 'icon-users'}"/>
                 </td>
             </tr>
             <tr class="w-100px">

@@ -30,9 +30,9 @@ public class ObjectMapService extends BaseService {
      * @param objectId   对象主键
      * @param targetName 目标名称
      */
-    public RestResult saveTargets(@NotEmpty(message = "请指定对象名称") String objectName,
-            @NotNull(message = "请指定对象主键") Long objectId, @NotEmpty(message = "请指定目标名称") String targetName,
-            String[] targetIds) {
+    public RestResult save(@NotEmpty(message = "请指定对象名称") String objectName,
+                           @NotNull(message = "请指定对象主键") Long objectId, @NotEmpty(message = "请指定目标名称") String targetName,
+                           String[] targetIds) {
         objectMapDao.deleteByObject(objectName, objectId, targetName);
         if(!XCI.isEmpty(targetIds)) {
             for(String targetId : targetIds) {
@@ -60,6 +60,17 @@ public class ObjectMapService extends BaseService {
     }
 
     /**
+     * 获取目标主键列表
+     * @param objectName 对象名称
+     * @param objectId   对象主键
+     * @param targetName 目标名称
+     */
+    public List<String> selectByObject(@NotEmpty(message = "请指定对象名称") String objectName,
+            @NotNull(message = "请指定对象主键") Long objectId, @NotEmpty(message = "请指定目标名称") String targetName) {
+        return objectMapDao.selectByObject(objectName, objectId, targetName);
+    }
+
+    /**
      * 根据目标删除关联
      * @param targetName 目标名称
      * @param targetId   目标主键
@@ -71,16 +82,6 @@ public class ObjectMapService extends BaseService {
         return RestResult.ok();
     }
 
-    /**
-     * 获取目标主键列表
-     * @param objectName 对象名称
-     * @param objectId   对象主键
-     * @param targetName 目标名称
-     */
-    public List<String> selectTargetList(@NotEmpty(message = "请指定对象名称") String objectName,
-            @NotNull(message = "请指定对象主键") Long objectId, @NotEmpty(message = "请指定目标名称") String targetName) {
-        return objectMapDao.selectTargetList(objectName, objectId, targetName);
-    }
 
     /**
      * 获取对象主键列表
@@ -88,8 +89,8 @@ public class ObjectMapService extends BaseService {
      * @param targetId   目标主键
      * @param objectName 对象名称
      */
-    public List<String> selectObjectList(@NotEmpty(message = "请指定目标名称") String targetName,
+    public List<String> selectByTarget(@NotEmpty(message = "请指定目标名称") String targetName,
             @NotNull(message = "请指定目标主键") Long targetId, @NotEmpty(message = "请指定对象名称") String objectName) {
-        return objectMapDao.selectObjectList(targetName, targetId, objectName);
+        return objectMapDao.selectByTarget(targetName, targetId, objectName);
     }
 }

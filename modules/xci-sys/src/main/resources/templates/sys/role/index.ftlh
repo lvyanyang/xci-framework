@@ -2,7 +2,7 @@
 <#assign allowInsert=sys.auth("sys.role.insert")/>
 <#assign allowUpdate=sys.auth("sys.role.update")/>
 <#assign allowDelete=sys.auth("sys.role.delete")/>
-<#assign allowAuth=sys.auth("sys.role.auth")/>
+<#assign allowAuthorize=sys.auth("sys.role.authorize")/>
 <@header/>
 <div id="gridtoolbar">
     <form id="gridform" class="jxform jxlayout-form form-inline">
@@ -26,6 +26,11 @@
 	        <@xci.echo test=allowDelete>
 	            <a id="btn-delete" class="btn btn-default">
                     <i class="icon-trash"></i> 删除
+                </a>
+            </@xci.echo>
+            <@xci.echo test=allowAuthorize>
+                <a id="btn-authorize" class="btn btn-default">
+                    授权
                 </a>
             </@xci.echo>
             <a id="btn-export"
@@ -56,7 +61,6 @@
     <@xci.echo test=allowUpdate><a class="cmd-edit" data-id="{0}">修改</a></@xci.echo>
     <@xci.echo test=allowDelete><a class="cmd-delete" data-id="{0}">删除</a></@xci.echo>
     <#--<@xci.echo test=allowMapUser><a class="cmd-map-user" data-id="{0}">成员</a></@xci.echo>-->
-    <@xci.echo test=allowAuth><a class="cmd-auth" data-id="{0}">授权</a></@xci.echo>
     </div>
 </script>
 <@footer>

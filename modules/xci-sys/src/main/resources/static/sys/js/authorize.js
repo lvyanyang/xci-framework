@@ -3,21 +3,20 @@
  */
 
 /*-----------------------------------------------------
- * 权限子系统-设置权限模块
+ * 角色权限分配模块
  * ---------------------------------------------------*/
 jx.ready(function () {
-
     var $moduleTree = $('#module-tree');
-    var $departmentTree = $('#department-tree');
+    var $deptTree = $('#dept-tree');
 
-    var setDepartmentTreeBackground = function () {
+    var setDeptTreeBackground = function () {
         var $checks = $('.jxcheck:checked');
         if ($checks.length > 0) {
             var value = $checks[0].value;
-            if (value == 'customDeptData') {
-                $("#department-tree-background").hide();
+            if (value == '2') {
+                $("#dept-tree-background").hide();
             } else {
-                $("#department-tree-background").show();
+                $("#dept-tree-background").show();
             }
         }
     };
@@ -35,7 +34,7 @@ jx.ready(function () {
             }
         });
 
-        $departmentTree.jxtree({
+        $deptTree.jxtree({
             defaultIconCls: 'icon-users',
             cascadeCheck: false,
             checkbox: true,
@@ -65,12 +64,12 @@ jx.ready(function () {
             });
             $('#moduleIds').val(moduleIds.join());
 
-            var departmentNodes = $departmentTree.jxtree().getChecked(['checked', 'indeterminate']);
-            var departmentIds = [];
-            $.each(departmentNodes, function (i, v) {
-                departmentIds.push(v.id);
+            var deptNodes = $deptTree.jxtree().getChecked(['checked', 'indeterminate']);
+            var deptIds = [];
+            $.each(deptNodes, function (i, v) {
+                deptIds.push(v.id);
             });
-            $('#departmentIds').val(departmentIds.join());
+            $('#deptIds').val(deptIds.join());
 
         }).on("aftersubmit", function (e, result) {
             if (result.success) {
@@ -97,22 +96,22 @@ jx.ready(function () {
         });
 
         $('.jxcheck').on('ifChecked', function (e) {
-            setDepartmentTreeBackground();
+            setDeptTreeBackground();
         });
 
         //向导控件自适应高度
         jx.wizardFit();
-        departmentTreeFit();
+        deptTreeFit();
     };
-    var departmentTreeFit = function () {
+    var deptTreeFit = function () {
         var height = $('#step-2').height() - 44 - 25;// $('.list-group-item:first').outerHeight();
-        $('#department-tree').height(height - 20);
-        $('#department-tree-background').height(height);
+        $('#dept-tree').height(height - 20);
+        $('#dept-tree-background').height(height);
     };
 
     initTree();
     initForm();
-    setDepartmentTreeBackground();
+    setDeptTreeBackground();
 
     jx.onAfterInit(function () {
         afterPage();

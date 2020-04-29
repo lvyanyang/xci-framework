@@ -1,26 +1,25 @@
-<#-- @ftlvariable name="objectId" type="java.lang.String" -->
-<#-- @ftlvariable name="dataSetting" type="com.xci.platform.auth.entity.ObjectDataSettingEntity" -->
-<#include "/_inc/_layout.ftl">
+<#-- @ftlvariable name="role" type="com.github.lvyanyang.sys.entity.SysRole" -->
+<#-- @ftlvariable name="roleIds" type="java.lang.String" -->
+<#include "/_inc/_layout.ftlh">
 <@header>
-    <link href="<@html.url '/auth/css/tree-noselect.css'/>" rel="stylesheet"/>
+    <link href="${web.url('/sys/css/tree-noselect.css')}" rel="stylesheet"/>
 </@header>
-<#assign save_url=html.urls("/auth/objectmap/save")>
-<#assign module_url=html.urls("/auth/objectmap/moduletree?objectId=${objectId}")>
-<#assign department_url=html.urls("/auth/objectmap/departmenttree?objectId=${objectId}")>
+<#assign save_url=web.url("/sys/role/authorizeSave")>
+<#assign module_url=web.url("/sys/role/authorizeModules?roleId=${role.id}")>
+<#assign dept_url=web.url("/sys/role/authorizeDepts?roleId=${role.id}")>
 
 <div class="jxpanel jx-overflow-no winpanel" data-fit="true">
     <form id="editform" class="jxform" method="post" action="${save_url}">
-        <input id="objectId" name="objectId" type="hidden" value="${objectId}"/>
+        <input id="roleIds" name="roleIds" type="hidden" value="${roleIds}"/>
         <input id="moduleIds" name="moduleIds" type="hidden"/>
-        <input id="departmentIds" name="departmentIds" type="hidden"/>
+        <input id="deptIds" name="deptIds" type="hidden"/>
 
         <div id="wizard" class="wizard" data-target="#wizard-steps" style="border-left: none; border-top: none; border-right: none;">
             <ul class="steps">
                 <li data-target="#step-1" class="active"><span class="step">1</span>功能权限<span class="chevron"></span></li>
-                <li data-target="#step-2"><span class="step">2</span>部门权限<span class="chevron"></span></li>
+                <li data-target="#step-2"><span class="step">2</span>机构权限<span class="chevron"></span></li>
             </ul>
         </div>
-
 
         <div id="wizard-steps" class="step-content" style="border-left: none; border-bottom: none; border-right: none;">
             <div id="step-1" class="step-pane jx-overflow-auto active">
@@ -33,44 +32,35 @@
                         <li class="list-group-item">
                             <div class="input-group">
                                 <div class="icheck-inline">
-                                    <#--<label><input name="dataType" class="jxcheck" type="radio" value="allDeptData" <@html.isChecked value=dataSetting.allDeptData/>/>全部</label>-->
-                                    <#--<label><input name="dataType" class="jxcheck" type="radio" value="currentUserData" <@html.isChecked value=dataSetting.currentUserData/>/>仅本人</label>-->
-                                    <#--<label><input name="dataType" class="jxcheck" type="radio" value="currentDeptData" <@html.isChecked value=dataSetting.currentDeptData/>/>所在部门</label>-->
-                                    <#--<label><input name="dataType" class="jxcheck" type="radio" value="currentLowerDeptData" <@html.isChecked value=dataSetting.currentLowerDeptData/>/>所在部门及所有下级</label>-->
-                                    <label><input name="dataType" class="jxcheck" type="radio"
-                                                  value="customDeptData" <@html.isChecked value=dataSetting.customDeptData/>/>自定义</label>
+                                    <#--1-全部, 2-自定义, 3-所在部门, 4-所在部门及所有下级, 5-仅本人-->
+                                    <label><input name="deptScope" class="jxcheck" type="radio" data-color="green" value="1" <@xci.isChecked value=role.deptScope==1/>/>全部</label>
+                                    <label><input name="deptScope" class="jxcheck" type="radio" data-color="green" value="2" <@xci.isChecked value=role.deptScope==2/>/>自定义</label>
+                                    <label><input name="deptScope" class="jxcheck" type="radio" data-color="green" value="3" <@xci.isChecked value=role.deptScope==3/>/>所在机构</label>
+                                    <label><input name="deptScope" class="jxcheck" type="radio" data-color="green" value="4" <@xci.isChecked value=role.deptScope==4/>/>所在机构及所有下级</label>
+                                    <label><input name="deptScope" class="jxcheck" type="radio" data-color="green" value="5" <@xci.isChecked value=role.deptScope==5/>/>仅本人</label>
                                 </div>
                             </div>
                         </li>
                         <li class="list-group-item" style="padding-left: 0;">
-                            <ul id="department-tree" class="jxtree" data-url="${department_url}"
+                            <ul id="dept-tree" class="jxtree" data-url="${dept_url}"
                                 data-load-empty-message="无部门数据"
                                 style="overflow:auto;margin: 0;"></ul>
-                            <div id="department-tree-background"
+                            <div id="dept-tree-background"
                                  style="position:absolute;top:0;left:0;z-index: 2; width: 100%; background: #000; filter: alpha(opacity=10); opacity: 0.1;"></div>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
-
-
     </form>
-
-
     <div class="panel-footer text-right">
-
         <div id="wizard-actions">
             <a id="btn_last" disabled class="btn btn-default btn-prev">上一步</a>
             <a id="btn_next" class="btn btn-default btn-next">下一步</a>
             <button id="btn_finish" type="button" disabled class="btn btn-primary" onclick="$('#editform').jxform().submit()">完成</button>
         </div>
-
     </div>
-
-
 </div>
-
 <@footer>
-    <script src="<@html.url '/auth/js/mapsetting.js'/>"></script>
+    <script src="${web.url('/sys/js/authorize.js')}"></script>
 </@footer>

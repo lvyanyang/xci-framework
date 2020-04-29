@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2007-2020 西安交通信息投资营运有限公司 版权所有
+ */
+
 /*-----------------------------------------------------
  * 系统用户模块
  * ---------------------------------------------------*/
@@ -5,11 +9,11 @@ jx.ready(function () {
     //region 私有变量
 
     var api = {
-        grid: '/sys/sysUser/grid',
-        create: '/sys/sysUser/create',
-        edit: '/sys/sysUser/edit',
-        delete: '/sys/sysUser/delete',
-        details: '/sys/sysUser/details',
+        grid: '/sys/user/grid',
+        create: '/sys/user/create',
+        edit: '/sys/user/edit',
+        delete: '/sys/user/delete',
+        details: '/sys/user/details',
         status: '/sys/user/status'
     };
 
@@ -17,7 +21,7 @@ jx.ready(function () {
     var $revisePasswordPopover = $('#revise-passwordpopover');
     var $revisePasswordForm = $('#revise-passwordform');
     var dialogWidth = '600px';
-    var dialogHeight = '700px';
+    var dialogHeight = '800px';
 
     //endregion
 
@@ -46,7 +50,9 @@ jx.ready(function () {
     var initGrid = function () {
         gridInstance = $('#grid').jxgrid({
             url: jx.url(api.grid),
-            onDblClickRow: jx.auth.onUserGridDblClickRow
+            onDblClickRow: function (index, row) {
+                detailsData(row);
+            }
         });
     }
 

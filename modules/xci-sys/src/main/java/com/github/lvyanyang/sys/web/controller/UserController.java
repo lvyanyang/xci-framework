@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2007-2020 西安交通信息投资营运有限公司 版权所有
+ */
+
 package com.github.lvyanyang.sys.web.controller;
 
 import com.github.lvyanyang.annotation.Authorize;
@@ -24,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
 @Authorize
 @Controller
 @RequestMapping(value = "/sys/user")
-public class UserController extends WebController {
+public class UserController extends SysWebController {
     //region 页面视图
 
     /** 首页 */
@@ -63,18 +67,6 @@ public class UserController extends WebController {
         map.put("roles", SysService.me().selectEnabledRoleList(SysService.me().getCurrentUser().getDeptId(), true));
     }
 
-    /** 详情页 */
-    @GetMapping("/details")
-    public String details(String id, ModelMap map) {
-        var idLong = Long.valueOf(id);
-        var entity = SysService.me().userService().selectById(idLong);
-        if (entity == null) throw new NotFoundException(id);
-        map.put("entity", entity);
-        map.put("roles", SysService.me().roleService().selectListByUserId(idLong));
-        // map.put("selfDataSettingDesc", AuthHelper.getObjectDataSettingDesc(permissionService.queryObjectDataSetting(id)));
-        // map.put("ownDataSetting", AuthHelper.mergeDataSetting(permissionService.queryUserOwnDataSettings(entity)));
-        return "sys/user/details";
-    }
 
     /**
      * 修改密码页面
@@ -84,9 +76,49 @@ public class UserController extends WebController {
         return "sys/user/modify-password";
     }
 
+
+    /** 详情页 */
+    @GetMapping("/details")
+    public String details(String id, ModelMap map) {
+        var idLong = Long.valueOf(id);
+        var entity = SysService.me().userService().selectById(idLong);
+        if (entity == null) throw new NotFoundException(id);
+        map.put("entity", entity);
+        map.put("roles", SysService.me().roleService().selectListByUserId(idLong));
+        var deptScope = SysService.me().userService().selectDeptScopeByUserId(getUser(idLong));
+        map.put("deptScopeName",XCI.getDeptScopeNameByValue(deptScope));
+        return "sys/user/details";
+    }
+
     //endregion
 
     //region 数据处理
+
+    /**
+     * 用户拥有的模块权限
+     * @param userId 用户主键
+     */
+    @ResponseBody
+    @GetMapping("/userOwnModules")
+    public RestResult userOwnModules(String userId) {
+        var user = SysService.me().userService().selectById(Long.valueOf(userId));
+        var modules = SysService.me().userService().selectUserModuleListByUser(user);
+        var nodes = SysWebService.me().toModuleNodeList(modules);
+        return RestResult.ok(nodes);
+    }
+
+    /**
+     * 用户拥有的机构权限
+     * @param userId 用户主键
+     */
+    @ResponseBody
+    @GetMapping("/userOwnDepts")
+    public RestResult userOwnDepts(String userId) {
+        var user = SysService.me().userService().selectById(Long.valueOf(userId));
+        var depts = SysService.me().userService().selectUserDeptDataListByUserId(user);
+        var nodes = SysWebService.me().toDeptNodeList(depts);
+        return RestResult.ok(nodes);
+    }
 
     /** 表格查询 */
     @ResponseBody
@@ -149,17 +181,5 @@ public class UserController extends WebController {
         XCI.exportExcel(SysService.me().userService().selectList(filter), SysUser.class, "系统用户列表");
     }
 
-    /**
-     * 用户拥有的模块节点
-     * @param userId 用户主键
-     */
-    @ResponseBody
-    @GetMapping("/userOwnModules")
-    public RestResult userOwnModules(String userId) {
-        var currentUser = SysService.me().userService().selectById(Long.valueOf(userId));
-        var modules = SysService.me().userService().selectUserModuleListByUser(currentUser);
-        var nodes = SysWebService.me().toModuleNodeList(modules);
-        return RestResult.ok(nodes);
-    }
     //endregion
 }

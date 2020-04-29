@@ -1,9 +1,15 @@
+<#-- @ftlvariable name="deptScopeName" type="java.lang.String" -->
 <#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.entity.SysUser" -->
 <#-- @ftlvariable name="roles" type="java.util.List<com.github.lvyanyang.sys.entity.SysRole>" -->
 <#include "/_inc/_layout.ftlh">
 <#include "/_inc/_historyLog.ftlh">
 <@header>
-    <link href="${xci.url('/sys/css/tree-noselect.css')}" rel="stylesheet"/>
+    <link href="${web.url('/sys/css/tree-noselect.css')}" rel="stylesheet"/>
+    <style>
+        .label{
+            font-size: 100% !important;
+        }
+    </style>
 </@header>
 <div class="jxpanel jx-overflow-no winpanel" data-options="fit:true">
     <div class="jxtabs jxtabs-line" data-options="{fit:true}">
@@ -11,7 +17,7 @@
             <li class="active"><a href="#tab-basic" data-toggle="tab">基本信息</a></li>
             <li><a href="#tab-role" data-toggle="tab">拥有角色</a></li>
             <li><a href="#tab-module" data-toggle="tab">功能权限</a></li>
-            <li><a href="#tab-data" data-toggle="tab">机构权限</a></li>
+            <li><a href="#tab-dept" data-toggle="tab">机构权限</a></li>
             <li><a href="#tab-history" data-toggle="tab">操作日志</a></li>
         </ul>
         <div class="tab-content">
@@ -74,7 +80,7 @@
                             <#--状态-->
                             <@xci.statusBoolLabel value=entity.status/>
                             <#--允许修改密码-->
-                            <@xci.boolLabel value=entity.pwdAllowModify trueLable="允许" falseLable="不允许"/>
+                            <@xci.boolLabel value=entity.pwdAllowModify trueLable="允许修改密码" falseLable="不允许修改密码"/>
                             <#--密码永不过期-->
                             <@xci.boolLabel value=entity.pwdNeverExpire trueLable="密码永不过期" falseLable=""/>
                         </td>
@@ -93,31 +99,31 @@
             </div>
             <div id="tab-role" class="tab-pane jx-overflow-auto fade">
                 <ul class="card-listview">
-                    <#list roles as role><li data-id="${role.id}">${role.name}</li></#list>
+                    <#list roles as role>
+                        <li data-id="${role.id}">${role.name}</li></#list>
                 </ul>
                 <@xci.warningMessage test=roles?size==0 msg="未配置角色"/>
             </div>
             <div id="tab-module" class="tab-pane jx-overflow-auto fade">
                 <ul class="list-group margin-5">
                     <li class="list-group-item padding-5">
-                        <ul id="user-own-modules-tree"
-                            data-url="${web.url('/sys/user/userOwnModules?userId=${entity.id}')}"
+                        <ul id="roleOwnModulesTree" data-url="${web.url('/sys/user/userOwnModules?userId='+entity.id)}"
                             data-default-icon-cls="icon-flag"
-                            data-load-empty-message="未配置功能权限"></ul>
+                            data-load-empty-message="未配置"></ul>
                     </li>
                 </ul>
             </div>
-            <div id="tab-data" class="tab-pane jx-overflow-auto fade">
+            <div id="tab-dept" class="tab-pane jx-overflow-auto fade">
                 <ul class="list-group margin-5">
                     <li class="list-group-item">
-                        <#--${auth.getObjectDataSettingDesc(ownDataSetting)!}-->
+                        ${deptScopeName}
                     </li>
-                    <#--<li class="list-group-item padding-5">-->
-                    <#--    <ul id="user-own-departments-tree"-->
-                    <#--        data-url="<@xci.url '/auth/user/user-own-departments?id=${entity.id}'/>"-->
-                    <#--        data-default-icon-cls="icon-flag"-->
-                    <#--        data-load-empty-message=""></ul>-->
-                    <#--</li>-->
+                    <li class="list-group-item padding-5">
+                        <ul id="roleOwnDeptsTree" data-url="${web.url('/sys/user/userOwnDepts?userId='+entity.id)}"
+                            data-default-icon-cls="icon-flag"
+                            data-load-empty-message="">
+                        </ul>
+                    </li>
                 </ul>
             </div>
             <div id="tab-history" class="tab-pane jx-overflow-auto fade">
@@ -130,12 +136,12 @@
     <script>
         jx.auth.tabsAuthInit(function (id) {
             if (id == 'tab-module') {
-                $('#user-own-modules-tree').jxtree();
-            }else if (id == 'tab-data') {
-                $('#user-own-departments-tree').jxtree();
+                $('#roleOwnModulesTree').jxtree();
+            } else if (id == 'tab-dept') {
+                $('#roleOwnDeptsTree').jxtree();
             }
         });
-        $(document.body).on('dblclick','.card-listview>li',function () {
+        $(document.body).on('dblclick', '.card-listview>li', function () {
             var id = $(this).data('id');
             jx.auth.showRoleDetails(id);
         });

@@ -3725,4 +3725,24 @@ public class XCI {
         return list;
     }
     // endregion
+
+    /**
+     * 根据机构权限值获取对应的名称
+     * @param deptScope 机构权限值
+     */
+    public static String getDeptScopeNameByValue(Integer deptScope){
+         switch (deptScope) {
+            case 1:
+                return "全部";
+            case 2:
+                return "自定义";
+            case 3:
+                return "所在部门";
+            case 4:
+                return "所在部门及所有下级";
+            case 5:
+                return "仅本人";
+        }
+        return R.Empty;
+    }
 }

@@ -10,6 +10,7 @@ import com.github.lvyanyang.core.BaseService;
 import com.github.lvyanyang.core.R;
 import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
+import com.github.lvyanyang.exceptions.AppException;
 import com.github.lvyanyang.model.PageList;
 import com.github.lvyanyang.model.PermissionBody;
 import com.github.lvyanyang.sys.annotation.DataScope;
@@ -18,9 +19,7 @@ import com.github.lvyanyang.sys.dao.RoleDao;
 import com.github.lvyanyang.sys.entity.SysDept;
 import com.github.lvyanyang.sys.entity.SysModule;
 import com.github.lvyanyang.sys.entity.SysRole;
-import com.github.lvyanyang.sys.entity.SysUser;
 import com.github.lvyanyang.sys.filter.RoleFilter;
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
@@ -175,17 +174,7 @@ public class RoleService extends BaseService {
      * @param userId 用户主键
      */
     public List<SysRole> selectListByUserId(@NotNull(message = "请指定用户主键") Long userId) {
-        SysUser user = SysService.me().userService().selectById(userId);
-        return selectListByUserId(user);
-    }
-
-    /**
-     * 获取用户所属角色列表
-     * @param user 用户对象
-     */
-    public List<SysRole> selectListByUserId(SysUser user) {
-        if (user == null) return Lists.newArrayList();
-        return roleDao.selectListByUserId(user.getId());
+        return roleDao.selectListByUserId(userId);
     }
 
     /**
@@ -243,11 +232,10 @@ public class RoleService extends BaseService {
         for (String roleIdStr : roleIdList) {
             var roleId = Long.valueOf(roleIdStr);
             saveModuleMap(roleId, XCI.splitToArray(permissionModel.getModuleIds()));
-            saveDeptDataMap(roleId, Integer.valueOf(permissionModel.getDeptIds()), XCI.splitToArray(permissionModel.getDeptIds()));
+            saveDeptDataMap(roleId, permissionModel.getDeptScope(), XCI.splitToArray(permissionModel.getDeptIds()));
         }
         return RestResult.ok();
     }
-
 
     // region 模块
 
@@ -258,7 +246,7 @@ public class RoleService extends BaseService {
      */
     @Transactional(rollbackFor = Exception.class)
     public RestResult saveModuleMap(@NotNull(message = "请指定角色主键") Long roleId, String[] moduleIds) {
-        return SysService.me().objectMapService().saveTargets(R.R_ROLE, roleId, R.R_MODULE, moduleIds);
+        return SysService.me().objectMapService().save(R.R_ROLE, roleId, R.R_MODULE, moduleIds);
     }
 
     /**
@@ -275,7 +263,7 @@ public class RoleService extends BaseService {
      * @param roleId 角色主键
      */
     public List<String> selectModuleMapArray(@NotNull(message = "请指定角色主键") Long roleId) {
-        return SysService.me().objectMapService().selectObjectList(R.R_ROLE, roleId, R.R_MODULE);
+        return SysService.me().objectMapService().selectByObject(R.R_ROLE, roleId, R.R_MODULE);
     }
 
     /**
@@ -300,15 +288,16 @@ public class RoleService extends BaseService {
                                       String[] deptIds) {
         var role = selectById(roleId);
         if (role == null) {
-            return RestResult.fail("无效的角色主键");
+            throw new AppException("无效的角色主键");
         }
         role.setDeptScope(deptScope);
         roleDao.updateScope(roleId, deptScope);
         roleCache.evict(roleId);
         if (deptScope == 2) {
-            return SysService.me().objectMapService().saveTargets(R.R_ROLE, roleId, R.R_DEPT_DATA, deptIds);
+            return SysService.me().objectMapService().save(R.R_ROLE, roleId, R.R_DEPT_DATA, deptIds);
+        } else {
+            return SysService.me().objectMapService().deleteByObject(R.R_ROLE, roleId, R.R_DEPT_DATA);
         }
-        return RestResult.ok();
     }
 
     /**
@@ -325,7 +314,7 @@ public class RoleService extends BaseService {
      * @param roleId 角色主键
      */
     public List<String> selectDeptDataMapArray(@NotNull(message = "请指定角色主键") Long roleId) {
-        return SysService.me().objectMapService().selectObjectList(R.R_ROLE, roleId, R.R_DEPT_DATA);
+        return SysService.me().objectMapService().selectByObject(R.R_ROLE, roleId, R.R_DEPT_DATA);
     }
 
     /**

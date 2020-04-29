@@ -6,7 +6,7 @@ package com.github.lvyanyang.sys.api;
 
 import com.github.lvyanyang.sys.component.CaptchaService;
 import com.github.lvyanyang.sys.core.SysApiController;
-import com.github.lvyanyang.sys.entity.SysUserSave;
+import com.github.lvyanyang.sys.entity.*;
 import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.annotation.AllowAnonymous;
 import com.github.lvyanyang.annotation.Authorize;
@@ -16,9 +16,6 @@ import com.github.lvyanyang.core.R;
 import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
 import com.github.lvyanyang.model.LoginBody;
-import com.github.lvyanyang.sys.entity.SysModule;
-import com.github.lvyanyang.sys.entity.SysUser;
-import com.github.lvyanyang.sys.entity.SysUserLogin;
 import com.github.lvyanyang.model.StatusBody;
 import com.github.lvyanyang.sys.filter.UserFilter;
 import io.swagger.annotations.*;
@@ -148,17 +145,25 @@ public class UserApiController extends SysApiController {
 
     //endregion
 
-    //region 用户拥有的模块
+    //region 用户拥有的模块权限和机构权限
 
     @ApiOperationSupport(order = 9, author = R.LYY)
-    @ApiOperation(value = "根据用户主键查询用户拥有的模块列表")
+    @ApiOperation(value = "根据用户主键查询用户拥有的机构权限列表")
+    @ApiImplicitParam(name = "userId", value = "用户主键")
+    @PostMapping("/selectDeptListByUserId")
+    public RestResult<List<SysDept>> selectDeptListByUserId(@SingleJson Long userId) {
+        return RestResult.ok(SysService.me().userService().selectUserDeptDataListByUserId(getUser(userId)));
+    }
+
+    @ApiOperationSupport(order = 9, author = R.LYY)
+    @ApiOperation(value = "根据用户主键查询用户拥有的模块权限列表")
     @ApiImplicitParam(name = "userId", value = "用户主键")
     @PostMapping("/selectModuleCacheListByUserId")
     public RestResult<List<SysModule>> selectModuleCacheListByUserId(@SingleJson Long userId) {
         return RestResult.ok(SysService.me().userService().selectUserModuleCacheListByUser(getUser(userId)));
     }
 
-    @ApiOperation(value = "清除用户拥有模块缓存")
+    @ApiOperation(value = "清除用户拥有模块权限缓存")
     @ApiOperationSupport(order = 10, author = R.LYY)
     @ApiImplicitParam(name = "userId", value = "用户主键")
     @PostMapping("/clearUserModuleListCache")

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2007-2020 西安交通信息投资营运有限公司 版权所有
+ */
+
 /*-----------------------------------------------------
  * 系统角色模块
  * ---------------------------------------------------*/
@@ -11,7 +15,7 @@ jx.ready(function () {
         delete: '/sys/role/delete',
         details: '/sys/role/details',
         status: '/sys/role/status',
-        auth: '/sys/role/auth'
+        authorize: '/sys/role/authorize'
     };
     var gridInstance;
     var dialogWidth = '600px'
@@ -57,11 +61,9 @@ jx.ready(function () {
         $('#btn-delete').click(function () {
             deleteData();
         });
-        // $('#btn-map-user').click(function () {
-        //     map();
-        // });
-        $('#btn-auth').click(function () {
-            auth();
+
+        $('#btn-authorize').click(function () {
+            authorize();
         });
 
         var $gridPanel = gridInstance.getPanel();
@@ -82,9 +84,9 @@ jx.ready(function () {
         //     map($(this).data('id'));
         // });
         //授权事件
-        $gridPanel.on('click', '.cmd-auth', function () {
-            auth($(this).data('id'));
-        });
+        // $gridPanel.on('click', '.cmd-auth', function () {
+        //     auth($(this).data('id'));
+        // });
 
         //详情事件
         $gridPanel.on('click', '.cmd-details', function () {
@@ -134,7 +136,7 @@ jx.ready(function () {
 
     //删除数据
     var deleteData = function () {
-        if (!gridInstance.hasCheckedRow(null,'请先选择系统角色后再操作！')) return;
+        if (!gridInstance.hasCheckedRow(null, '请先选择系统角色后再操作！')) return;
         var ids = gridInstance.getCheckedRowIds();
 
         deleteCore(ids.join());
@@ -158,20 +160,10 @@ jx.ready(function () {
 
     //查看详情
     var detailsData = function (row) {
-        var id = gridInstance.getRowId(row);
-        if (!id) return;
-
-        var detailsUrl = jx.url(api.details);
-
         //弹出对话框模式
-        jx.detailsDialog({
-            title: '查看系统角色',
-            url: detailsUrl,
-            params: {id: id},
-            anim: -1,
-            offset: 'auto',
-            width: '700px',
-            height: '70%'
+        jx.auth.detailsData(gridInstance, row, {
+            url: jx.url(api.details),
+            title: '查看系统角色'
         });
 
         //页面跳转模式
@@ -196,20 +188,14 @@ jx.ready(function () {
     };
 
     //设置权限
-    var auth = function (id) {
-        // if (!gridInstance.hasSelectedRow()) return;
-        // var ids = gridInstance.getCheckedRowIds();
-        // if (ids.length > 1) {
-        //     jx.toastr.error('只能选择一项进行操作！');
-        //     return;
-        // }
-        // var id = gridInstance.getSelectedRowId();
-        var row = gridInstance.getSelected();
+    var authorize = function () {
+        if (!gridInstance.hasSelectedRow()) return;
+        var ids = gridInstance.getCheckedRowIds();
         jx.dialog({
-            title: '角色授权 - ' + row.name,
-            url: jx.url(api.auth),
-            params: {objectId: id},
-            width: '700px',
+            title: '角色授权',
+            url: jx.url(api.authorize),
+            params: {roleIds: ids.join()},
+            width: '580px',
             height: '80%'
         });
     };

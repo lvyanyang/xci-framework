@@ -4,6 +4,7 @@
 
 package com.github.lvyanyang.sys.web.component;
 
+import com.github.lvyanyang.core.IAction;
 import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.entity.SysDic;
 import com.github.lvyanyang.core.XCI;
@@ -18,6 +19,7 @@ import org.springframework.util.ObjectUtils;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Slf4j
 @Component
@@ -35,9 +37,18 @@ public class SysWebService extends SysService {
 
     /**
      * 模块列表转为树节点列表
-     * @param moduleList 模块列表
+     * @param moduleList   模块列表
      */
     public List<TreeNode> toModuleNodeList(List<SysModule> moduleList) {
+        return toModuleNodeList(moduleList,null);
+    }
+
+    /**
+     * 模块列表转为树节点列表
+     * @param moduleList   模块列表
+     * @param eachCallback 每行循环的回调函数
+     */
+    public List<TreeNode> toModuleNodeList(List<SysModule> moduleList, Consumer<TreeNode> eachCallback) {
         List<TreeNode> nodes = new ArrayList<>();
         if (ObjectUtils.isEmpty(moduleList)) return nodes;
 
@@ -57,6 +68,9 @@ public class SysWebService extends SysService {
                 state = "closed";
             }
             node.setState(state);
+            if (eachCallback != null) {
+                eachCallback.accept(node);
+            }
             nodes.add(node);
         }
         return nodes;
@@ -67,6 +81,15 @@ public class SysWebService extends SysService {
      * @param deptList 机构列表
      */
     public List<TreeNode> toDeptNodeList(List<SysDept> deptList) {
+        return toDeptNodeList(deptList,null);
+    }
+
+    /**
+     * 机构列表转为树节点列表
+     * @param deptList 机构列表
+     * @param eachCallback 每行循环的回调函数
+     */
+    public List<TreeNode> toDeptNodeList(List<SysDept> deptList, Consumer<TreeNode> eachCallback) {
         List<TreeNode> nodes = new ArrayList<>();
         if (ObjectUtils.isEmpty(deptList)) return nodes;
 
@@ -79,6 +102,9 @@ public class SysWebService extends SysService {
             node.setText(item.getName());
             node.setSpell(item.getSpell());
             node.setLeaf(hasChild ? 0 : 1);
+             if (eachCallback != null) {
+                eachCallback.accept(node);
+            }
             nodes.add(node);
         }
         return nodes;

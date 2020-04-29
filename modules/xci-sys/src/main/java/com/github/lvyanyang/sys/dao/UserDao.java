@@ -5,10 +5,7 @@
 package com.github.lvyanyang.sys.dao;
 
 import com.github.lvyanyang.annotation.Paging;
-import com.github.lvyanyang.sys.entity.SysModule;
-import com.github.lvyanyang.sys.entity.SysUser;
-import com.github.lvyanyang.sys.entity.SysUserRoleMap;
-import com.github.lvyanyang.sys.entity.SysUserSecurity;
+import com.github.lvyanyang.sys.entity.*;
 import com.github.lvyanyang.sys.filter.UserFilter;
 import org.apache.ibatis.annotations.Param;
 
@@ -195,10 +192,17 @@ public interface UserDao {
     //region 用户拥有的模块
 
     /**
-     * 根据用户主键查询用户拥有的模块列表
+     * 根据用户主键查询用户拥有的模块权限列表
      * @param userId 用户主键
-     * @return 返回用户拥有的模块列表
+     * @return 返回用户拥有的模块权限列表
      */
     List<SysModule> selectUserModuleListByUserId(@Param("userId") Long userId);
+
+    /**
+     * 根据用户主键查询用户拥有的机构权限列表
+     * @param userId 用户主键
+     * @return 返回用户拥有的机构权限列表
+     */
+    List<SysDept> selectUserDeptListByUserId(@Param("userId") Long userId);
     //endregion
 }

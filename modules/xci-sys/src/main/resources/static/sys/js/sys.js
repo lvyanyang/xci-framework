@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2007-2020 西安交通信息投资营运有限公司 版权所有
+ */
+
 /*-----------------------------------------------------
  * 权限子系统
  * ---------------------------------------------------*/
@@ -149,25 +153,15 @@ jx.auth = {
             } else if (id == 'tab-role') {
                 $('#jx-owner-role-grid').jxgrid();
             }*/
-              // else if (id == 'tab-data') {
-              //     $('#jxAuthDataDetails').jxtree();
+                // else if (id == 'tab-data') {
+                //     $('#jxAuthDataDetails').jxtree();
             // }
             else if (callback) {
                 callback(id);
             }
         });
     },
-    /**
-     * 用户表格行双击事件
-     * @param index
-     * @param row
-     */
-    onUserGridDblClickRow: function (index, row) {
-        var gridInstance = $(this).jxgrid();
-        var id = gridInstance.getRowId(row);
-        if (!id) return;
-        jx.auth.showUserDetails(id);
-    },
+
     /**
      * 角色表格行双击事件
      * @param index
@@ -202,13 +196,14 @@ jx.auth = {
     showUserDetails: function (id) {
         if (!id) return;
         jx.detailsDialog({
-            title: '查看用户详细信息',
-            url: jx.apiUrl('/sys/user/details'),
-            params: {id: id},
-            anim: -1,
-            offset: 'auto',
-            width: '700px',
-            height: '70%'
+            url: jx.url('/sys/user/details'),
+            title: '查看系统用户',
+            shadeClose: true,
+            offset: 'rt',
+            anim: 2,
+            width: '50%',
+            height: '100%',
+            params: {id: id}
         });
     },
     /**
@@ -465,12 +460,12 @@ jx.gf.fileEditOperateType = function (v, row) {
 jx.__extends = (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
-          ({__proto__: []} instanceof Array && function (d, b) {
-              d.__proto__ = b;
-          }) ||
-          function (d, b) {
-              for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-          };
+            ({__proto__: []} instanceof Array && function (d, b) {
+                d.__proto__ = b;
+            }) ||
+            function (d, b) {
+                for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+            };
         return extendStatics(d, b);
     }
     return function (d, b) {
@@ -619,7 +614,7 @@ var JXDataItemSelect = (function () {
     var self;
 
     var $element, $view, $toolbar, $section, $sectionTitle, $hr, $box, $summary,
-      $page, $btnSelectAll, $btnInverseAll, $btnCleanAll;
+        $page, $btnSelectAll, $btnInverseAll, $btnCleanAll;
 
     var clsOps = {maxSection: 500, pageSize: 100};
 
