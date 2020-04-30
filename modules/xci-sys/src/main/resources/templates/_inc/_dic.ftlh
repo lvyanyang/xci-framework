@@ -2,7 +2,8 @@
 <#import '/_inc/_project.ftlh' as pro>
 
 <#--数据字典树-->
-<#macro dicTree categoryCode nameField="" idField="" selectedValue="" showClear=false defaultIconCls="icon-badge" panelHeight="250px" loadEmptyMessage="无">
+<#macro dicTree categoryCode nameField="" idField="" selectedValue=""
+    showClear=false defaultIconCls="icon-badge" panelHeight="250px" loadEmptyMessage="无">
     <input name="${nameField}" class='form-control jxcombotree'
            data-value="${selectedValue}"
            data-options="editable: false,showClear: ${showClear},hiddenField: '${idField}',panelHeight: '${panelHeight}',
@@ -19,6 +20,11 @@
 <#--参数分类编码-->
 <#macro sysParamCategory selectedValue>
     <@pro.systemDic code="sys.param.category" selectedValue=selectedValue isMultiple=false />
+</#macro>
+
+<#--用户职位-->
+<#macro sysParamCategory selectedValue>
+    <@pro.systemDic code="sys.user.post" selectedValue=selectedValue isMultiple=false />
 </#macro>
 
 <#--机构分类-->

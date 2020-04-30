@@ -81,9 +81,9 @@
             <th data-options="title: '账号', field: 'account', width: 150, sortable: true, align: 'center'"></th>
             <th data-options="title: '机构', field: 'deptName', width: 150, align: 'center'"></th>
             <th data-options="title: '状态', field: 'status', width: 50, align: 'center',formatter:jx.gf.status"></th>
-            <th data-options="title: '职位',field:'post',width:200,align:'left'"></th>
+            <th data-options="title: '职位',field:'post',width:150,align:'left'"></th>
             <th data-options="title: '手机号码',field:'mobile',width:120,align:'left'"></th>
-            <th data-options="title: '电子邮件',field:'email',width:150,align:'left'"></th>
+            <th data-options="title: '电子邮件',field:'email',width:200,align:'left'"></th>
             <th data-options="title: '登录次数', field: 'loginTimes', width: 100, align: 'center'"></th>
             <th data-options="title: '首次登录时间', field: 'firstVisitTime', width: 170, align: 'center'"></th>
             <th data-options="title: '最后登录时间', field: 'lastVisitTime', width: 170, align: 'center'"></th>

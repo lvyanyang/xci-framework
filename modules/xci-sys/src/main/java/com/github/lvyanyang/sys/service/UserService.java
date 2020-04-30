@@ -765,6 +765,9 @@ public class UserService extends BaseService {
      * @return 密码符合强度要求返回true
      */
     public static RestResult validPwdStrong(String pwd) {
+        if (pwd.length()>20) {
+            return RestResult.fail("密码长度不能超过20位");
+        }
         if (PASSWORD_STRONG_PATTERN == null) {
             String regex = Params.sysUserPasswordStrongPattern();
             PASSWORD_STRONG_PATTERN = Pattern.compile(regex);

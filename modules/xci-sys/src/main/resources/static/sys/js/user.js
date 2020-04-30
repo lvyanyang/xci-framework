@@ -20,7 +20,7 @@ jx.ready(function () {
     var gridInstance;
     var $revisePasswordPopover = $('#revise-passwordpopover');
     var $revisePasswordForm = $('#revise-passwordform');
-    var dialogWidth = '600px';
+    var dialogWidth = '500px';
     var dialogHeight = '800px';
 
     //endregion

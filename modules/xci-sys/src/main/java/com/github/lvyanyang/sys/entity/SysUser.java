@@ -6,6 +6,7 @@ package com.github.lvyanyang.sys.entity;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import cn.afterturn.easypoi.excel.annotation.ExcelIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -139,14 +140,16 @@ public class SysUser extends BaseEntity {
     /**
      * 有效期开始时间
      */
-    @Excel(name = "有效期开始时间", exportFormat = R.DEFAULT_DATETIME_PATTERN)
+    @Excel(name = "有效期开始时间", exportFormat = R.DEFAULT_DATE_PATTERN)
+    @JsonFormat(pattern = R.DEFAULT_DATE_PATTERN)
     @ApiModelProperty(value = "有效期开始时间", position = 12)
     private Date allowStartTime;
 
     /**
      * 有效期结束时间
      */
-    @Excel(name = "有效期结束时间", exportFormat = R.DEFAULT_DATETIME_PATTERN)
+    @Excel(name = "有效期结束时间", exportFormat = R.DEFAULT_DATE_PATTERN)
+    @JsonFormat(pattern = R.DEFAULT_DATE_PATTERN)
     @ApiModelProperty(value = "有效期结束时间", position = 13)
     private Date allowEndTime;
 

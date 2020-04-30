@@ -15,7 +15,6 @@ import com.github.lvyanyang.sys.entity.SysUserSave;
 import com.github.lvyanyang.sys.filter.UserFilter;
 import com.github.lvyanyang.sys.web.component.SysWebService;
 import com.github.lvyanyang.sys.web.model.JsonGrid;
-import com.github.lvyanyang.web.WebController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +44,8 @@ public class UserController extends SysWebController {
         var entity = new SysUser();
         entity.setId(XCI.nextId());
         entity.setStatus(true);
+        entity.setPwdAllowModify(true);
+        entity.setVisible(true);
         map.put("entity", entity);
         setEditRoles(map);
         return "sys/user/edit";
@@ -66,7 +67,6 @@ public class UserController extends SysWebController {
     private void setEditRoles(ModelMap map) {
         map.put("roles", SysService.me().selectEnabledRoleList(SysService.me().getCurrentUser().getDeptId(), true));
     }
-
 
     /**
      * 修改密码页面

@@ -62,10 +62,11 @@
 
     <!--查询安全List-->
     <sql id="selectSecurity">
-        select id,name,spell,account,category,dept_id,pwd,pwd_salt,pwd_must_modify,pwd_allow_modify,
-               pwd_never_expire,pwd_expire_time,allow_start_time,allow_end_time,admin,mobile,email,
-               post,login_times,first_visit_time,last_visit_time,ent_id,ent_name,visible,status,remark
-        from sys_user
+        select u.id, u.name, u.spell, u.account, u.category, u.pwd, u.pwd_salt, u.pwd_must_modify, u.pwd_allow_modify,
+               u.pwd_never_expire, u.pwd_expire_time, u.allow_start_time, u.allow_end_time, u.admin, u.mobile, u.email,
+               u.post, u.login_times, u.first_visit_time, u.last_visit_time, u.ent_id, u.ent_name, u.visible, u.status, u.remark,
+               d.id dept_id,d.name dept_name
+        from sys_user u left join sys_dept d on u.dept_id = d.id
     </sql>
 
     <!--查询List-->
@@ -142,7 +143,7 @@
             #{entity.pwd},
             #{entity.pwdSalt},
             #{entity.pwdMustModify},
-            #{entity.pwdAllowedModify},
+            #{entity.pwdAllowModify},
             #{entity.pwdNeverExpire},
             #{entity.pwdExpireTime},
             #{entity.allowStartTime},

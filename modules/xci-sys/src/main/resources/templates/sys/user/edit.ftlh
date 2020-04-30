@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.entity.SysUser" -->
+<#-- @ftlvariable name="entity" type="com.github.lvyanyang.sys.entity.SysUserSave" -->
 <#-- @ftlvariable name="roles" type="java.util.List<com.github.lvyanyang.sys.entity.SysRole>" -->
 <#include "/_inc/_layout.ftlh">
 <#assign url=xci.saveUrl("/sys/user/","createSave","updateSave")/>
@@ -18,6 +18,7 @@
                 <th class="w-100px">账号</th>
                 <td>
                     <input class="form-control" name="account" value="${entity.account}" autofocus maxlength="20"
+                           <@xci.isReadonly value=_create_!='1'/>
                            data-validate="required:[true,'请输入账号'],maxlength: 20" autocomplete="off"/>
                 </td>
             </tr>
@@ -32,15 +33,15 @@
                 <tr>
                     <th>密码</th>
                     <td>
-                        <input class="form-control" id="password" name="password" type="password"
+                        <input class="form-control" id="pwd" name="pwd" type="password" maxlength="20"
                                data-validate="required: [true,'请输入密码']" autocomplete="off"/>
                     </td>
                 </tr>
                 <tr>
                     <th>确认密码</th>
                     <td>
-                        <input class="form-control" name="confirmPassword" type="password"
-                               data-validate="required: [true,'请输入确认密码'],equalTo: ['#password','确认密码必须与密码输入一致']"
+                        <input class="form-control" name="confirmPwd" type="password" maxlength="20"
+                               data-validate="required: [true,'请输入确认密码'],equalTo: ['#pwd','确认密码必须与密码输入一致']"
                                autocomplete="off"/>
                     </td>
                 </tr>
@@ -61,23 +62,25 @@
                     <#--data-options="{display_selected_options:false}">-->
                     <#--<@xci.options simpleList=roleSimples selectedValue=roleIds isMultiple=true/>-->
                     <#--</select>-->
-                    <select name="roleIds" class="form-control jxselect">
+                    <select name="roleIds" class="form-control jxchosen" multiple>
                         <option></option>
-                        <@xci.options simpleList=roles selectedValue=entity.roleIds/>
+                        <@xci.options simpleList=roles selectedValue=entity.roleIds isMultiple=true/>
                     </select>
                 </td>
             </tr>
             <tr>
                 <th>职位</th>
                 <td>
-                    <input class="form-control" id="post" name="post" value="${entity.post}" maxlength="100"
-                           data-validate="required: [true,'请输入职位'],maxlength: 100" autocomplete="off"/>
+                    <select class="form-control jxselect" name="post" data-allow-clear="true">
+                        <option></option>
+                        <@dic.sysParamCategory selectedValue=entity.post/>
+                    </select>
                 </td>
             </tr>
             <tr>
                 <th>手机</th>
                 <td>
-                    <input class="form-control" name="mobile" value="${entity.mobile}" data-validate="phone:true"
+                    <input class="form-control" name="mobile" value="${entity.mobile}" maxlength="11" data-validate="maxlength: 11"
                            autocomplete="off"/>
                 </td>
             </tr>
@@ -91,15 +94,25 @@
             <tr>
                 <th>开始有效期</th>
                 <td>
-                    <input class="form-control" id="allowStartTime" name="allowStartTime" value="${entity.allowStartTime}"
-                           data-validate="required: [true,'请输入开始有效期']" autocomplete="off"/>
+                    <div class="input-group date jxdate" data-options="endDate: '0d',format: 'yyyy-mm-dd'">
+                        <input id="allowStartTime" name="allowStartTime" class="form-control" value="${(entity.allowStartTime?string("yyyy-MM-dd"))!}"
+                               autocomplete="off">
+                        <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
                 </td>
             </tr>
             <tr>
                 <th>结束有效期</th>
                 <td>
-                    <input class="form-control" id="allowEndTime" name="allowEndTime" value="${entity.allowEndTime}"
-                           data-validate="required: [true,'请输入结束有效期']" autocomplete="off"/>
+                    <div class="input-group date jxdate" data-options="format: 'yyyy-mm-dd'">
+                        <input id="allowEndTime" name="allowEndTime" class="form-control" value="${(entity.allowEndTime?string("yyyy-MM-dd"))!}"
+                               data-validate="{compareEqualDate:'#allowStartTime'}" autocomplete="off">
+                        <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -133,7 +146,7 @@
                         <br>
                         <label>
                             <input class="jxcheck" name="visible" <@xci.isChecked value=entity.visible />
-                                   type="checkbox" value="1" data-unchecked-value="0"/> 管理员可见
+                                   type="checkbox" value="1" data-unchecked-value="0"/> 显示
                         </label>
                     </#if>
                 </td>

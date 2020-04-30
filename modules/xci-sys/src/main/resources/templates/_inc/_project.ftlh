@@ -63,7 +63,7 @@
     <#list simpleList as item>
         <#if selectedValue??>
             <#if isMultiple == true>
-                <#assign selected = selectedValue?contains(item.value)>
+                <#assign selected = selectedValue?contains(item.value?string)>
             <#else>
                 <#assign selected = selectedValue == item.value>
             </#if>
@@ -93,7 +93,7 @@
     <#list simpleList as item>
         <#if selectedValue??>
             <#if isMultiple == true>
-                <#assign selected = selectedValue?contains(item.id)>
+                <#assign selected = selectedValue?contains(item.id?string)>
             <#else>
                 <#assign selected = selectedValue == item.id>
             </#if>
