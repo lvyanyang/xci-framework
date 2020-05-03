@@ -1,3 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.github.lvyanyang.configuration.ApiAutoConfiguration,\
-com.github.lvyanyang.web.configuration.WebAutoConfiguration
+com.github.lvyanyang.web.configuration.WebAutoConfiguration,\
+com.github.lvyanyang.configuration.PageHelperAutoConfiguration

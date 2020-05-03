@@ -25,7 +25,7 @@ import java.util.List;
  * @author 吕艳阳
  */
 @Api(tags = "系统在线用户接口")
-@ApiSort(8)
+@ApiSort(15)
 @Authorize
 @RestController
 @RequestMapping(value = R.SysApiPrefix + "/onlineUser", produces = R.PROJSON)

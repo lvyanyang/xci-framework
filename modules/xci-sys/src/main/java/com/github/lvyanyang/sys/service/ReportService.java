@@ -20,7 +20,6 @@ import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -37,11 +36,6 @@ public class ReportService extends BaseService {
     @Resource private ReportDao reportDao;
     @Resource private Cache reportCache;
 
-    @PostConstruct
-    private void init() {
-        refresh();
-    }
-
     /**
      * 是否存在指定编码的报表
      * @param code      报表编码
@@ -49,7 +43,7 @@ public class ReportService extends BaseService {
      * @return 如果存在返回true
      */
     public boolean existByCode(@NotBlank(message = "请指定报表编码") String code, Long excludeId) {
-        return reportDao.existByCode(code, excludeId);
+        return reportDao.existxByCode(code, excludeId);
     }
 
     /**
@@ -77,8 +71,7 @@ public class ReportService extends BaseService {
      */
     @OperateLog(tag = R.Module.Report, msg = "修改报表状态", param = true, result = true)
     @Transactional(rollbackFor = Exception.class)
-    public RestResult updateStatus(@NotBlank(message = "请指定报表主键") String ids,
-                                   @NotNull(message = "请指定报表状态") Boolean status) {
+    public RestResult updateStatus(@NotBlank(message = "请指定报表主键") String ids, @NotNull(message = "请指定报表状态") Boolean status) {
         String[] idList = XCI.splitToArray(ids);
         for (String idStr : idList) {
             var id = Long.valueOf(idStr);
@@ -139,12 +132,12 @@ public class ReportService extends BaseService {
     }
 
     /**
-     * 刷新报表缓存
+     * 重新加载报表缓存
      */
     public void refresh() {
         reportCache.clear();
         reportDao.selectList(new ReportFilter()).forEach(p -> reportCache.put(p.getCode(), p));
-        log.info("刷新系统报表缓存");
+        log.info("重新加载系统报表缓存");
     }
 
     /**
@@ -157,7 +150,7 @@ public class ReportService extends BaseService {
         XCI.ifTrueAction(XCI.invalidId(created, entity.getId()), () -> entity.setId(XCI.nextId()));
 
         //检查报表编码是否存在
-        if (reportDao.existByCode(entity.getCode(), XCI.excludeId(created, entity.getId()))) {
+        if (reportDao.existxByCode(entity.getCode(), XCI.excludeId(created, entity.getId()))) {
             return RestResult.fail(XCI.format("报表编码[{}]已经存在", entity.getCode()));
         }
 

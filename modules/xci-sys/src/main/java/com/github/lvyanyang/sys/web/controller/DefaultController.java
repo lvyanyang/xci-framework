@@ -12,11 +12,12 @@ import com.github.lvyanyang.core.R;
 import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
 import com.github.lvyanyang.sys.component.SysService;
+import com.github.lvyanyang.sys.core.SysParams;
 import com.github.lvyanyang.sys.entity.SysDic;
 import com.github.lvyanyang.sys.entity.SysModule;
 import com.github.lvyanyang.sys.filter.HistoryLogFilter;
-import com.github.lvyanyang.sys.service.LockUserService;
 import com.github.lvyanyang.sys.service.UserService;
+import com.github.lvyanyang.sys.web.SysWebController;
 import com.github.lvyanyang.sys.web.component.SysWebService;
 import com.github.lvyanyang.sys.web.model.JsonGrid;
 import com.github.lvyanyang.sys.web.model.LoginModel;
@@ -40,7 +41,6 @@ import java.util.stream.Collectors;
 public class DefaultController extends SysWebController {
     @Resource private WebProperties webProperties;
     @Resource private UserService userService;//用户服务
-    @Resource private LockUserService lockUserService;//锁定用户服务
     @Resource private Cache captchaCache;//用户验证码缓存
 
     //region 页面视图
@@ -55,9 +55,9 @@ public class DefaultController extends SysWebController {
         if (loginResult) {
             return redirect(webProperties.getDefaultUrl());
         }
-        map.put("systemTitle", SysService.me().getParamValueByCode("SystemTitle", "西交投信息系统开发平台"));
-        map.put("systemTitleColor", SysService.me().getParamValueByCode("SystemTitleColor", "white"));
-        map.put("systemCopyright", SysService.me().getParamValueByCode("SystemCopyright", "西安交通信息投资营运有限公司 版权所有"));
+        map.put("title", SysParams.SysWebTitle);
+        map.put("titleColor", SysParams.SysWebTitleColor);
+        map.put("copyright", SysParams.SysWebCopyright);
         return "sys/default/login";
     }
 
@@ -65,16 +65,11 @@ public class DefaultController extends SysWebController {
     @GetMapping()
     public String index(ModelMap map) {
         map.put("currentUser", getCurrentUser());
-        map.put("systemTitle", SysService.me().getParamValueByCode("SystemTitle", "西交投信息系统开发平台"));
-        map.put("systemTitleColor", SysService.me().getParamValueByCode("SystemTitleColor", "white"));
-        map.put("systemCopyright", SysService.me().getParamValueByCode("SystemCopyright", "西安交通信息投资营运有限公司 版权所有"));
-        map.put("systemTitleVersion", SysService.me().getParamValueByCode("SystemTitleVersion", "测试版"));
-        map.put("systemTitleVersionColor", SysService.me().getParamValueByCode("SystemTitleVersionColor", "yellow"));
-
-        map.put("systemEnableOnlineUserRefresh", SysService.me().getParamValueByCode("SystemEnableOnlineUserRefresh", "0"));
-        map.put("systemEnableMessageRefresh", SysService.me().getParamValueByCode("SystemEnableMessageRefresh", "0"));
-        map.put("systemEnableTabPage", SysService.me().getParamValueByCode("SystemEnableTabPage", "0"));
-
+        map.put("title", SysParams.SysWebTitle);
+        map.put("titleColor", SysParams.SysWebTitleColor);
+        map.put("copyright", SysParams.SysWebCopyright);
+        map.put("versionTitle", SysParams.SysWebVersionTitle);
+        map.put("versionTitleColor", SysParams.SysWebVersionTitleColor);
         return "sys/default/index";
     }
 
@@ -146,11 +141,11 @@ public class DefaultController extends SysWebController {
         if (XCI.isBlank(model.getUuid())) {
             return RestResult.fail("账号密码错误");
         }
-        if (lockUserService.isLock(account)) {
+        if (SysService.me().lockUserService().isLock(account)) {
             return RestResult.fail("账号错误次数达到上限,暂时被锁定");
         }
         model.setCaptcha(captchaCache.get(account, String.class));
-        var result = userService.login(account, model.getPassword(), model.getCaptcha());
+        var result = SysService.me().accountService().login(account, model.getPassword(), model.getCaptcha());
         if (result.isFail()) {
             return result;
         }
@@ -173,7 +168,7 @@ public class DefaultController extends SysWebController {
     @ResponseBody
     @PostMapping("/checkLock")
     public RestResult checkLock(String account) {
-        if (lockUserService.requireCaptcha(account)) {
+        if (SysService.me().lockUserService().requireCaptcha(account)) {
             return RestResult.ok();
         }
         return RestResult.fail();
@@ -182,7 +177,7 @@ public class DefaultController extends SysWebController {
     @ResponseBody
     @PostMapping("/logout")
     public RestResult logout() {
-        userService.logout(getCurrentUser().getId());
+        SysService.me().accountService().logout(getCurrentUser().getId());
         getSession().removeAttribute(R.CURRENT_USER_Session_KEY);
         XCI.removeCookie(R.CURRENT_USER_COOKIE_KEY);
         return RestResult.ok(MapUtil.of("url", webProperties.getLoginUrl()));
@@ -194,8 +189,10 @@ public class DefaultController extends SysWebController {
     @ResponseBody
     @GetMapping("/userModuleTree")
     public RestResult userModuleTree() {
-        List<SysModule> list = SysService.me().userService().selectUserModuleCacheListByUser(getCurrentUser())
-                .stream().filter(p -> p.getMenu() && p.getWeb()).collect(Collectors.toList());
+        var currentUser = getCurrentUser();
+        var userPermission = SysService.me().permissionService().selectUserPermissionFromCache(currentUser.getId());
+        List<SysModule> list = userPermission.getModules().stream()
+                .filter(p -> p.getMenu() && p.getWeb()).collect(Collectors.toList());
         List<TreeNode> nodes = SysWebService.me().toModuleNodeList(list);
         return RestResult.ok(nodes);
     }
@@ -207,7 +204,7 @@ public class DefaultController extends SysWebController {
     @PostMapping("/clearUserModuleTree")
     public RestResult clearUserModuleTree() {
         var currentUser = getCurrentUser();
-        SysService.me().userService().clearUserModuleCache(currentUser.getId());
+        SysService.me().permissionService().clearUserPermissionCache(currentUser.getId());
         return RestResult.ok();
     }
 

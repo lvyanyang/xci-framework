@@ -23,7 +23,7 @@ public class XCITest {
                 .append("d", "　　create_user _id　　");
         System.out.println("-----------------");
         System.out.println(map);
-        XCI.objectStringConverter(map, new StringConverterType[]{StringConverterType.trimAll, StringConverterType.toDBC, StringConverterType.toCamelCase}, null, R.Empty, R.Empty);
+        XCI.objectStringConverter(map, new StringConverterType[]{StringConverterType.TrimAll, StringConverterType.ToDBC, StringConverterType.ToCamelCase}, null, R.Empty, R.Empty);
         System.out.println("-----------------");
         System.out.println(map);
 
@@ -34,7 +34,7 @@ public class XCITest {
         bean.setStr4("　　create_user _id　　");
         System.out.println("-----------------");
         System.out.println(bean);
-        XCI.objectStringConverter(bean, new StringConverterType[]{StringConverterType.trimAll, StringConverterType.toDBC, StringConverterType.toCamelCase}, null, R.Empty, R.Empty);
+        XCI.objectStringConverter(bean, new StringConverterType[]{StringConverterType.TrimAll, StringConverterType.ToDBC, StringConverterType.ToCamelCase}, null, R.Empty, R.Empty);
         System.out.println("-----------------");
         System.out.println(bean);
     }
@@ -46,75 +46,75 @@ public class XCITest {
 
         //测试前空格
         item = "   12";
-        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.trimLeft}, null, R.Empty, R.Empty);
+        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.TrimLeft}, null, R.Empty, R.Empty);
         assertEquals("12", actual);
         System.out.println(actual);
 
         //测试前中文空格
         item = "  12";
-        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.trimLeft}, null, R.Empty, R.Empty);
+        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.TrimLeft}, null, R.Empty, R.Empty);
         assertEquals("12", actual);
         System.out.println(actual);
 
         //测试前全角空格
         item = "　　12";
-        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.trimLeft}, null, R.Empty, R.Empty);
+        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.TrimLeft}, null, R.Empty, R.Empty);
         assertEquals("12", actual);
         System.out.println(actual);
 
         //测试后全角空格
         item = "12　　";
-        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.trimRight}, null, R.Empty, R.Empty);
+        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.TrimRight}, null, R.Empty, R.Empty);
         assertEquals("12", actual);
         System.out.println(actual);
 
         //测试前后角空格
         item = "  12　　";
-        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.trimLeftRight}, null, R.Empty, R.Empty);
+        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.TrimLeftRight}, null, R.Empty, R.Empty);
         assertEquals("12", actual);
         System.out.println(actual);
 
         //测试所有空格
         item = "  1  2　　";
-        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.trimAll}, null, R.Empty, R.Empty);
+        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.TrimAll}, null, R.Empty, R.Empty);
         assertEquals("12", actual);
         System.out.println(actual);
 
         //全角转半角
         item = "　　1ｘ2ｘ3　　";
-        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.trimLeft, StringConverterType.trimRight, StringConverterType.toDBC}, null, R.Empty, R.Empty);
+        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.TrimLeft, StringConverterType.TrimRight, StringConverterType.ToDBC}, null, R.Empty, R.Empty);
         assertEquals("1x2x3", actual);
         System.out.println(actual);
 
         //半角转全角
         item = "　　1x2x3　　";
-        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.trimLeft, StringConverterType.trimRight, StringConverterType.toSBC}, null, R.Empty, R.Empty);
+        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.TrimLeft, StringConverterType.TrimRight, StringConverterType.ToSBC}, null, R.Empty, R.Empty);
         assertEquals("１ｘ２ｘ３", actual);
         System.out.println(actual);
 
         //将驼峰式命名的字符串转换为下划线方式
         item = "　　create User Id　　";
-        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.trimAll, StringConverterType.toUnderlineCase}, null, R.Empty, R.Empty);
+        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.TrimAll, StringConverterType.ToUnderlineCase}, null, R.Empty, R.Empty);
         assertEquals("create_user_id", actual);
         System.out.println(actual);
 
         //将下划线方式命名的字符串转换为驼峰式
         item = "　　create_user _id　　";
-        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.trimAll, StringConverterType.toCamelCase}, null, R.Empty, R.Empty);
+        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.TrimAll, StringConverterType.ToCamelCase}, null, R.Empty, R.Empty);
         assertEquals("createUserId", actual);
         System.out.println(actual);
 
         //替换
         item = "　　create_user _id　　";
-        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.trimAll,
-                StringConverterType.toCamelCase, StringConverterType.replace}, null, "e,s", "5,9");
+        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.TrimAll,
+                StringConverterType.ToCamelCase, StringConverterType.Replace}, null, "e,s", "5,9");
         assertEquals("cr5at5U95rId", actual);
         System.out.println(actual);
 
         //替换
         item = "　　create_user _id　　";
-        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.trimAll,
-                StringConverterType.toCamelCase, StringConverterType.replace}, null, "e,s", null);
+        actual = XCI.stringConvert(item, new StringConverterType[]{StringConverterType.TrimAll,
+                StringConverterType.ToCamelCase, StringConverterType.Replace}, null, "e,s", null);
         assertEquals("cratUrId", actual);
         System.out.println(actual);
 

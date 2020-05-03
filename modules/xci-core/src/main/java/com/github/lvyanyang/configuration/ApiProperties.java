@@ -58,4 +58,9 @@ public class ApiProperties {
      * 系统接口分页允许的最大页数
      */
     private int maxPageSize = 1000;
+
+    /**
+     * 是否启用Mybatis插件,拦截以existx开头的方法,根据不同的数据方言生成不同的exist语句
+     */
+    private boolean enabledMybatisExistx = true;
 }

@@ -69,7 +69,7 @@ jx.ready(function () {
             $.each(deptNodes, function (i, v) {
                 deptIds.push(v.id);
             });
-            $('#deptIds').val(deptIds.join());
+            $('#customDeptIds').val(deptIds.join());
 
         }).on("aftersubmit", function (e, result) {
             if (result.success) {

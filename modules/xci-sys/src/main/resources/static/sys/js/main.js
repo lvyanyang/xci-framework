@@ -582,6 +582,10 @@ jx.ready(function () {
     //endregion
 
     //region 模块初始化
+    window.systemEnableTabPage = '1';
+    window.systemEnableOnlineUserRefresh = '0';
+    window.systemEnableMessageRefresh = '0';
+
     init();
     //endregion
 })

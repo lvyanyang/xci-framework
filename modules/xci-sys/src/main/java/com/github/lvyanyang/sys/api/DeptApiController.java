@@ -29,17 +29,20 @@ import java.util.List;
  * @author 吕艳阳
  */
 @Api(tags = "系统机构接口")
-@ApiSort(3)
+@ApiSort(21)
 @Authorize
 @RestController
 @RequestMapping(value = R.SysApiPrefix + "/dept", produces = R.PROJSON)
 public class DeptApiController extends SysApiController {
     @ApiOperation(value = "检查机构编码是否存在")
     @ApiOperationSupport(order = 1, author = R.LYY)
-    @ApiImplicitParam(name = "code", value = "编码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "code", value = "编码"),
+            @ApiImplicitParam(name = "excludeId", value = "排除的主键,可为空")
+    })
     @PostMapping(value = "/existByCode")
-    public RestResult existByCode(@SingleJson String code) {
-        return RestResult.ok(SysService.me().deptService().existByCode(code, null));
+    public RestResult existByCode(@SingleJson String code, @SingleJson(required = false) Long excludeId) {
+        return RestResult.ok(SysService.me().deptService().existByCode(code, excludeId));
     }
 
     @ApiOperation(value = "检查机构名称是否存在")
@@ -95,7 +98,7 @@ public class DeptApiController extends SysApiController {
     @Authorize(code = R.Permission.SysDeptDelete)
     @PostMapping(value = "/delete")
     public RestResult delete(@SingleJson String ids) {
-        SysService.me().deptService().delete(ids);
+        SysService.me().deptService().deleteByIds(ids);
         return RestResult.ok();
     }
 

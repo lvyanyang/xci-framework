@@ -15,6 +15,7 @@ import com.github.lvyanyang.core.XCI;
 import com.github.lvyanyang.model.HistoryInfo;
 import com.github.lvyanyang.model.HistoryOperateType;
 import com.github.lvyanyang.model.OperateLogInfo;
+import com.github.lvyanyang.sys.core.SysParams;
 import com.github.lvyanyang.sys.entity.*;
 import com.github.lvyanyang.sys.filter.*;
 import com.github.lvyanyang.sys.model.BaseOperateUserEntity;
@@ -34,6 +35,7 @@ import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -43,10 +45,17 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class SysService {
+    /** 密码强度监测正则表达式 */
+    private static Pattern PASSWORD_STRONG_PATTERN;
+    private static SysService me;
+
     // region 系统服务对象
     @Resource private AppService appService;
     @Resource private ReportService reportService;
     @Resource private UserService userService;
+    @Resource private AccountService accountService;
+    @Resource private UserRoleMapService userRoleMapService;
+    @Resource private PermissionService permissionService;
     @Resource private DeptService deptService;
     @Resource private RoleService roleService;
     @Resource private ParamService paramService;
@@ -77,6 +86,21 @@ public class SysService {
     /** 系统用户服务 */
     public UserService userService() {
         return userService;
+    }
+
+    /** 系统账户服务 */
+    public AccountService accountService() {
+        return accountService;
+    }
+
+    /** 系统用户角色关联服务 */
+    public UserRoleMapService userRoleMapService() {
+        return userRoleMapService;
+    }
+
+    /** 系统账户权限服务 */
+    public PermissionService permissionService() {
+        return permissionService;
     }
 
     /** 系统部门服务 */
@@ -161,8 +185,6 @@ public class SysService {
 
     // endregion
 
-    private static SysService me;
-
     @PostConstruct
     private void init() {
         SysService.me = this;
@@ -214,29 +236,60 @@ public class SysService {
     }
 
     /**
+     * 当前操作用户主键
+     */
+    public Long getCurrentUserId() {
+        var user = getCurrentUser();
+        if (user != null) {
+            return user.getId();
+        }
+        return null;
+    }
+
+    /**
      * 获取当前用户角色字符串
      */
     public String getRoleName(SysUser user) {
         if (user == null) return R.Empty;
         if (user.getAdmin()) {
-            return "系统管理员";
+            return "内置管理员";
         }
         // return roleService.selectByUserId(user.getId()).getName();
-        List<SysRole> roleList = roleService.selectListByUserId(user.getId());
-        return roleList.stream().map(SysRole::getName).collect(Collectors.joining(","));
+        var userPermission = permissionService.selectUserPermissionFromCache(user.getId());
+        return userPermission.getRoles().stream().map(SysRole::getName).collect(Collectors.joining(","));
+    }
+
+    /**
+     * 验证密码强度
+     * @param pwd 密码
+     * @return 密码符合强度要求返回true
+     */
+    public RestResult validPasswordStrong(String pwd) {
+        if (pwd.length() > 20) {
+            return RestResult.fail("密码长度不能超过20位");
+        }
+        if (PASSWORD_STRONG_PATTERN == null) {
+            String regex = SysParams.SysUserPasswordStrongPattern.getString();
+            PASSWORD_STRONG_PATTERN = Pattern.compile(regex);
+        }
+        if (PASSWORD_STRONG_PATTERN.matcher(pwd).matches()) {
+            return RestResult.ok();
+        }
+        return RestResult.fail(SysParams.SysUserPasswordStrongErrorMsg.getString());
     }
 
     /**
      * 是否有指定模块编码的权限
-     * @param user  用户对象
-     * @param codes 模块编码字符串
+     * @param userId 用户主键
+     * @param code   模块编码字符串
      */
-    public boolean isAuthorize(SysUser user, String codes) {
-        return userService.isAuthorize(user, codes);
+    public boolean isAuthModule(Long userId, String code) {
+        return permissionService.isAuthModule(userId, code);
     }
 
     /**
      * 生成用户Token
+     * @param userId 用户主键
      */
     public String buildUserToken(Long userId) {
         GMap map = GMap.newMap(R.USER_ID, XCI.encrypt(userId.toString()));
@@ -433,7 +486,7 @@ public class SysService {
     //region getDic
 
     /**
-     * 根据字典编码获取字典明细列表
+     * 根据字典编码获取字典列表
      * @param categoryCode 字典类型编码
      */
     public List<SysDic> getDicList(String categoryCode) {
@@ -485,59 +538,7 @@ public class SysService {
 
     //endregion
 
-    //region getParam
-
-    /**
-     * 从缓存中根据编码查询单个参数值,如果指定编码在缓存中没有,则返回默认值
-     * @param code         参数编码
-     * @param defaultValue 如果没有找到指定编码的参数,则返回此默认值
-     * @return 返回指定编码对应的参数值
-     */
-    public Object getParamValueByCode(String code, Object defaultValue) {
-        SysParam param = paramService.selectByCode(code);
-        if (param != null && XCI.isNotBlank(param.getValue())) return param.getValue();
-        return defaultValue;
-    }
-
-    /**
-     * 从缓存中根据编码查询单个参数值(字符串类型),如果指定编码在缓存中没有,则返回默认值
-     * @param code         参数编码
-     * @param defaultValue 如果没有找到指定编码的参数,则返回此默认值
-     * @return 返回指定编码对应的参数值
-     */
-    public String getParamStringValueByCode(String code, String defaultValue) {
-        return XCI.toStr(getParamValueByCode(code, defaultValue));
-    }
-
-    /**
-     * 从缓存中根据编码查询单个参数值(整型),如果指定编码在缓存中没有,则返回默认值
-     * @param code         参数编码
-     * @param defaultValue 如果没有找到指定编码的参数,则返回此默认值
-     * @return 返回指定编码对应的参数值
-     */
-    public Integer getParamIntValueByCode(String code, Integer defaultValue) {
-        return XCI.toInt(getParamValueByCode(code, defaultValue));
-    }
-
-    /**
-     * 从缓存中根据编码查询单个参数值(长整型),如果指定编码在缓存中没有,则返回默认值
-     * @param code         参数编码
-     * @param defaultValue 如果没有找到指定编码的参数,则返回此默认值
-     * @return 返回指定编码对应的参数值
-     */
-    public Long getParamLongValueByCode(String code, Long defaultValue) {
-        return XCI.toLong(getParamValueByCode(code, defaultValue));
-    }
-
-    /**
-     * 从缓存中根据编码查询单个参数值(长整型),如果指定编码在缓存中没有,则返回默认值
-     * @param code         参数编码
-     * @param defaultValue 如果没有找到指定编码的参数,则返回此默认值
-     * @return 返回指定编码对应的参数值
-     */
-    public Boolean getParamBooleanValueByCode(String code, Boolean defaultValue) {
-        return XCI.toBool(getParamValueByCode(code, defaultValue));
-    }
+    //region selectEnabledList
 
     /**
      * 查询启用的用户列表
@@ -547,7 +548,7 @@ public class SysService {
     public List<SysUser> selectEnabledUserList(boolean dataScope) {
         var filter = new UserFilter();
         filter.setStatus(true);
-        filter.setDataScope(dataScope);
+        filter.setEnableDeptScope(dataScope);
         if (!SysService.me().getCurrentUser().getAdmin()) {
             //如果不是管理员,那么不显示隐藏的账户
             filter.setVisible(true);
@@ -557,12 +558,12 @@ public class SysService {
 
     /**
      * 查询启用的部门列表
-     * @param dataScope 是否启用数据权限过滤 [true-启用, false-禁用]
+     * @param deptScope 是否启用数据权限过滤 [true-启用, false-禁用]
      */
-    public List<SysDept> selectEnabledDeptList(boolean dataScope) {
+    public List<SysDept> selectEnabledDeptList(boolean deptScope) {
         var filter = new DeptFilter();
         filter.setStatus(true);
-        filter.setDataScope(dataScope);
+        filter.setEnableDeptScope(deptScope);
         return deptService().selectList(filter);
     }
 
@@ -575,7 +576,7 @@ public class SysService {
         var filter = new RoleFilter();
         filter.setStatus(true);
         filter.setDeptId(deptId);
-        filter.setDataScope(dataScope);
+        filter.setEnableDeptScope(dataScope);
         return roleService().selectList(filter);
     }
 

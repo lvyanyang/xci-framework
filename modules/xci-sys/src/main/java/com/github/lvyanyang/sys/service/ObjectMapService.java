@@ -31,11 +31,12 @@ public class ObjectMapService extends BaseService {
      * @param targetName 目标名称
      */
     public RestResult save(@NotEmpty(message = "请指定对象名称") String objectName,
-                           @NotNull(message = "请指定对象主键") Long objectId, @NotEmpty(message = "请指定目标名称") String targetName,
+                           @NotNull(message = "请指定对象主键") Long objectId,
+                           @NotEmpty(message = "请指定目标名称") String targetName,
                            String[] targetIds) {
         objectMapDao.deleteByObject(objectName, objectId, targetName);
-        if(!XCI.isEmpty(targetIds)) {
-            for(String targetId : targetIds) {
+        if (!XCI.isEmpty(targetIds)) {
+            for (String targetId : targetIds) {
                 SysObjectMap entity = new SysObjectMap();
                 entity.setObjectName(objectName);
                 entity.setObjectId(objectId);
@@ -54,7 +55,8 @@ public class ObjectMapService extends BaseService {
      * @param targetName 目标名称
      */
     public RestResult deleteByObject(@NotEmpty(message = "请指定对象名称") String objectName,
-            @NotNull(message = "请指定对象主键") Long objectId, @NotEmpty(message = "请指定目标名称") String targetName) {
+                                     @NotNull(message = "请指定对象主键") Long objectId,
+                                     @NotEmpty(message = "请指定目标名称") String targetName) {
         objectMapDao.deleteByObject(objectName, objectId, targetName);
         return RestResult.ok();
     }
@@ -66,31 +68,33 @@ public class ObjectMapService extends BaseService {
      * @param targetName 目标名称
      */
     public List<String> selectByObject(@NotEmpty(message = "请指定对象名称") String objectName,
-            @NotNull(message = "请指定对象主键") Long objectId, @NotEmpty(message = "请指定目标名称") String targetName) {
+                                       @NotNull(message = "请指定对象主键") Long objectId,
+                                       @NotEmpty(message = "请指定目标名称") String targetName) {
         return objectMapDao.selectByObject(objectName, objectId, targetName);
     }
 
-    /**
-     * 根据目标删除关联
-     * @param targetName 目标名称
-     * @param targetId   目标主键
-     * @param objectName 对象名称
-     */
-    public RestResult deleteByTarget(@NotEmpty(message = "请指定目标名称") String targetName,
-            @NotNull(message = "请指定目标主键") Long targetId, @NotEmpty(message = "请指定对象名称") String objectName) {
-        objectMapDao.deleteByTarget(targetName, targetId, objectName);
-        return RestResult.ok();
-    }
-
-
-    /**
-     * 获取对象主键列表
-     * @param targetName 目标名称
-     * @param targetId   目标主键
-     * @param objectName 对象名称
-     */
-    public List<String> selectByTarget(@NotEmpty(message = "请指定目标名称") String targetName,
-            @NotNull(message = "请指定目标主键") Long targetId, @NotEmpty(message = "请指定对象名称") String objectName) {
-        return objectMapDao.selectByTarget(targetName, targetId, objectName);
-    }
+    // /**
+    //  * 根据目标删除关联
+    //  * @param targetName 目标名称
+    //  * @param targetId   目标主键
+    //  * @param objectName 对象名称
+    //  */
+    // public RestResult deleteByTarget(@NotEmpty(message = "请指定目标名称") String targetName,
+    //                                  @NotNull(message = "请指定目标主键") Long targetId, @NotEmpty(message = "请指定对象名称") String objectName) {
+    //     objectMapDao.deleteByTarget(targetName, targetId, objectName);
+    //     return RestResult.ok();
+    // }
+    //
+    //
+    // /**
+    //  * 获取对象主键列表
+    //  * @param targetName 目标名称
+    //  * @param targetId   目标主键
+    //  * @param objectName 对象名称
+    //  */
+    // public List<String> selectByTarget(@NotEmpty(message = "请指定目标名称") String targetName,
+    //                                    @NotNull(message = "请指定目标主键") Long targetId,
+    //                                    @NotEmpty(message = "请指定对象名称") String objectName) {
+    //     return objectMapDao.selectByTarget(targetName, targetId, objectName);
+    // }
 }

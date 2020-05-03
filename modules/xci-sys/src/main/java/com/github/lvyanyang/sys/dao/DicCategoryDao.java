@@ -19,7 +19,7 @@ public interface DicCategoryDao {
      * @param id 字典类型主键
      * @return 如果存在返回true
      */
-    boolean existById(@Param("id") Long id);
+    boolean existxById(@Param("id") Long id);
 
     /**
      * 是否存在指定编码的字典类型
@@ -27,7 +27,7 @@ public interface DicCategoryDao {
      * @param excludeId 排除的主键，如果为null则不指定排除的主键
      * @return 如果存在返回true
      */
-    boolean existByCode(@Param("code") String code, @Param("excludeId") Long excludeId);
+    boolean existxByCode(@Param("code") String code, @Param("excludeId") Long excludeId);
 
     /**
      * 是否存在指定名称的字典类型
@@ -35,7 +35,7 @@ public interface DicCategoryDao {
      * @param excludeId 排除的主键，如果为null则不指定排除的主键
      * @return 如果存在返回true
      */
-    boolean existByName(@Param("name") String name, @Param("excludeId") Long excludeId);
+    boolean existxByName(@Param("name") String name, @Param("excludeId") Long excludeId);
 
     /**
      * 新建字典类型

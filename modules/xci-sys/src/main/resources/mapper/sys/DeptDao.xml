@@ -9,9 +9,10 @@
 
     <!--公共查询列-->
     <sql id="select">
-        select d.id,d.parent_id,d.name,d.spell,d.code,d.category,d.nature,d.leader_id,us.name leader_name,
-            d.path,d.status,d.remark
-        from sys_dept d left join sys_user us on d.leader_id = us.id
+        select d.id, d.parent_id, d.name, d.spell, d.code, d.category, d.nature, d.leader_id, us.name leader_name,
+               d.path, d.status, d.remark
+        from sys_dept d
+                 left join sys_user us on d.leader_id = us.id
     </sql>
 
     <!--公共Where查询条件-->
@@ -19,9 +20,7 @@
         <where>
             d.deleted=0
             <if test="filter.status != null">and d.status = #{filter.status}</if>
-            <if test="filter.dataScope != null and filter.dataScope == true">
-                <include refid="com.github.lvyanyang.internal.FrameworkDao.dataScope"/>
-            </if>
+            <include refid="com.github.lvyanyang.internal.FrameworkDao.deptScope"/>
         </where>
     </sql>
 
@@ -35,78 +34,58 @@
     <!--endregion-->
 
     <!--region 是否存在指定主键的机构-->
-    <select id="existById" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_dept"/>
-            <property name="where" value="existByIdWhere"/>
-        </include>
-    </select>
-    <!--existById Where-->
-    <sql id="existByIdWhere">
+    <select id="existxById" resultType="boolean">
+        select count(1)
+        from sys_dept
         where id = #{id}
-    </sql>
+    </select>
     <!--endregion-->
 
     <!--region 是否存在指定编码的机构-->
-    <select id="existByCode" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_dept"/>
-            <property name="where" value="existByCodeWhere"/>
-        </include>
-    </select>
-    <!--existByCode Where-->
-    <sql id="existByCodeWhere">
+    <select id="existxByCode" resultType="boolean">
+        select count(1) from sys_dept
         where code = #{code}
         <if test="excludeId != null">and id != #{excludeId}</if>
-    </sql>
+    </select>
     <!--endregion-->
 
     <!--region 检查是否存在指定的机构名称-->
-    <select id="existByName" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_dept"/>
-            <property name="where" value="existByNameWhere"/>
-        </include>
-    </select>
-    <!--existByNameWhere-->
-    <sql id="existByNameWhere">
+    <select id="existxByName" resultType="boolean">
+        select count(1) from sys_dept
         where name = #{name} and parent_id = #{parentId}
         <if test="excludeId != null">and id != #{excludeId}</if>
-    </sql>
+    </select>
     <!--endregion-->
 
     <!--region 新建机构-->
     <insert id="insert">
         insert into sys_dept (id, parent_id, name, spell, code, category, nature, leader_id, path, status, remark)
-        values
-        (
-        #{entity.id},
-        #{entity.parentId},
-        #{entity.name},
-        #{entity.spell},
-        #{entity.code},
-        #{entity.category},
-        #{entity.nature},
-        #{entity.leaderId},
-        #{entity.path},
-        #{entity.status},
-        #{entity.remark}
-        )
+        values (#{entity.id},
+                #{entity.parentId},
+                #{entity.name},
+                #{entity.spell},
+                #{entity.code},
+                #{entity.category},
+                #{entity.nature},
+                #{entity.leaderId},
+                #{entity.path},
+                #{entity.status},
+                #{entity.remark})
     </insert>
     <!--endregion-->
 
     <!--region 修改机构-->
     <update id="update">
         update sys_dept
-        set parent_id     = #{entity.parentId},
-            name          = #{entity.name},
-            spell         = #{entity.spell},
-            code          = #{entity.code},
-            category      = #{entity.category},
-            nature        = #{entity.nature},
-            leader_id     = #{entity.leaderId},
-            status        = #{entity.status},
-            remark        = #{entity.remark}
+        set parent_id = #{entity.parentId},
+            name      = #{entity.name},
+            spell     = #{entity.spell},
+            code      = #{entity.code},
+            category  = #{entity.category},
+            nature    = #{entity.nature},
+            leader_id = #{entity.leaderId},
+            status    = #{entity.status},
+            remark    = #{entity.remark}
         where id = #{entity.id}
     </update>
     <!--endregion-->

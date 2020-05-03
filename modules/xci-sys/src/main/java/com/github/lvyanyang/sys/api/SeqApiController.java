@@ -27,7 +27,7 @@ import java.util.List;
  * @author 吕艳阳
  */
 @Api(tags = "系统序列接口")
-@ApiSort(7)
+@ApiSort(27)
 // @ApiEncrypt
 @Authorize
 @RestController
@@ -91,14 +91,14 @@ public class SeqApiController extends SysApiController {
     }
 
     @ApiOperation(value = "查询序列列表")
-    @ApiOperationSupport(order = 8, author = R.LYY, ignoreParameters = {R.IG_PAGE_INDEX, R.IG_PAGE_SIZE, R.IG_SORT_NAME, R.IG_SORT_DIR})
+    @ApiOperationSupport(order = 8, author = R.LYY, ignoreParameters = {R.IPI, R.IPS, R.IPSN, R.IPSD})
     @PostMapping(value = "/selectList")
     public RestResult<List<SysSeq>> selectList(@RequestBody SeqFilter filter) {
         return RestResult.ok(SysService.me().seqService().selectList(filter));
     }
 
     @ApiOperation(value = "导出序列列表")
-    @ApiOperationSupport(order = 9, author = R.LYY, ignoreParameters = {R.IG_PAGE_INDEX, R.IG_PAGE_SIZE, R.IG_SORT_NAME, R.IG_SORT_DIR})
+    @ApiOperationSupport(order = 9, author = R.LYY, ignoreParameters = {R.IPI, R.IPS, R.IPSN, R.IPSD})
     @PostMapping(value = "/export", produces = {R.PROOCTET, R.PROJSON})
     public void export(@RequestBody SeqFilter filter) {
         XCI.exportExcel(SysService.me().seqService().selectList(filter), SysSeq.class, "系统序列列表");

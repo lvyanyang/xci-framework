@@ -31,8 +31,8 @@ public class DeptFilter extends BaseFilter {
 	private Boolean status;
 
 	/**
-	 * 是否启用数据权限过滤 [true-启用, false-禁用]
+	 * 是否启用机构数据权限过滤 [true-启用, false-禁用]
 	 */
-	@ApiModelProperty(value = "是否启用数据权限过滤 [true-启用, false-禁用]")
-	private Boolean dataScope;
+	@ApiModelProperty(value = "是否启用机构数据权限过滤 [true-启用, false-禁用]")
+	private Boolean enableDeptScope;
 }

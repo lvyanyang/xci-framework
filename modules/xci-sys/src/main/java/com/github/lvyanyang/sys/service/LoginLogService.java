@@ -6,7 +6,7 @@ package com.github.lvyanyang.sys.service;
 
 import com.github.lvyanyang.component.AsyncService;
 import com.github.lvyanyang.model.PageList;
-import com.github.lvyanyang.sys.core.Params;
+import com.github.lvyanyang.sys.core.SysParams;
 import com.github.lvyanyang.sys.dao.LoginLogDao;
 import com.github.lvyanyang.sys.entity.SysLoginLog;
 import com.github.lvyanyang.sys.filter.LoginLogFilter;
@@ -30,7 +30,7 @@ public class LoginLogService {
      * @param entity 登陆日志实体
      */
     public void insert(SysLoginLog entity) {
-        if (Params.enableLoginLog()){
+        if (SysParams.SysLogEnableLoginLog.getBoolean()){
             loginLogDao.insert(entity);
         }
     }
@@ -40,7 +40,7 @@ public class LoginLogService {
      * @param entity 登陆日志实体
      */
     public void insertAsync(SysLoginLog entity) {
-        if (Params.enableLoginLog()) {
+        if (SysParams.SysLogEnableLoginLog.getBoolean()) {
             AsyncService.me().execute(new TimerTask() {
                 @Override
                 public void run() {

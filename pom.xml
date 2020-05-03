@@ -30,7 +30,6 @@
         <spring-boot.version>2.2.6.RELEASE</spring-boot.version>
         <spring.version>5.2.5.RELEASE</spring.version>
         <slf4j.version>1.7.30</slf4j.version>
-        <pagehelper-spring-boot.version>1.2.13</pagehelper-spring-boot.version>
         <guava.version>20.0</guava.version>
         <javassist.version>3.27.0-GA</javassist.version>
         <jackson.version>2.10.3</jackson.version>
@@ -262,14 +261,8 @@
             <!--分页插件-->
             <dependency>
                 <groupId>com.github.pagehelper</groupId>
-                <artifactId>pagehelper-spring-boot-starter</artifactId>
-                <version>${pagehelper-spring-boot.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.mybatis.spring.boot</groupId>
-                        <artifactId>mybatis-spring-boot-starter</artifactId>
-                    </exclusion>
-                </exclusions>
+                <artifactId>pagehelper</artifactId>
+                <version>${pagehelper.version}</version>
             </dependency>
 
             <!--hutool工具库-->

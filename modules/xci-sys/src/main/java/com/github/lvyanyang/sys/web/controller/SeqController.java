@@ -4,14 +4,15 @@
 
 package com.github.lvyanyang.sys.web.controller;
 
-import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.annotation.Authorize;
-import com.github.lvyanyang.exceptions.NotFoundException;
 import com.github.lvyanyang.core.R;
 import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
+import com.github.lvyanyang.exceptions.NotFoundException;
+import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.entity.SysSeq;
 import com.github.lvyanyang.sys.filter.SeqFilter;
+import com.github.lvyanyang.sys.web.SysWebController;
 import com.github.lvyanyang.sys.web.model.JsonGrid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;

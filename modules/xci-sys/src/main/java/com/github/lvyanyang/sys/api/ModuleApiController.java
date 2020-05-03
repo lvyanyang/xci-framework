@@ -28,7 +28,7 @@ import java.util.List;
  * @author 吕艳阳
  */
 @Api(tags = "系统模块接口")
-@ApiSort(4)
+@ApiSort(26)
 @Authorize
 @RestController
 @RequestMapping(value = R.SysApiPrefix + "/module", produces = R.PROJSON)

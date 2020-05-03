@@ -20,7 +20,6 @@ import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -37,11 +36,6 @@ public class AppService extends BaseService {
     @Resource private AppDao appDao;
     @Resource private Cache appCache;
 
-    @PostConstruct
-    private void init() {
-        refresh();
-    }
-
     /**
      * 是否存在指定名称的应用
      * @param name      应用名称
@@ -49,7 +43,7 @@ public class AppService extends BaseService {
      * @return 如果存在返回true
      */
     public boolean existByName(@NotBlank(message = "请指定应用编码") String name, Long excludeId) {
-        return appDao.existByName(name, excludeId);
+        return appDao.existxByName(name, excludeId);
     }
 
     /**
@@ -77,8 +71,7 @@ public class AppService extends BaseService {
      */
     @OperateLog(tag = R.Module.App, msg = "修改应用状态", param = true, result = true)
     @Transactional(rollbackFor = Exception.class)
-    public RestResult updateStatus(@NotBlank(message = "请指定应用主键") String ids,
-                                   @NotNull(message = "请指定应用状态") Boolean status) {
+    public RestResult updateStatus(@NotBlank(message = "请指定应用主键") String ids, @NotNull(message = "请指定应用状态") Boolean status) {
         String[] idList = XCI.splitToArray(ids);
         for (String idStr : idList) {
             var id = Long.valueOf(idStr);
@@ -127,12 +120,12 @@ public class AppService extends BaseService {
     }
 
     /**
-     * 刷新应用缓存
+     * 重新加载应用缓存
      */
     public void refresh() {
         appCache.clear();
         appDao.selectList(new AppFilter()).forEach(p -> appCache.put(p.getId(), p));
-        log.info("刷新系统应用缓存");
+        log.info("重新加载系统应用缓存");
     }
 
     /**
@@ -145,7 +138,7 @@ public class AppService extends BaseService {
         XCI.ifTrueAction(XCI.invalidId(created, entity.getId()), () -> entity.setId(XCI.nextId()));
 
         //检查应用名称是否存在
-        if (appDao.existByName(entity.getName(), XCI.excludeId(created, entity.getId()))) {
+        if (appDao.existxByName(entity.getName(), XCI.excludeId(created, entity.getId()))) {
             return RestResult.fail(XCI.format("应用名称[{}]已经存在", entity.getName()));
         }
 

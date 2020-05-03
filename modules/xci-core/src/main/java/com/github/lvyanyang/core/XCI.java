@@ -33,13 +33,13 @@ import cn.hutool.crypto.SecureUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.lvyanyang.exceptions.*;
-import com.github.lvyanyang.model.*;
-import com.github.promeg.pinyinhelper.Pinyin;
 import com.github.lvyanyang.annotation.AllowAnonymous;
 import com.github.lvyanyang.annotation.Authorize;
 import com.github.lvyanyang.component.SpringBeanFactory;
+import com.github.lvyanyang.exceptions.*;
 import com.github.lvyanyang.internal.ServletUtil;
+import com.github.lvyanyang.model.*;
+import com.github.promeg.pinyinhelper.Pinyin;
 import eu.bitwalker.useragentutils.UserAgent;
 import io.jsonwebtoken.*;
 import io.swagger.annotations.ApiModelProperty;
@@ -47,6 +47,7 @@ import net.sf.ehcache.Element;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.jsoup.Jsoup;
@@ -63,7 +64,6 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.cache.Cache;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
-import org.springframework.http.MediaType;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.ObjectUtils;
@@ -82,6 +82,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 import java.awt.*;
@@ -102,6 +103,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.Key;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.time.*;
@@ -930,7 +932,7 @@ public class XCI {
      * @param unknownErrorHandler 未知异常处理
      * @return 处理后的结果
      */
-    public static RestResult defaultApiExceptionHandler(Exception e, Function<Exception,String> unknownErrorHandler) {
+    public static RestResult defaultApiExceptionHandler(Exception e, Function<Exception, String> unknownErrorHandler) {
         String msg = e.getMessage();
         if (e.getCause() != null) {
             msg = e.getCause().getMessage();
@@ -965,12 +967,12 @@ public class XCI {
 
     /**
      * 获取Web异常错误页
-     * @param e 异常对象
+     * @param e        异常对象
      * @param errorUrl 错误页面视图路径
-     * @param msg 错误消息，如果为null，返回e对象的消息
+     * @param msg      错误消息，如果为null，返回e对象的消息
      * @return 返回Web视图对象
      */
-    public static ModelAndView getExceptionView(Throwable e,String errorUrl,String msg){
+    public static ModelAndView getExceptionView(Throwable e, String errorUrl, String msg) {
         var request = XCI.getRequest();
         String contextPath = request.getContextPath();
         ModelAndView view = new ModelAndView();
@@ -1342,7 +1344,7 @@ public class XCI {
 
     // endregion
 
-    // region Convert
+    //region Convert
 
     /**
      * 转换为字符<br>
@@ -2026,6 +2028,8 @@ public class XCI {
         return charset.decode(data).toString();
     }
 
+    //endregion
+
     // region Charset
 
     /**
@@ -2465,17 +2469,8 @@ public class XCI {
      */
     public static boolean isApiRequest() {
         HttpServletRequest request = getRequest();
-        String type = request.getHeader("X-Requested-With");
-        if (isBlank(type)) {
-            type = request.getParameter("X-Requested-With");
-        }
-        if (isNotBlank(type) && "XMLHttpRequest".equals(type)){
-            return false;
-        }
-        if (isNotBlank(type) && ("api".equals(type)||"AppHttpRequest".equals(type))){
-            return true;
-        }
-        return !request.getHeader("accept").contains(MediaType.TEXT_HTML_VALUE);
+        String type = request.getHeader("requestType");
+        return isNotBlank(type) && "api".equals(type);
     }
 
     /**
@@ -3235,11 +3230,11 @@ public class XCI {
 
     /**
      * 移除子节点
-     * @param list 树形对象集合
-     * @param id 待移除的对象注解
+     * @param list    树形对象集合
+     * @param id      待移除的对象注解
      * @param hasSelf 是否移除自身
      */
-    public static void removeTreeChildren(List<? extends ITreeModel> list, Long id,boolean hasSelf){
+    public static void removeTreeChildren(List<? extends ITreeModel> list, Long id, boolean hasSelf) {
         var children = XCI.getTreeChildren(list, id, hasSelf);
         children.forEach(p -> {
             list.removeIf(x -> x.getId().equals(p.getId()));
@@ -3622,7 +3617,7 @@ public class XCI {
      * @param newStr   替换后字符串
      */
     public static void objectStringConverter(Object obj, StringConverterType[] converts,
-                                             Class<?>[] customs,String oldStr, String newStr) {
+                                             Class<?>[] customs, String oldStr, String newStr) {
         if (obj instanceof Map) {
             //Map
             var map = (Map) obj;
@@ -3630,7 +3625,7 @@ public class XCI {
                 Object val = map.get(key);
                 //字符串类型,并且字符串不能为空才进行处理
                 if (!(val instanceof String) || isBlank(val)) continue;
-                var res = stringConvert((String) val, converts, customs,oldStr, newStr);
+                var res = stringConvert((String) val, converts, customs, oldStr, newStr);
                 map.put(key, res);
             }
         } else {
@@ -3640,7 +3635,7 @@ public class XCI {
                 var val = ReflectUtil.getFieldValue(obj, field);
                 //字符串类型,并且字符串不能为空才进行处理
                 if (!field.getType().equals(String.class) || isBlank(val)) continue;
-                var res = stringConvert((String) val, converts, customs,oldStr, newStr);
+                var res = stringConvert((String) val, converts, customs, oldStr, newStr);
                 ReflectUtil.setFieldValue(obj, field, res);
             }
         }
@@ -3654,43 +3649,43 @@ public class XCI {
      * @param newStr   替换后字符串
      */
     public static String stringConvert(String item, StringConverterType[] converts,
-                                       Class<?>[] customs,String oldStr, String newStr) {
+                                       Class<?>[] customs, String oldStr, String newStr) {
         if (isBlank(item)) return item;
         if (isEmpty(converts)) return item;
         for (StringConverterType convert : converts) {
             switch (convert) {
-                case custom:
+                case Custom:
                     for (Class<?> custom : customs) {
                         var bean = getBean(custom);
-                        var func = (Function<String,String>)bean;
+                        var func = (Function<String, String>) bean;
                         item = func.apply(item);
                     }
                     break;
-                case trimLeft://去除左边空格
+                case TrimLeft://去除左边空格
                     item = StrUtil.trimStart(item);
                     break;
-                case trimRight://去除右边空格
+                case TrimRight://去除右边空格
                     item = StrUtil.trimEnd(item);
                     break;
-                case trimLeftRight://去除左边和右边空格
+                case TrimLeftRight://去除左边和右边空格
                     item = StrUtil.trim(item);
                     break;
-                case trimAll://去除所有空格
+                case TrimAll://去除所有空格
                     item = StrUtil.trim(item).replaceAll("\\s*", R.Empty);
                     break;
-                case toSBC://半角转全角
+                case ToSBC://半角转全角
                     item = Convert.toSBC(item);
                     break;
-                case toDBC://全角转半角
+                case ToDBC://全角转半角
                     item = Convert.toDBC(item);
                     break;
-                case toUnderlineCase://将驼峰式命名的字符串转换为下划线方式
+                case ToUnderlineCase://将驼峰式命名的字符串转换为下划线方式
                     item = StrUtil.toUnderlineCase(item);
                     break;
-                case toCamelCase://将下划线方式命名的字符串转换为驼峰式
+                case ToCamelCase://将下划线方式命名的字符串转换为驼峰式
                     item = StrUtil.toCamelCase(item);
                     break;
-                case replace://字符串替换
+                case Replace://字符串替换
                     var kvs = parseArrayString(oldStr, newStr, ',');
                     for (KeyValue kv : kvs) {
                         item = item.replace(kv.getKey(), kv.getValue());
@@ -3724,25 +3719,59 @@ public class XCI {
         }
         return list;
     }
-    // endregion
 
     /**
-     * 根据机构权限值获取对应的名称
-     * @param deptScope 机构权限值
+     * 获取默认数据源的数据库标识符
      */
-    public static String getDeptScopeNameByValue(Integer deptScope){
-         switch (deptScope) {
-            case 1:
-                return "全部";
-            case 2:
-                return "自定义";
-            case 3:
-                return "所在部门";
-            case 4:
-                return "所在部门及所有下级";
-            case 5:
-                return "仅本人";
+    public static String getDefaultDatabaseId() {
+        var dataSource = XCI.getBean(DataSource.class);
+        var databaseIdProvider = XCI.getBean(DatabaseIdProvider.class);
+        String dbId = R.Empty;
+        try {
+            dbId = databaseIdProvider.getDatabaseId(dataSource);
+        } catch (SQLException throwables) {
+            log.error("获取DefaultDatabaseId时出错:", throwables);
+        }
+        return dbId;
+    }
+
+    /**
+     * 根据不同的数据库返回查询是否存在sql语句
+     * @param databaseId     数据库类型:oracle、mysql、sqlserver、sqlite、postgresql
+     * @param tableName      表名
+     * @param whereStatement where语句，不带where关键字
+     */
+    public static String getExistSqlStatement(String databaseId, String tableName, String whereStatement) {
+        if (XCI.isNotBlank(whereStatement)) {
+            whereStatement = "where " + whereStatement;
+        }
+        if (databaseId.equals("sqlserver") || databaseId.equals("mysql")) {
+            return XCI.format("select case when exists(select 1 from {} {}) then 1 else 0 end", tableName, whereStatement);
+        } else if (databaseId.equals("oracle")) {
+            return XCI.format("select case when exists(select 1 from {} {}) then 1 else 0 end from dual", tableName, whereStatement);
+        }
+        return XCI.format("select count(1) from {} {}", tableName, whereStatement);
+    }
+
+    /**
+     * 根据不同的数据库返回查询机构和机构下级的sql语句
+     * @param databaseId      数据库类型:oracle、mysql、sqlserver、sqlite、postgresql
+     * @param deptIdParamName 机构主键参数名称
+     */
+    public static String getDeptAndLowerSqlStatement(String databaseId, String deptIdParamName) {
+        if (databaseId.equals("sqlserver")) {
+            return "select id from fnGetDeptLower(#{"+deptIdParamName+"},1)";
+        } else if (databaseId.equals("oracle")) {
+            return XCI.format("select id from sys_dept start with id=#{"+deptIdParamName+"} connect by prior id=parent_id");
+        } else if (databaseId.equals("mysql")) {
+            return XCI.format("select id from sys_dept where find_in_set(id, fnGetDeptLower('#{"+deptIdParamName+"}',1))");
         }
         return R.Empty;
     }
+
+
+
+
+
+    // endregion
 }

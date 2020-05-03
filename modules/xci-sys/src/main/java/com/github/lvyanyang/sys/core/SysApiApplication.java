@@ -8,11 +8,13 @@ import com.github.lvyanyang.core.BaseApplication;
 import com.github.lvyanyang.core.R;
 import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
-
+import com.github.lvyanyang.model.NameValue;
 import com.github.lvyanyang.model.OperateLogInfo;
-import com.github.lvyanyang.sys.entity.SysApp;
 import com.github.lvyanyang.sys.component.SysService;
+import com.github.lvyanyang.sys.entity.SysApp;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 /**
  * 系统模块应用程序接口
@@ -50,8 +52,8 @@ public class SysApiApplication extends BaseApplication {
 
     @Override
     public Boolean isAuthorize(String code) {
-        var user = SysService.me().getCurrentUser();
-        return SysService.me().isAuthorize(user, code);
+        var user = SysService.me().getCurrentUserId();
+        return SysService.me().isAuthModule(user, code);
     }
 
     @Override
@@ -59,5 +61,17 @@ public class SysApiApplication extends BaseApplication {
         log.info(XCI.toJsonString(operateLogInfo, true));
         var operateLog = SysService.me().buildOperateLog(operateLogInfo);
         SysService.me().operateLogService().insertAsync(operateLog);
+    }
+
+    @Override
+    public Object getParam(String code, Object defaultValue) {
+        var param = SysService.me().paramService().selectByCode(code);
+        if (param != null && XCI.isNotBlank(param.getValue())) return param.getValue();
+        return defaultValue;
+    }
+
+    @Override
+    public List<NameValue> getDic(String code) {
+        return super.getDic(code);
     }
 }

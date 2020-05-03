@@ -28,7 +28,7 @@ import java.util.List;
  * @author 吕艳阳
  */
 @Api(tags = "系统字典接口")
-@ApiSort(5)
+@ApiSort(24)
 @Authorize
 @RestController
 @RequestMapping(value = R.SysApiPrefix + "/dic", produces = R.PROJSON)
@@ -127,14 +127,14 @@ public class DicApiController extends SysApiController {
     }
 
     @ApiOperation(value = "查询字典列表")
-    @ApiOperationSupport(order = 10, author = R.LYY, ignoreParameters = {R.IG_PAGE_INDEX, R.IG_PAGE_SIZE, R.IG_SORT_NAME, R.IG_SORT_DIR})
+    @ApiOperationSupport(order = 10, author = R.LYY, ignoreParameters = {R.IPI, R.IPS, R.IPSN, R.IPSD})
     @PostMapping("/selectList")
     public RestResult<List<SysDic>> selectList(DicFilter filter) {
         return RestResult.ok(SysService.me().dicService().selectList(filter));
     }
 
     @ApiOperation(value = "导出字典列表")
-    @ApiOperationSupport(order = 11, author = R.LYY, ignoreParameters = {R.IG_PAGE_INDEX, R.IG_PAGE_SIZE, R.IG_SORT_NAME, R.IG_SORT_DIR})
+    @ApiOperationSupport(order = 11, author = R.LYY, ignoreParameters = {R.IPI, R.IPS, R.IPSN, R.IPSD})
     @PostMapping(value = "/export", produces = {R.PROOCTET, R.PROJSON})
     public void export(DicFilter filter) {
         XCI.exportExcel(SysService.me().dicService().selectList(filter), SysDic.class, "系统字典列表");

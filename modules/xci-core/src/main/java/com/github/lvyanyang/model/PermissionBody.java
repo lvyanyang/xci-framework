@@ -19,15 +19,15 @@ public class PermissionBody {
     @ApiModelProperty(value = "角色主键字符串")
     private String roleIds;
 
-    /** 机构数据权限 [1-全部, 2-自定义, 3-所在部门, 4-所在部门及所有下级, 5-仅本人] */
-    @ApiModelProperty(value = "机构数据权限 [1-全部, 2-自定义, 3-所在部门, 4-所在部门及所有下级, 5-仅本人]")
+    /** 模块主键数组字符串 */
+    @ApiModelProperty(value = "模块主键数组字符串")
+    private String moduleIds;
+
+    /** 机构权限*/
+    @ApiModelProperty(value = "机构权限")
     private Integer deptScope;
 
     /** 自定义机构数据主键数组字符串 */
     @ApiModelProperty(value = "机构数据主键数组字符串")
-    private String deptIds;
-
-    /** 模块主键数组字符串 */
-    @ApiModelProperty(value = "模块主键数组字符串")
-    private String moduleIds;
+    private String customDeptIds;
 }

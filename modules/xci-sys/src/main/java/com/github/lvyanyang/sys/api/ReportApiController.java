@@ -28,7 +28,7 @@ import java.util.List;
  * @author 吕艳阳
  */
 @Api(tags = "系统报表接口")
-@ApiSort(15)
+@ApiSort(28)
 @Authorize
 @RestController
 @RequestMapping(value = R.SysApiPrefix + "/report", produces = R.PROJSON)
@@ -99,14 +99,14 @@ public class ReportApiController extends SysApiController {
     }
 
     @ApiOperation(value = "查询报表列表")
-    @ApiOperationSupport(order = 9, author = R.LYY, ignoreParameters = {R.IG_PAGE_INDEX, R.IG_PAGE_SIZE, R.IG_SORT_NAME, R.IG_SORT_DIR})
+    @ApiOperationSupport(order = 9, author = R.LYY, ignoreParameters = {R.IPI, R.IPS, R.IPSN, R.IPSD})
     @PostMapping(value = "/selectList")
     public RestResult<List<SysReport>> selectList(@RequestBody ReportFilter filter) {
         return RestResult.ok(SysService.me().reportService().selectList(filter));
     }
 
     @ApiOperation(value = "导出报表列表")
-    @ApiOperationSupport(order = 10, author = R.LYY, ignoreParameters = {R.IG_PAGE_INDEX, R.IG_PAGE_SIZE, R.IG_SORT_NAME, R.IG_SORT_DIR})
+    @ApiOperationSupport(order = 10, author = R.LYY, ignoreParameters = {R.IPI, R.IPS, R.IPSN, R.IPSD})
     @PostMapping(value = "/export", produces = {R.PROOCTET, R.PROJSON})
     public void export(@RequestBody ReportFilter filter) {
         XCI.exportExcel(SysService.me().reportService().selectList(filter), SysReport.class, "系统报表列表");

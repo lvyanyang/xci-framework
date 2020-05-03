@@ -7,6 +7,7 @@ package com.github.lvyanyang.sys.configuration;
 import com.github.lvyanyang.sys.api.ParamApiController;
 import com.google.common.collect.Lists;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +34,7 @@ import javax.annotation.Resource;
         "com.github.lvyanyang.sys.web.component",
         "com.github.lvyanyang.sys.web.controller"
 })
+@EnableConfigurationProperties(SysProperties.class)
 @MapperScan(basePackages = {"com.github.lvyanyang.sys.dao"})
 public class SysAutoConfiguration {
     @Resource private ApiInfo apiInfo;
@@ -93,7 +95,7 @@ public class SysAutoConfiguration {
         return cacheManager.getCache("captchaCache");
     }
 
-    @Bean public Cache userModuleCache() {
-        return cacheManager.getCache("userModuleCache");
+    @Bean public Cache permissionCache() {
+        return cacheManager.getCache("permissionCache");
     }
 }

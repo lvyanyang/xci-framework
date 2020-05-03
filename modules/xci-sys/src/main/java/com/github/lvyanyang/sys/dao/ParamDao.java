@@ -21,7 +21,7 @@ public interface ParamDao {
      * @param id 参数主键
      * @return 如果存在返回true
      */
-    boolean existById(@Param("id") Long id);
+    boolean existxById(@Param("id") Long id);
 
     /**
      * 是否存在指定编码的参数
@@ -29,7 +29,7 @@ public interface ParamDao {
      * @param excludeId 排除的主键，如果为null则不指定排除的主键
      * @return 如果存在返回true
      */
-    boolean existByCode(@Param("code") String code, @Param("excludeId") Long excludeId);
+    boolean existxByCode(@Param("code") String code, @Param("excludeId") Long excludeId);
 
     /**
      * 新建参数

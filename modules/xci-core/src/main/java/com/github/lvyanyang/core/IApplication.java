@@ -4,8 +4,11 @@
 
 package com.github.lvyanyang.core;
 
+import com.github.lvyanyang.model.NameValue;
 import com.github.lvyanyang.model.OperateLogInfo;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 /**
  * 应用程序业务处理接口
@@ -50,4 +53,17 @@ public interface IApplication extends WebMvcConfigurer {
      * @param operateLogInfo 操作日志对象
      */
     void processOperateLog(OperateLogInfo operateLogInfo);
+
+    /**
+     * 根据参数编码获取参数值
+     * @param code 参数编码
+     * @param defaultValue 找不到时的默认值
+     */
+    Object getParam(String code, Object defaultValue);
+
+    /**
+     * 根据字典编码获取字典列表
+     * @param code 字典类型编码
+     */
+    List<NameValue> getDic(String code);
 }

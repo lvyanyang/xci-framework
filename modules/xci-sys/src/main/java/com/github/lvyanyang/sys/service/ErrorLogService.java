@@ -6,7 +6,7 @@ package com.github.lvyanyang.sys.service;
 
 import com.github.lvyanyang.component.AsyncService;
 import com.github.lvyanyang.model.PageList;
-import com.github.lvyanyang.sys.core.Params;
+import com.github.lvyanyang.sys.core.SysParams;
 import com.github.lvyanyang.sys.dao.ErrorLogDao;
 import com.github.lvyanyang.sys.entity.SysErrorLog;
 import com.github.lvyanyang.sys.filter.ErrorLogFilter;
@@ -30,7 +30,7 @@ public class ErrorLogService {
      * @param entity 错误日志对象
      */
     public void insert(SysErrorLog entity) {
-        if (Params.enableErrorLog()){
+        if (SysParams.SysLogEnableErrorLog.getBoolean()){
             errorLogDao.insert(entity);
         }
     }
@@ -40,7 +40,7 @@ public class ErrorLogService {
      * @param entity 错误日志实体
      */
     public void insertAsync(SysErrorLog entity) {
-        if (Params.enableErrorLog()){
+        if (SysParams.SysLogEnableErrorLog.getBoolean()){
             AsyncService.me().execute(new TimerTask() {
                 @Override
                 public void run() {

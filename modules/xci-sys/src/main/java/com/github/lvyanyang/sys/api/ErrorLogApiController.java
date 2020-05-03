@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author 吕艳阳
  */
 @Api(tags = "系统错误日志接口")
-@ApiSort(10)
+@ApiSort(31)
 @Authorize
 @RestController
 @RequestMapping(value = R.SysApiPrefix + "/errorLog", produces = R.PROJSON)

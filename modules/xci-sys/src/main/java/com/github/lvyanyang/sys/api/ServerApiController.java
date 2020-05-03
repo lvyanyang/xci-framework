@@ -4,12 +4,12 @@
 
 package com.github.lvyanyang.sys.api;
 
-import com.github.lvyanyang.sys.core.Params;
-import com.github.lvyanyang.sys.core.SysApiController;
 import com.github.lvyanyang.core.R;
 import com.github.lvyanyang.core.RestResult;
-import com.github.lvyanyang.internal.ServletUtil;
 import com.github.lvyanyang.core.XCI;
+import com.github.lvyanyang.internal.ServletUtil;
+import com.github.lvyanyang.sys.core.SysApiController;
+import com.github.lvyanyang.sys.core.SysParams;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
@@ -40,7 +40,7 @@ public class ServerApiController extends SysApiController {
     @ApiOperationSupport(order = 2, author = R.LYY)
     @PostMapping("/name")
     public RestResult serverName() {
-        return RestResult.ok(Params.sysServerName());
+        return RestResult.ok(SysParams.SysApiServerName.getString());
     }
 
     @ApiOperation(value = "获取客户端IP地址")

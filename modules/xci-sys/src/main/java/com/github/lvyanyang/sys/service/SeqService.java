@@ -39,7 +39,7 @@ public class SeqService extends BaseService {
      * @return 如果存在返回true
      */
     public boolean existByCode(@NotBlank(message = "请指定序列编码") String code, Long excludeId) {
-        return seqDao.existByCode(code, excludeId);
+        return seqDao.existxByCode(code, excludeId);
     }
 
     /**
@@ -134,7 +134,7 @@ public class SeqService extends BaseService {
         XCI.ifTrueAction(XCI.invalidId(created, entity.getId()), () -> entity.setId(XCI.nextId()));
 
         //检查序列编码是否存在
-        if (seqDao.existByCode(entity.getCode(), XCI.excludeId(created, entity.getId()))) {
+        if (seqDao.existxByCode(entity.getCode(), XCI.excludeId(created, entity.getId()))) {
             return RestResult.fail(XCI.format("序列编码[{}]已经存在", entity.getCode()));
         }
 

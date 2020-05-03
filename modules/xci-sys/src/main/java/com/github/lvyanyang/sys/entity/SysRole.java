@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.github.lvyanyang.core.BaseEntity;
 import com.github.lvyanyang.core.R;
-import com.github.lvyanyang.core.XCI;
+import com.github.lvyanyang.sys.model.DeptScopeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -82,10 +82,10 @@ public class SysRole extends BaseEntity {
     private String deptName;
 
     /**
-     * 机构权限 [1-全部, 2-自定义, 3-所在部门, 4-所在部门及所有下级, 5-仅本人]
+     * 机构权限 [1-全部, 2-自定义, 3-所在部门及所有下级, 4-所在部门, 5-仅本人]
      */
-    @Excel(name = "机构权限", replace = {"全部_1", "自定义_2", "所在部门_3", "所在部门及所有下级_4", "仅本人_5"})
-    @ApiModelProperty(value = "机构权限 [1-全部, 2-自定义, 3-所在部门, 4-所在部门及所有下级, 5-仅本人]", required = true, position = 6)
+    @Excel(name = "机构权限", replace = {"全部_1", "自定义_2", "所在部门及所有下级_3", "所在部门_4", "仅本人_5"})
+    @ApiModelProperty(value = "机构权限 [1-全部, 2-自定义, 3-所在部门及所有下级, 4-所在部门, 5-仅本人]", required = true, position = 6)
     private Integer deptScope;
 
     /**
@@ -93,7 +93,7 @@ public class SysRole extends BaseEntity {
      */
     @ApiModelProperty(value = "机构数据权限名称")
     public String getDeptScopeName() {
-       return XCI.getDeptScopeNameByValue(deptScope);
+       return DeptScopeEnum.valueOf(deptScope).getName();
     }
 
     /**

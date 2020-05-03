@@ -265,9 +265,7 @@ EXEC sp_addextendedproperty N'MS_Description', N'角色简拼', 'SCHEMA', N'dbo'
 GO
 EXEC sp_addextendedproperty N'MS_Description', N'机构主键 [0-全局角色]', 'SCHEMA', N'dbo', 'TABLE', N'sys_role', 'COLUMN', N'dept_id'
 GO
-EXEC sp_addextendedproperty N'MS_Description', N'机构数据权限 [1-全部, 2-自定义, 3-所在部门, 4-所在部门及所有下级, 5-仅本人]', 'SCHEMA', N'dbo', 'TABLE', N'sys_role',
-     'COLUMN',
-     N'dept_scope'
+EXEC sp_addextendedproperty N'MS_Description', N'机构权限 [1-全部, 2-自定义, 3-所在机构及所有下级, 4-所在机构, 5-仅本人]', 'SCHEMA', N'dbo', 'TABLE', N'sys_role','COLUMN', N'dept_scope'
 GO
 EXEC sp_addextendedproperty N'MS_Description', N'序号', 'SCHEMA', N'dbo', 'TABLE', N'sys_role', 'COLUMN', N'path'
 GO

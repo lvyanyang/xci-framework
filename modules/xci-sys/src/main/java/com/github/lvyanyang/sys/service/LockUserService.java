@@ -7,7 +7,7 @@ package com.github.lvyanyang.sys.service;
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateTime;
 import com.github.lvyanyang.core.XCI;
-import com.github.lvyanyang.sys.core.Params;
+import com.github.lvyanyang.sys.core.SysParams;
 import com.github.lvyanyang.sys.model.LockUserModel;
 import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
@@ -43,7 +43,7 @@ public class LockUserService {
         }
 
         current.setCount(current.getCount() + 1);
-        if (current.getCount() >= Params.sysUserLockMaxRetryCount()) {
+        if (current.getCount() >= SysParams.SysUserLockMaxRetryCount.getInt()) {
             current.setDisLockTime(DateTime.now().offset(DateField.HOUR, 1).toJdkDate());
         }
     }
@@ -55,7 +55,7 @@ public class LockUserService {
      */
     public boolean isLock(@NotBlank(message = "请指定用户账号") String account) {
         LockUserModel current = get(account);
-        return current != null && (current.getCount() >= Params.sysUserLockMaxRetryCount());
+        return current != null && (current.getCount() >= SysParams.SysUserLockMaxRetryCount.getInt());
     }
 
     /**
@@ -65,7 +65,7 @@ public class LockUserService {
      */
     public boolean requireCaptcha(@NotBlank(message = "请指定用户账号") String account) {
         LockUserModel current = get(account);
-        return current != null && (current.getCount() >= Params.sysUserRequireCaptchaCount());
+        return current != null && (current.getCount() >= SysParams.SysUserRequireCaptchaCount.getInt());
     }
 
     /**
@@ -75,9 +75,9 @@ public class LockUserService {
     public int limtCount(@NotBlank(message = "请指定用户账号") String account) {
         LockUserModel current = get(account);
         if (current != null) {
-            return Params.sysUserLockMaxRetryCount() - current.getCount();
+            return SysParams.SysUserLockMaxRetryCount.getInt() - current.getCount();
         }
-        return Params.sysUserLockMaxRetryCount();
+        return SysParams.SysUserLockMaxRetryCount.getInt();
     }
 
     /**

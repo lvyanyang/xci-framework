@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author 吕艳阳
  */
 @Api(tags = "系统操作日志接口")
-@ApiSort(10)
+@ApiSort(35)
 @Authorize
 @RestController
 @RequestMapping(value = R.SysApiPrefix + "/operateLog", produces = R.PROJSON)

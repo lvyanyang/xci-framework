@@ -22,7 +22,7 @@ public interface FileDao {
      * @param recordId 记录主键
      * @return 如果存在返回true, 否则返回false
      */
-    boolean existByRecordId(@Param("recordId") Long recordId);
+    boolean existxByRecordId(@Param("recordId") Long recordId);
 
     /**
      * 新建文件

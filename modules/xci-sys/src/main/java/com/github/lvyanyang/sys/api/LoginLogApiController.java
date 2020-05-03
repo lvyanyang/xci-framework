@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author 吕艳阳
  */
 @Api(tags = "系统登陆日志接口")
-@ApiSort(10)
+@ApiSort(34)
 @Authorize
 @RestController
 @RequestMapping(value = R.SysApiPrefix + "/loginLog", produces = R.PROJSON)

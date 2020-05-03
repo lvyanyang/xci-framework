@@ -11,7 +11,7 @@ import com.github.lvyanyang.core.XCI;
 import com.github.lvyanyang.model.HistoryInfo;
 import com.github.lvyanyang.model.PageList;
 import com.github.lvyanyang.sys.component.SysService;
-import com.github.lvyanyang.sys.core.Params;
+import com.github.lvyanyang.sys.core.SysParams;
 import com.github.lvyanyang.sys.dao.HistoryLogDao;
 import com.github.lvyanyang.sys.entity.SysHistoryLog;
 import com.github.lvyanyang.sys.filter.HistoryLogFilter;
@@ -35,7 +35,7 @@ public class HistoryLogService {
      * @param history 历史日志实体
      */
     public void insert(HistoryInfo history) {
-        if (Params.enableHistoryLog()) {
+        if (SysParams.SysLogEnableHistoryLog.getBoolean()) {
             SysHistoryLog entity = buildHistory(history);
             historyDao.insert(entity);
         }
@@ -46,7 +46,7 @@ public class HistoryLogService {
      * @param history 历史日志实体
      */
     public void insertAsync(HistoryInfo history) {
-        if (Params.enableHistoryLog()) {
+        if (SysParams.SysLogEnableHistoryLog.getBoolean()) {
             SysHistoryLog entity = buildHistory(history);
             AsyncService.me().execute(new TimerTask() {
                 @Override

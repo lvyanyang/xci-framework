@@ -34,30 +34,18 @@
     <!--endregion-->
 
     <!--region 是否存在指定主键的参数-->
-    <select id="existById" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_param"/>
-            <property name="where" value="existByIdWhere"/>
-        </include>
-    </select>
-    <!--existById Where-->
-    <sql id="existByIdWhere">
+    <select id="existxById" resultType="boolean">
+        select count(1) from sys_param
         where id = #{id}
-    </sql>
+    </select>
     <!--endregion-->
 
     <!--region 是否存在指定编码的参数-->
-    <select id="existByCode" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_param"/>
-            <property name="where" value="existByCodeWhere"/>
-        </include>
-    </select>
-    <!--existByCode Where-->
-    <sql id="existByCodeWhere">
+    <select id="existxByCode" resultType="boolean">
+        select count(1) from sys_param
         where code = #{code}
         <if test="excludeId != null">and id != #{excludeId}</if>
-    </sql>
+    </select>
     <!--endregion-->
     
     <!--region 新建参数-->

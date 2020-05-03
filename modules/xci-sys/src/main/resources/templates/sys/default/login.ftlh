@@ -1,6 +1,6 @@
-<#-- @ftlvariable name="systemTitle" type="java.lang.String" -->
-<#-- @ftlvariable name="systemTitleColor" type="java.lang.String" -->
-<#-- @ftlvariable name="systemCopyright" type="java.lang.String" -->
+<#-- @ftlvariable name="title" type="java.lang.String" -->
+<#-- @ftlvariable name="titleColor" type="java.lang.String" -->
+<#-- @ftlvariable name="copyright" type="java.lang.String" -->
 <#include "/_inc/_layout.ftlh">
 <@header title=systemTitle+" 系统登录">
     <link href="${web.url('/sys/css/login.css')}" rel="stylesheet"/>
@@ -10,8 +10,8 @@
         <div class="form-group">
             <img src="${web.cdn('/img/logo.svg')}" width="106" height="128"/>
         </div>
-        <div class="form-group title font-kai" style="color: ${systemTitleColor};">
-            ${systemTitle}
+        <div class="form-group title font-kai" style="color: ${titleColor};">
+            ${title}
         </div>
         <div class="form-group">
             <div class="col-md-8 col-md-offset-2 has-feedback">
@@ -52,7 +52,7 @@
     </div>
 </div>
 <div class="footer">
-    ${systemCopyright}
+    ${copyright}
 </div>
 <@footer>
     <script src="${web.cdn('/lib/jigsaw/jigsaw.js')}"></script>

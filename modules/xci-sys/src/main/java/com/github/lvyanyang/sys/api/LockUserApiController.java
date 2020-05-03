@@ -24,7 +24,7 @@ import java.util.List;
  * @author 吕艳阳
  */
 @Api(tags = "系统锁定用户接口")
-@ApiSort(9)
+@ApiSort(16)
 @Authorize
 @RestController
 @RequestMapping(value = R.SysApiPrefix + "/lockUser", produces = R.PROJSON)

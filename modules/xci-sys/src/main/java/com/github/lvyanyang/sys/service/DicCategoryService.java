@@ -39,7 +39,7 @@ public class DicCategoryService extends BaseService {
      * @return 如果存在返回true
      */
     public boolean existByCode(@NotBlank(message = "请指定字典类型编码") String code, Long excludeId) {
-        return dicCategoryDao.existByCode(code, excludeId);
+        return dicCategoryDao.existxByCode(code, excludeId);
     }
 
     /**
@@ -49,7 +49,7 @@ public class DicCategoryService extends BaseService {
      * @return 如果存在返回true
      */
     public boolean existByName(@NotBlank(message = "请指定字典类型名称") String name, Long excludeId) {
-        return dicCategoryDao.existByName(name, excludeId);
+        return dicCategoryDao.existxByName(name, excludeId);
     }
 
     /**
@@ -167,12 +167,12 @@ public class DicCategoryService extends BaseService {
         }
 
         //检查字典类型编码是否存在
-        if(dicCategoryDao.existByCode(entity.getCode(), XCI.excludeId(created, entity.getId()))) {
+        if(dicCategoryDao.existxByCode(entity.getCode(), XCI.excludeId(created, entity.getId()))) {
             return RestResult.fail(XCI.format("字典类型编码[{}]已经存在", entity.getCode()));
         }
 
         //检查字典类型名称是否存在
-        if(dicCategoryDao.existByName(entity.getName(), XCI.excludeId(created, entity.getId()))) {
+        if(dicCategoryDao.existxByName(entity.getName(), XCI.excludeId(created, entity.getId()))) {
             return RestResult.fail(XCI.format("字典类型名称[{}]已经存在", entity.getName()));
         }
 

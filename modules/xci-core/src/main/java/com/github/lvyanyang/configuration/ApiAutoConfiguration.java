@@ -34,7 +34,9 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  */
 @Configuration
 @EnableConfigurationProperties(ApiProperties.class)
-@Import(SwaggerAutoConfiguration.class)
+@Import({
+        SwaggerAutoConfiguration.class
+})
 @ComponentScan(basePackages = {"com.github.lvyanyang.component", "com.github.lvyanyang.aspect"})
 public class ApiAutoConfiguration {
     // 核心线程池大小
@@ -76,7 +78,7 @@ public class ApiAutoConfiguration {
      */
     @Bean(name = "captchaProducer")
     public DefaultKaptcha getKaptchaBean() {
-        Properties properties = getDefaultProperties();
+        Properties properties = getKaptchaDefaultProperties();
         Config config = new Config(properties);
         DefaultKaptcha defaultKaptcha = new DefaultKaptcha();
         defaultKaptcha.setConfig(config);
@@ -88,7 +90,7 @@ public class ApiAutoConfiguration {
      */
     @Bean(name = "captchaProducerMath")
     public DefaultKaptcha getKaptchaBeanMath() {
-        Properties properties = getDefaultProperties();
+        Properties properties = getKaptchaDefaultProperties();
         // 验证码文本字符大小 默认为40
         properties.setProperty("kaptcha.textproducer.font.size", "35");
         // 验证码文本生成器
@@ -106,7 +108,7 @@ public class ApiAutoConfiguration {
     /**
      * 获取验证码默认配置
      */
-    private Properties getDefaultProperties() {
+    private Properties getKaptchaDefaultProperties() {
         Properties properties = new Properties();
 
         // 是否有边框 默认为true 我们可以自己设置yes，no
@@ -149,7 +151,6 @@ public class ApiAutoConfiguration {
     public StringHttpMessageConverter createResponseBodyConverter() {
         return new StringHttpMessageConverter(StandardCharsets.UTF_8);
     }
-
 
     /**
      * 对方法中的简单参数进行校验

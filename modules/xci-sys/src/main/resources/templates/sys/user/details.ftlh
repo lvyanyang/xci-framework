@@ -6,7 +6,7 @@
 <@header>
     <link href="${web.url('/sys/css/tree-noselect.css')}" rel="stylesheet"/>
     <style>
-        .label{
+        .label {
             font-size: 100% !important;
         }
     </style>
@@ -54,7 +54,7 @@
                     </tr>
                     <tr>
                         <th>登录次数</th>
-                        <td>${entity.loginCount}</td>
+                        <td>${entity.loginTimes}</td>
                         <th>职位</th>
                         <td>${entity.post}</td>
                     </tr>
@@ -74,7 +74,9 @@
                         <th>选项</th>
                         <td colspan="3">
                             <#--账号类型-->
-                            <@xci.boolAllLabel value=entity.category==0 allLable=entity.categoryName/>
+                            <#if entity.category==1>
+                                <@xci.boolAllLabel value=entity.category==0 allLable=entity.categoryName/>
+                            </#if>
                             <#--管理员-->
                             <@xci.boolLabel value=!entity.admin trueLable="普通账号" falseLable="管理员"/>
                             <#--状态-->
@@ -85,12 +87,14 @@
                             <@xci.boolLabel value=entity.pwdNeverExpire trueLable="密码永不过期" falseLable=""/>
                         </td>
                     </tr>
-                    <tr>
-                        <th>企业主键</th>
-                        <td>${entity.entId}</td>
-                        <th>企业名称</th>
-                        <td>${entity.entName}</td>
-                    </tr>
+                    <#if web.notBlank(entity.entId)>
+                        <tr>
+                            <th>企业主键</th>
+                            <td>${entity.entId}</td>
+                            <th>企业名称</th>
+                            <td>${entity.entName}</td>
+                        </tr>
+                    </#if>
                     <tr>
                         <th>备注</th>
                         <td colspan="3">${entity.remark}</td>

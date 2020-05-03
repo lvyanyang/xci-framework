@@ -4,13 +4,13 @@
 
 package com.github.lvyanyang.sys.aspect;
 
-import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.annotation.BindingCurrentUser;
-import lombok.extern.slf4j.Slf4j;
+import com.github.lvyanyang.sys.component.SysService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 
@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
  * @author 吕艳阳
  */
 @Aspect
-@Slf4j
+@Component
 public class BindingCurrentUserAspect {
     @Before("@annotation(com.github.lvyanyang.sys.annotation.BindingCurrentUser)")
     public void doProcess(JoinPoint joinPoint) {

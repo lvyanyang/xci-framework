@@ -1,24 +1,21 @@
 <#-- @ftlvariable name="currentUser" type="com.github.lvyanyang.sys.entity.SysUser" -->
-<#-- @ftlvariable name="systemTitle" type="java.lang.String" -->
-<#-- @ftlvariable name="systemTitleColor" type="java.lang.String" -->
-<#-- @ftlvariable name="systemCopyright" type="java.lang.String" -->
-<#-- @ftlvariable name="systemTitleVersion" type="java.lang.String" -->
-<#-- @ftlvariable name="systemTitleVersionColor" type="java.lang.String" -->
-<#-- @ftlvariable name="systemEnableOnlineUserRefresh" type="java.lang.String" -->
-<#-- @ftlvariable name="systemEnableMessageRefresh" type="java.lang.String" -->
-<#-- @ftlvariable name="systemEnableTabPage" type="java.lang.String" -->
+<#-- @ftlvariable name="title" type="java.lang.String" -->
+<#-- @ftlvariable name="titleColor" type="java.lang.String" -->
+<#-- @ftlvariable name="copyright" type="java.lang.String" -->
+<#-- @ftlvariable name="versionTitle" type="java.lang.String" -->
+<#-- @ftlvariable name="versionTitleColor" type="java.lang.String" -->
 <#include "/_inc/_layout.ftlh">
-<@header title=systemTitle bodyCls="jxlayout">
+<@header title=title bodyCls="jxlayout">
     <link href="${web.url('/sys/css/main.css')}" rel="stylesheet"/>
 </@header>
 <div class="north-panel" data-options="region:'north'">
     <div class="logo">
         <img src="${web.cdn('/img/logo.svg')}">
     </div>
-    <div class="title font-kai" style="color: ${systemTitleColor};">
-        ${systemTitle}
-        <div class="subtitle" style="color: ${systemTitleVersionColor};">
-            ${systemTitleVersion}
+    <div class="title font-kai" style="color: ${titleColor};">
+        ${title}
+        <div class="subtitle" style="color: ${versionTitleColor};">
+            ${versionTitle}
         </div>
     </div>
     <div class="nav">
@@ -88,7 +85,7 @@
         <span id="current_time"></span>
     </div>
     <div class="right">
-        ${systemCopyright}
+        ${copyright}
     </div>
 </div>
 <div id="closeMenu" style="width:150px;">
@@ -104,13 +101,5 @@
     <div id="fullPage">全屏</div>
 </div>
 <@footer>
-    <script>
-        <#--window.systemEnableTabPage = '${systemEnableTabPage}';-->
-        <#--window.systemEnableOnlineUserRefresh = '${systemEnableOnlineUserRefresh}';-->
-        <#--window.systemEnableMessageRefresh = '${systemEnableMessageRefresh}';-->
-        window.systemEnableTabPage = '1';
-        window.systemEnableOnlineUserRefresh = '1';
-        window.systemEnableMessageRefresh = '0';
-    </script>
     <script src="${web.url('/sys/js/main.js')}"></script>
 </@footer>

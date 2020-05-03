@@ -58,6 +58,21 @@ public class RestResult<T> {
         this.data = data;
     }
 
+    public RestResult<T> code(int code){
+        this.code = code;
+        return this;
+    }
+
+    public RestResult<T> msg(String msg){
+        this.msg = msg;
+        return this;
+    }
+
+    public RestResult<T> data(T data){
+        this.data = data;
+        return this;
+    }
+
     /**
      * 初始化成功操作结果对象
      */

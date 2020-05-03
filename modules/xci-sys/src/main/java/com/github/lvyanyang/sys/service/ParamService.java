@@ -20,7 +20,6 @@ import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -37,11 +36,6 @@ public class ParamService extends BaseService {
     @Resource private ParamDao paramDao;
     @Resource private Cache paramCache;
 
-    @PostConstruct
-    private void init() {
-        refresh();
-    }
-
     /**
      * 是否存在指定编码的参数
      * @param code      参数编码
@@ -49,7 +43,7 @@ public class ParamService extends BaseService {
      * @return 如果存在返回true
      */
     public boolean existByCode(@NotBlank(message = "请指定参数编码") String code, Long excludeId) {
-        return paramDao.existByCode(code, excludeId);
+        return paramDao.existxByCode(code, excludeId);
     }
 
     /**
@@ -77,7 +71,7 @@ public class ParamService extends BaseService {
     @Transactional(rollbackFor = Exception.class)
     public void batchSave(@Valid List<SysParam> entities) {
         for (SysParam param : entities) {
-            if (param.getId() == null || !paramDao.existById(param.getId())) {
+            if (param.getId() == null || !paramDao.existxById(param.getId())) {
                 //无主键或者主键在数据库中不存在,则新增;
                 SysService.me().paramService().save(true, param).ifFailThrow();
             } else {
@@ -149,12 +143,12 @@ public class ParamService extends BaseService {
     }
 
     /**
-     * 刷新参数缓存
+     * 重新加载参数缓存
      */
     public void refresh() {
         paramCache.clear();
         paramDao.selectList(new ParamFilter()).forEach(p -> paramCache.put(p.getCode(), p));
-        log.info("刷新系统参数缓存");
+        log.info("重新加载系统参数缓存");
     }
 
     /**
@@ -170,7 +164,7 @@ public class ParamService extends BaseService {
         XCI.ifBlankAction(entity.getSpell(), () -> entity.setSpell(XCI.getSpell(entity.getName())));
 
         //检查参数编码是否存在
-        if (paramDao.existByCode(entity.getCode(), XCI.excludeId(created, entity.getId()))) {
+        if (paramDao.existxByCode(entity.getCode(), XCI.excludeId(created, entity.getId()))) {
             return RestResult.fail(XCI.format("参数编码[{}]已经存在", entity.getCode()));
         }
 

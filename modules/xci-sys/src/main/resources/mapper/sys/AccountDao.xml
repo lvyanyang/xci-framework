@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2007-2020 西安交通信息投资营运有限公司 版权所有
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.lvyanyang.sys.dao.AccountDao">
+    <!--region 公共代码段-->
+
+    <!--查询安全List-->
+    <sql id="selectSecurity">
+        select u.id, u.name, u.spell, u.account, u.category, u.pwd, u.pwd_salt, u.pwd_must_modify, u.pwd_allow_modify,
+               u.pwd_never_expire, u.pwd_expire_time, u.allow_start_time, u.allow_end_time, u.admin, u.mobile, u.email,
+               u.post, u.login_times, u.first_visit_time, u.last_visit_time, u.ent_id, u.ent_name, u.visible, u.status, u.remark,
+               d.id dept_id,d.name dept_name
+        from sys_user u left join sys_dept d on u.dept_id = d.id
+    </sql>
+
+    <!--endregion-->
+
+    <!--region 根据户账号查询单个用户,包含安全信息-->
+    <select id="selectSecurityById" resultType="com.github.lvyanyang.sys.entity.SysUserSecurity">
+        <include refid="selectSecurity"/>
+        where u.id = #{id}
+    </select>
+    <!--endregion-->
+
+    <!--region 根据户账号查询单个用户,包含安全信息-->
+    <select id="selectSecurityByAccount" resultType="com.github.lvyanyang.sys.entity.SysUserSecurity">
+        <include refid="selectSecurity"/>
+        where u.account = #{account} and u.deleted = 0
+    </select>
+    <!--endregion-->
+
+    <!--region 更新用户登录状态-->
+    <update id="updateLoginStatus">
+        update sys_user
+        <set>
+            login_times = login_times + 1,
+            last_visit_time = #{lastVisitTime},
+            <if test="firstVisitTime != null">first_visit_time = #{firstVisitTime}</if>
+        </set>
+        where id = #{id}
+    </update>
+    <!--endregion -->
+
+    <!--region 修改用户密码-->
+    <update id="modifyPassword">
+        update sys_user
+        <set>
+            pwd_salt = #{salt},
+            pwd = #{pwd},
+            pwd_must_modify = 0,
+            <if test="pwdExpireTime != null">pwd_expire_time = #{pwdExpireTime}</if>
+        </set>
+        where id = #{id}
+    </update>
+    <!--endregion -->
+
+    <!--region 重置用户密码-->
+    <update id="revisePassword">
+        update sys_user
+        <set>
+            pwd_salt = #{salt},
+            pwd = #{pwd}
+        </set>
+        where id = #{id}
+    </update>
+    <!--endregion -->
+
+</mapper>

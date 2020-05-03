@@ -20,7 +20,6 @@ import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -41,18 +40,13 @@ public class DicService extends BaseService {
     /** 字典缓存对象 */
     @Resource private Cache dicCache;
 
-    @PostConstruct
-    private void init() {
-        refresh();
-    }
-
     /**
      * 检查字典类型编码是否存在
      * @param categoryCode 字典编码
      * @return 如果存在返回true
      */
     public boolean existByCategoryCode(@NotBlank(message = "请指定字典编码") String categoryCode) {
-        return dicDao.existByCategoryCode(categoryCode);
+        return dicDao.existxByCategoryCode(categoryCode);
     }
 
     /**
@@ -62,9 +56,8 @@ public class DicService extends BaseService {
      * @param excludeId    排除的主键，如果为null则不指定排除的主键
      * @return 如果存在返回true
      */
-    public boolean existByName(@NotBlank(message = "请指定字典类型编码") String categoryCode,
-                               @NotBlank(message = "请指定字典名称") String name, Long excludeId) {
-        return dicDao.existByName(categoryCode, name, excludeId);
+    public boolean existByName(@NotBlank(message = "请指定字典类型编码") String categoryCode, @NotBlank(message = "请指定字典名称") String name, Long excludeId) {
+        return dicDao.existxByName(categoryCode, name, excludeId);
     }
 
     /**
@@ -92,7 +85,7 @@ public class DicService extends BaseService {
     @Transactional(rollbackFor = Exception.class)
     public void batchSave(@Valid List<SysDic> entities) {
         for (SysDic dic : entities) {
-            if (dic.getId() == null || !dicDao.existById(dic.getId())) {
+            if (dic.getId() == null || !dicDao.existxById(dic.getId())) {
                 //无主键或者主键在数据库中不存在,则新增;
                 SysService.me().dicService().save(true, dic).ifFailThrow();
             } else {
@@ -109,8 +102,7 @@ public class DicService extends BaseService {
      */
     @OperateLog(tag = R.Module.Dic, msg = "更新字典类型编码")
     @Transactional(rollbackFor = Exception.class)
-    public RestResult updateCategoryCode(@NotBlank(message = "请指定原字典类型编码") String oldCategoryCode,
-                                         @NotBlank(message = "请指定新字典类型编码") String newCategoryCode) {
+    public RestResult updateCategoryCode(@NotBlank(message = "请指定原字典类型编码") String oldCategoryCode, @NotBlank(message = "请指定新字典类型编码") String newCategoryCode) {
         dicDao.updateCategoryCode(oldCategoryCode, newCategoryCode);
         dicCache.evict(oldCategoryCode);
         return RestResult.ok();
@@ -152,7 +144,6 @@ public class DicService extends BaseService {
         refreshCache(IdValues);
         return RestResult.ok();
     }
-
 
     /**
      * 根据主键修改字典排序路径
@@ -239,8 +230,7 @@ public class DicService extends BaseService {
      * @param defaultValue 找不到指定的项值时返回的默认值
      * @return 返回字典键值对
      */
-    public String selectValueByName(@NotBlank(message = "请指定字典类型编码") String categoryCode,
-                                    @NotBlank(message = "请指定字典名称") String name, String defaultValue) {
+    public String selectValueByName(@NotBlank(message = "请指定字典类型编码") String categoryCode, @NotBlank(message = "请指定字典名称") String name, String defaultValue) {
         if (XCI.isBlank(categoryCode) || XCI.isBlank(name)) {
             return defaultValue;
         }
@@ -260,8 +250,7 @@ public class DicService extends BaseService {
      * @param defaultName  找不到指定的项值时返回的默认名称
      * @return 返回数据字典键值对
      */
-    public String selectNameByValue(@NotBlank(message = "请指定字典类型编码") String categoryCode,
-                                    @NotBlank(message = "请指定字典值") String value, String defaultName) {
+    public String selectNameByValue(@NotBlank(message = "请指定字典类型编码") String categoryCode, @NotBlank(message = "请指定字典值") String value, String defaultName) {
         if (XCI.isBlank(categoryCode) || XCI.isBlank(value)) {
             return defaultName;
         }
@@ -280,8 +269,7 @@ public class DicService extends BaseService {
      * @param id           主键
      * @return 返回直接子节点数量
      */
-    public Integer selectChildCount(@NotBlank(message = "请指定字典类型编码") String categoryCode,
-                                    @NotNull(message = "请指定字典主键") Long id) {
+    public Integer selectChildCount(@NotBlank(message = "请指定字典类型编码") String categoryCode, @NotNull(message = "请指定字典主键") Long id) {
         return dicDao.selectChildCount(categoryCode, id);
     }
 
@@ -296,7 +284,7 @@ public class DicService extends BaseService {
     }
 
     /**
-     * 刷新字典缓存
+     * 重新加载字典缓存
      */
     public void refresh() {
         dicCache.clear();
@@ -310,7 +298,7 @@ public class DicService extends BaseService {
                     .sorted(Comparator.comparing(SysDic::getPath)).collect(Collectors.toList());
             dicCache.put(code, list);
         }
-        log.info("刷新系统字典缓存");
+        log.info("重新加载系统字典缓存");
     }
 
     /**
@@ -334,7 +322,7 @@ public class DicService extends BaseService {
         }
 
         //检查字典名称是否存在
-        if (dicDao.existByName(entity.getCategoryCode(), entity.getName(), XCI.excludeId(created, entity.getId()))) {
+        if (dicDao.existxByName(entity.getCategoryCode(), entity.getName(), XCI.excludeId(created, entity.getId()))) {
             return RestResult.fail(XCI.format("字典名称[{}]已经存在", entity.getName()));
         }
 

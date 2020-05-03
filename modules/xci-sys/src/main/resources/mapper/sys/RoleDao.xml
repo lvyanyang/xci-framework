@@ -22,9 +22,7 @@
                 <bind name="sname" value="'%' + filter.name + '%'"/>
                 and ( r.name like #{sname} or r.spell like #{sname}  or r.code like #{sname} )
             </if>
-            <if test="filter.dataScope != null and filter.dataScope == true">
-                <include refid="com.github.lvyanyang.internal.FrameworkDao.dataScope"/>
-            </if>
+            <include refid="com.github.lvyanyang.internal.FrameworkDao.deptScope"/>
         </where>
     </sql>
 
@@ -38,57 +36,33 @@
     <!--endregion-->
 
     <!--region 是否存在指定主键的角色-->
-    <select id="existById" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_role"/>
-            <property name="where" value="existByIdWhere"/>
-        </include>
-    </select>
-    <!--existById Where-->
-    <sql id="existByIdWhere">
+    <select id="existxById" resultType="boolean">
+        select count(1) from sys_role
         where id = #{id}
-    </sql>
+    </select>
     <!--endregion-->
 
     <!--region 是否存在指定机构主键的角色-->
-    <select id="existByDeptId" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_role"/>
-            <property name="where" value="existByDeptIdWhere"/>
-        </include>
+    <select id="existxByDeptId" resultType="boolean">
+        select count(1) from sys_role
+       where dept_id = #{deptId}
     </select>
-    <!--existByDeptId Where-->
-    <sql id="existByDeptIdWhere">
-        where dept_id = #{deptId}
-    </sql>
     <!--endregion-->
 
     <!--region 是否存在指定编码的角色-->
-    <select id="existByCode" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_role"/>
-            <property name="where" value="existByCodeWhere"/>
-        </include>
-    </select>
-    <!--existByCodeWhere Where-->
-    <sql id="existByCodeWhere">
+    <select id="existxByCode" resultType="boolean">
+        select count(1) from sys_role
         where code = #{code}
         <if test="excludeId != null">and id != #{excludeId}</if>
-    </sql>
+    </select>
     <!--endregion-->
 
     <!--region 检查是否存在指定的角色名称-->
-    <select id="existByName" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_role"/>
-            <property name="where" value="existByNameWhere"/>
-        </include>
-    </select>
-    <!--existByNameWhere-->
-    <sql id="existByNameWhere">
+    <select id="existxByName" resultType="boolean">
+        select count(1) from sys_role
         where dept_id = #{deptId} and name = #{name}
         <if test="excludeId != null">and id != #{excludeId}</if>
-    </sql>
+    </select>
     <!--endregion-->
 
     <!--region 新建角色-->
@@ -131,7 +105,7 @@
     <!--endregion-->
 
     <!--region 根据主键修改角色机构数据权限-->
-    <update id="updateScope">
+    <update id="updateDeptScope">
         update sys_role
         set dept_scope = #{deptScope}
         where id = #{id}
@@ -168,64 +142,6 @@
     <!--region 查询角色分页列表-->
     <select id="selectPageList" resultType="com.github.lvyanyang.sys.entity.SysRole">
         <include refid="list"/>
-    </select>
-    <!--endregion-->
-
-    <!--region 查询指定用户关联的角色主键列表-->
-    <select id="selectIdsByUserId" resultType="string">
-        select r.id from sys_role r
-        where r.status=1 and exists (
-            select 1 from sys_user_role_map map where map.user_id = #{userId} and map.role_id = r.id
-        )
-    </select>
-    <!--endregion-->
-
-    <!--region 查询指定用户关联的角色列表-->
-    <select id="selectListByUserId" resultType="com.github.lvyanyang.sys.entity.SysRole">
-        <include refid="select"/>
-            where r.status=1 and exists (
-            select 1 from sys_user_role_map map where map.user_id = #{userId} and map.role_id = r.id
-        )
-    </select>
-    <!--endregion-->
-
-    <!--region 查询指定用户未关联的角色主键列表-->
-    <select id="selectUnIdsByUserId" resultType="string">
-        select r.id from sys_role r
-        where r.status=1 and not exists (
-            select 1 from sys_user_role_map map where map.user_id = #{userId} and map.role_id = r.id
-        )
-    </select>
-    <!--endregion-->
-
-    <!--region 查询指定用户未关联的角色列表-->
-    <select id="selectUnListByUserId" resultType="com.github.lvyanyang.sys.entity.SysRole">
-        <include refid="select"/>
-            where r.status=1 and not exists (
-            select 1 from sys_user_role_map map where map.user_id = #{userId} and map.role_id = r.id
-        )
-    </select>
-    <!--endregion-->
-
-    <!--region 根据角色主键查询模块对象列表-->
-    <select id="selectModuleListByRoleId" resultType="com.github.lvyanyang.sys.entity.SysModule">
-        select
-        <include refid="com.github.lvyanyang.sys.dao.ModuleDao.columns"/>
-        from sys_module
-        where status = 1 and id in (
-            select distinct target_id from sys_object_map where object_name='role' and object_id = #{roleId} and target_name='module'
-        )
-        order by parent_id asc,path asc
-    </select>
-    <!--endregion-->
-
-    <!--region 根据角色主键查询机构数据对象列表-->
-    <select id="selectDeptDataListByRoleId" resultType="com.github.lvyanyang.sys.entity.SysDept">
-        <include refid="com.github.lvyanyang.sys.dao.DeptDao.select"/>
-        where d.status = 1 and d.id in (
-            select distinct target_id from sys_object_map where object_name='role' and object_id = #{roleId} and target_name='dept.data'
-        )
-        order by d.parent_id asc,d.path asc
     </select>
     <!--endregion-->
 </mapper>

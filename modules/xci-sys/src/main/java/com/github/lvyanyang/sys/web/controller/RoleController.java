@@ -4,18 +4,19 @@
 
 package com.github.lvyanyang.sys.web.controller;
 
-import com.github.lvyanyang.core.R;
-import com.github.lvyanyang.model.PermissionBody;
-import com.github.lvyanyang.sys.component.SysService;
-import com.github.lvyanyang.sys.filter.RoleFilter;
-import com.github.lvyanyang.sys.web.component.SysWebService;
-import com.github.lvyanyang.sys.web.model.TreeNode;
-import com.github.lvyanyang.sys.entity.SysRole;
 import com.github.lvyanyang.annotation.Authorize;
-import com.github.lvyanyang.exceptions.NotFoundException;
+import com.github.lvyanyang.core.R;
 import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
+import com.github.lvyanyang.exceptions.NotFoundException;
+import com.github.lvyanyang.model.PermissionBody;
+import com.github.lvyanyang.sys.component.SysService;
+import com.github.lvyanyang.sys.entity.SysRole;
+import com.github.lvyanyang.sys.filter.RoleFilter;
+import com.github.lvyanyang.sys.web.SysWebController;
+import com.github.lvyanyang.sys.web.component.SysWebService;
 import com.github.lvyanyang.sys.web.model.JsonGrid;
+import com.github.lvyanyang.sys.web.model.TreeNode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -68,9 +69,7 @@ public class RoleController extends SysWebController {
         var entity = SysService.me().roleService().selectById(idLong);
         if (entity == null) throw new NotFoundException(id);
         map.put("entity", entity);
-
-        map.put("users", SysService.me().userService().selectListByRoleId(idLong));
-        //map.put("ownDataSetting", permissionService.queryObjectDataSetting(id));
+        map.put("users", SysService.me().userRoleMapService().selectMapUserList(idLong));
         return "sys/role/details";
     }
 
@@ -83,8 +82,8 @@ public class RoleController extends SysWebController {
      */
     @ResponseBody
     @GetMapping("/roleOwnModules")
-    public RestResult roleOwnModules(String roleId) {
-        var modules = SysService.me().roleService().selectModuleMapList(Long.valueOf(roleId));
+    public RestResult roleOwnModules(Long roleId) {
+        var modules = SysService.me().permissionService().selectRolePermission(roleId).getModules();
         var nodes = SysWebService.me().toModuleNodeList(modules);
         return RestResult.ok(nodes);
     }
@@ -94,8 +93,8 @@ public class RoleController extends SysWebController {
      */
     @ResponseBody
     @GetMapping("/roleOwnDepts")
-    public RestResult roleOwnDepts(String roleId) {
-        var depts = SysService.me().roleService().selectDeptDataMapList(Long.valueOf(roleId));
+    public RestResult roleOwnDepts(Long roleId) {
+        var depts = SysService.me().permissionService().selectRolePermission(roleId).getDeptScopePermission().getCustoms();
         var nodes = SysWebService.me().toDeptNodeList(depts);
         return RestResult.ok(nodes);
     }
@@ -104,6 +103,7 @@ public class RoleController extends SysWebController {
     @ResponseBody
     @PostMapping("/grid")
     public JsonGrid grid(RoleFilter filter) {
+        filter.setEnableDeptScope(true);
         return new JsonGrid(SysService.me().roleService().selectPageList(filter));
     }
 
@@ -137,7 +137,8 @@ public class RoleController extends SysWebController {
     @PostMapping("/status")
     @Authorize(code = R.Permission.SysRoleUpdate)
     public RestResult status(String id, Integer status) {
-        return SysService.me().roleService().updateStatus(id, XCI.toBool(status));
+        SysService.me().roleService().updateStatus(id, XCI.toBool(status));
+        return RestResult.ok();
     }
 
     /** 导出 */
@@ -170,7 +171,8 @@ public class RoleController extends SysWebController {
     @PostMapping("/authorizeSave")
     @Authorize(code = R.Permission.SysRoleAuthorize)
     public RestResult authorizeSave(PermissionBody permissionModel) {
-        return SysWebService.me().roleService().savePermission(permissionModel);
+         SysWebService.me().permissionService().saveRolePermission(permissionModel);
+         return RestResult.ok();
     }
 
     /**
@@ -178,13 +180,13 @@ public class RoleController extends SysWebController {
      */
     @ResponseBody
     @GetMapping("/authorizeModules")
-    public RestResult authorizeModules(String roleId) {
-        var modules = SysWebService.me().userService().selectUserModuleListByUser(getCurrentUser());
+    public RestResult authorizeModules(Long roleId) {
+        var modules = SysWebService.me().permissionService().selectUserPermission(getCurrentUserId()).getModules();
         Consumer<TreeNode> checkNodeCallback = null;
         if (XCI.isNotBlank(roleId)) {
-            var moduleIds = SysService.me().roleService().selectModuleMapArray(Long.valueOf(roleId));
+            var roleModules = SysService.me().permissionService().selectRolePermission(roleId).getModules();
             checkNodeCallback = node -> {
-                if (moduleIds.stream().anyMatch(p -> p.equals(node.getId()))) {
+                if (roleModules.stream().anyMatch(p -> p.getId().toString().equals(node.getId()))) {
                     node.setChecked(true);
                 }
             };
@@ -199,13 +201,13 @@ public class RoleController extends SysWebController {
      */
     @ResponseBody
     @GetMapping("/authorizeDepts")
-    public RestResult authorizeDepts(String roleId) {
-        var depts = SysService.me().userService().selectUserDeptDataListByUserId(getCurrentUser());
+    public RestResult authorizeDepts(Long roleId) {
+        var depts = SysService.me().permissionService().selectUserPermission(getCurrentUserId()).getDeptScopePermission().getCustoms();
         Consumer<TreeNode> checkNodeCallback = null;
         if (XCI.isNotBlank(roleId)) {
-            var deptIds = SysService.me().roleService().selectDeptDataMapArray(Long.valueOf(roleId));
+            var roleDepts = SysService.me().permissionService().selectRolePermission(roleId).getDeptScopePermission().getCustoms();
             checkNodeCallback = node -> {
-                if (deptIds.stream().anyMatch(p -> p.equals(node.getId()))) {
+                if (roleDepts.stream().anyMatch(p -> p.getId().toString().equals(node.getId()))) {
                     node.setChecked(true);
                 }
             };

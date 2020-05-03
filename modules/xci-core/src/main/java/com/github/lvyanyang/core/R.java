@@ -286,11 +286,17 @@ public class R {
 
     public static final String M_SYS = "System";
 
-    public static final String IG_PAGE_INDEX = "filter.pageIndex";
-    public static final String IG_PAGE_SIZE = "filter.pageSize";
-    public static final String IG_SORT_NAME = "filter.sortName";
-    public static final String IG_SORT_DIR = "filter.sortDir";
-    public static final String IG_FIELDNAMES = "filter.fieldNames";
+    /** 分页页码字段名 */
+    public static final String IPI = "filter.pageIndex";
+
+    /** 每页数量字段名 */
+    public static final String IPS = "filter.pageSize";
+
+    /** 排序字段名字段名 */
+    public static final String IPSN = "filter.sortName";
+
+    /** 排序方式字段名 */
+    public static final String IPSD = "filter.sortDir";
 
     /**
      * 系统Api接口Url前缀

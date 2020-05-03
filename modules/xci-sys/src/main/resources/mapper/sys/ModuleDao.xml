@@ -34,44 +34,26 @@
     <!--endregion-->
 
     <!--region 是否存在指定主键的模块-->
-    <select id="existById" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_module"/>
-            <property name="where" value="existByIdWhere"/>
-        </include>
-    </select>
-    <!--existById Where-->
-    <sql id="existByIdWhere">
+    <select id="existxById" resultType="boolean">
+        select count(1) from sys_module
         where id = #{id}
-    </sql>
+    </select>
     <!--endregion-->
 
     <!--region 是否存在指定编码的模块-->
-    <select id="existByCode" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_module"/>
-            <property name="where" value="existByCodeWhere"/>
-        </include>
-    </select>
-    <!--existByCode Where-->
-    <sql id="existByCodeWhere">
+    <select id="existxByCode" resultType="boolean">
+        select count(1) from sys_module
         where code = #{code}
         <if test="excludeId != null">and id != #{excludeId}</if>
-    </sql>
+    </select>
     <!--endregion-->
 
     <!--region 是否存在指定名称的模块-->
-    <select id="existByName" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_module"/>
-            <property name="where" value="existByNameWhere"/>
-        </include>
-    </select>
-    <!--existByNameWhere Where-->
-    <sql id="existByNameWhere">
+    <select id="existxByName" resultType="boolean">
+        select count(1) from sys_module
         where name = #{name} and parent_id = #{parentId}
         <if test="excludeId != null">and id != #{excludeId}</if>
-    </sql>
+    </select>
     <!--endregion-->
 
     <!--region 新建模块-->

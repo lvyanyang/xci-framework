@@ -10,14 +10,10 @@ import com.github.lvyanyang.core.BaseService;
 import com.github.lvyanyang.core.R;
 import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
-import com.github.lvyanyang.exceptions.AppException;
 import com.github.lvyanyang.model.PageList;
-import com.github.lvyanyang.model.PermissionBody;
-import com.github.lvyanyang.sys.annotation.DataScope;
+import com.github.lvyanyang.sys.annotation.DeptScope;
 import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.dao.RoleDao;
-import com.github.lvyanyang.sys.entity.SysDept;
-import com.github.lvyanyang.sys.entity.SysModule;
 import com.github.lvyanyang.sys.entity.SysRole;
 import com.github.lvyanyang.sys.filter.RoleFilter;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +21,6 @@ import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -43,18 +38,13 @@ public class RoleService extends BaseService {
     /** 角色缓存对象 */
     @Resource private Cache roleCache;
 
-    @PostConstruct
-    private void init() {
-        refresh();
-    }
-
     /**
      * 是否存在指定机构主键的角色
      * @param deptId 机构主键
      * @return 如果存在返回true, 否则返回false
      */
-    public Boolean existByDeptId(@NotNull(message = "请指定机构主键") Long deptId) {
-        return roleDao.existByDeptId(deptId);
+    public boolean existByDeptId(@NotNull(message = "请指定机构主键") Long deptId) {
+        return roleDao.existxByDeptId(deptId);
     }
 
     /**
@@ -63,20 +53,19 @@ public class RoleService extends BaseService {
      * @param excludeId 排除的主键,可为空
      * @return 如果存在返回true
      */
-    public Boolean existByCode(@NotBlank(message = "请指定角色编码") String code, Long excludeId) {
-        return roleDao.existByCode(code, excludeId);
+    public boolean existByCode(@NotBlank(message = "请指定角色编码") String code, Long excludeId) {
+        return roleDao.existxByCode(code, excludeId);
     }
 
     /**
      * 是否存在指定名称的角色
-     * @param code      角色编码
+     * @param name      角色名称
      * @param deptId    机构主键
      * @param excludeId 排除的主键,可为空
      * @return 如果存在返回true
      */
-    public boolean existByName(@NotBlank(message = "请指定角色编码") String code,
-                               @NotNull(message = "请指定机构主键") Long deptId, Long excludeId) {
-        return roleDao.existByName(code, deptId, excludeId);
+    public boolean existByName(@NotBlank(message = "请指定角色名称") String name, @NotNull(message = "请指定机构主键") Long deptId, Long excludeId) {
+        return roleDao.existxByName(name, deptId, excludeId);
     }
 
     /**
@@ -104,7 +93,7 @@ public class RoleService extends BaseService {
     @Transactional(rollbackFor = Exception.class)
     public void batchSave(@Valid List<SysRole> entities) {
         for (SysRole entity : entities) {
-            if (entity.getId() == null || !roleDao.existById(entity.getId())) {
+            if (entity.getId() == null || !roleDao.existxById(entity.getId())) {
                 //无主键或者主键在数据库中不存在,则新增;
                 SysService.me().roleService().save(true, entity).ifFailThrow();
             } else {
@@ -121,15 +110,29 @@ public class RoleService extends BaseService {
      */
     @OperateLog(tag = R.Module.Role, msg = "修改角色状态", param = true, result = true)
     @Transactional(rollbackFor = Exception.class)
-    public RestResult updateStatus(@NotBlank(message = "请指定角色主键") String ids,
-                                   @NotNull(message = "请指定角色状态") Boolean status) {
+    public void updateStatus(@NotBlank(message = "请指定角色主键") String ids, @NotNull(message = "请指定角色状态") Boolean status) {
         String[] idList = XCI.splitToArray(ids);
         for (String idStr : idList) {
             var id = Long.valueOf(idStr);
             roleDao.updateStatus(id, status);
             roleCache.evict(id);
         }
-        return RestResult.ok();
+    }
+
+    /**
+     * 根据主键修改角色机构数据权限
+     * @param ids       角色主键字符串
+     * @param deptScope 角色机构数据权限
+     */
+    @OperateLog(tag = R.Module.Role, msg = "修改角色机构数据权限", param = true, result = true)
+    @Transactional(rollbackFor = Exception.class)
+    public void updateDeptScope(@NotBlank(message = "请指定角色主键") String ids, @NotNull(message = "请指定角色机构数据权限") Integer deptScope) {
+        String[] idList = XCI.splitToArray(ids);
+        for (String idStr : idList) {
+            var id = Long.valueOf(idStr);
+            roleDao.updateDeptScope(id, deptScope);
+            roleCache.evict(id);
+        }
     }
 
     /**
@@ -162,43 +165,11 @@ public class RoleService extends BaseService {
     }
 
     /**
-     * 查询指定用户关联的角色主键列表
-     * @param userId 用户主键
-     */
-    public List<String> selectIdsByUserId(@NotNull(message = "请指定用户主键") Long userId) {
-        return roleDao.selectIdsByUserId(userId);
-    }
-
-    /**
-     * 获取用户所属角色列表
-     * @param userId 用户主键
-     */
-    public List<SysRole> selectListByUserId(@NotNull(message = "请指定用户主键") Long userId) {
-        return roleDao.selectListByUserId(userId);
-    }
-
-    /**
-     * 查询指定用户未关联的角色主键列表
-     * @param userId 用户主键
-     */
-    public List<String> selectUnIdsByUserId(@NotNull(message = "请指定用户主键") Long userId) {
-        return roleDao.selectUnIdsByUserId(userId);
-    }
-
-    /**
-     * 查询指定用户未关联的角色列表
-     * @param userId 用户主键
-     */
-    public List<SysRole> selectUnListByUserId(@NotNull(message = "请指定用户主键") Long userId) {
-        return roleDao.selectUnListByUserId(userId);
-    }
-
-    /**
      * 查询角色列表
      * @param filter 过滤条件
      * @return 返回角色列表
      */
-    @DataScope
+    @DeptScope
     public List<SysRole> selectList(RoleFilter filter) {
         return roleDao.selectList(filter);
     }
@@ -208,124 +179,19 @@ public class RoleService extends BaseService {
      * @param filter 过滤条件
      * @return 返回角色分页列表
      */
-    @DataScope
+    @DeptScope
     public PageList<SysRole> selectPageList(RoleFilter filter) {
         return PageList.of(roleDao.selectPageList(filter));
     }
 
     /**
-     * 刷新角色缓存
+     * 重新加载角色缓存
      */
     public void refresh() {
         roleCache.clear();
         roleDao.selectList(new RoleFilter()).forEach(p -> roleCache.put(p.getId(), p));
-        log.info("刷新系统角色缓存");
+        log.info("重新加载系统角色缓存");
     }
-
-    /**
-     * 保存角色权限
-     * @param permissionModel 权限模型
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public RestResult savePermission(PermissionBody permissionModel) {
-        String[] roleIdList = XCI.splitToArray(permissionModel.getRoleIds());
-        for (String roleIdStr : roleIdList) {
-            var roleId = Long.valueOf(roleIdStr);
-            saveModuleMap(roleId, XCI.splitToArray(permissionModel.getModuleIds()));
-            saveDeptDataMap(roleId, permissionModel.getDeptScope(), XCI.splitToArray(permissionModel.getDeptIds()));
-        }
-        return RestResult.ok();
-    }
-
-    // region 模块
-
-    /**
-     * 保存角色关联模块
-     * @param roleId    角色主键
-     * @param moduleIds 模块主键数组
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public RestResult saveModuleMap(@NotNull(message = "请指定角色主键") Long roleId, String[] moduleIds) {
-        return SysService.me().objectMapService().save(R.R_ROLE, roleId, R.R_MODULE, moduleIds);
-    }
-
-    /**
-     * 根据角色主键删除关联模块
-     * @param roleId 角色主键
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public RestResult deleteModuleMap(@NotNull(message = "请指定角色主键") Long roleId) {
-        return SysService.me().objectMapService().deleteByObject(R.R_ROLE, roleId, R.R_MODULE);
-    }
-
-    /**
-     * 根据角色主键查询关联模块主键集合
-     * @param roleId 角色主键
-     */
-    public List<String> selectModuleMapArray(@NotNull(message = "请指定角色主键") Long roleId) {
-        return SysService.me().objectMapService().selectByObject(R.R_ROLE, roleId, R.R_MODULE);
-    }
-
-    /**
-     * 根据角色主键查询关联模块对象列表
-     * @param roleId 角色主键
-     */
-    public List<SysModule> selectModuleMapList(@NotNull(message = "请指定角色主键") Long roleId) {
-        return roleDao.selectModuleListByRoleId(roleId);
-    }
-    // endregion
-
-    // region 机构
-
-    /**
-     * 保存角色数据权限
-     * @param roleId    角色主键
-     * @param deptScope 机构数据权限 [1-全部, 2-自定义, 3-所在部门, 4-所在部门及所有下级, 5-仅本人]
-     * @param deptIds   机构主键数组
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public RestResult saveDeptDataMap(@NotNull(message = "请指定角色主键") Long roleId, @NotNull(message = "请指定角色数据范围") Integer deptScope,
-                                      String[] deptIds) {
-        var role = selectById(roleId);
-        if (role == null) {
-            throw new AppException("无效的角色主键");
-        }
-        role.setDeptScope(deptScope);
-        roleDao.updateScope(roleId, deptScope);
-        roleCache.evict(roleId);
-        if (deptScope == 2) {
-            return SysService.me().objectMapService().save(R.R_ROLE, roleId, R.R_DEPT_DATA, deptIds);
-        } else {
-            return SysService.me().objectMapService().deleteByObject(R.R_ROLE, roleId, R.R_DEPT_DATA);
-        }
-    }
-
-    /**
-     * 根据角色主键删除关联机构
-     * @param roleId 角色主键
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public RestResult deleteDeptDataMap(@NotNull(message = "请指定角色主键") Long roleId) {
-        return SysService.me().objectMapService().deleteByObject(R.R_ROLE, roleId, R.R_DEPT_DATA);
-    }
-
-    /**
-     * 根据角色主键查询关联机构主键集合
-     * @param roleId 角色主键
-     */
-    public List<String> selectDeptDataMapArray(@NotNull(message = "请指定角色主键") Long roleId) {
-        return SysService.me().objectMapService().selectByObject(R.R_ROLE, roleId, R.R_DEPT_DATA);
-    }
-
-    /**
-     * 根据角色主键查询关联机构列表
-     * @param roleId 角色主键
-     */
-    public List<SysDept> selectDeptDataMapList(@NotNull(message = "请指定角色主键") Long roleId) {
-        return roleDao.selectDeptDataListByRoleId(roleId);
-    }
-
-    // endregion
 
     /**
      * 保存数据,在insert和update之前和之后的校验和处理
@@ -349,13 +215,13 @@ public class RoleService extends BaseService {
         // }
 
         //检查角色编码是否存在
-        if (roleDao.existByCode(entity.getCode(), XCI.excludeId(created, entity.getId()))) {
+        if (roleDao.existxByCode(entity.getCode(), XCI.excludeId(created, entity.getId()))) {
             String msg = XCI.format("角色编码[{}]已经存在", entity.getCode());
             return RestResult.fail(msg);
         }
 
         //检查角色名称是否存在
-        if (roleDao.existByName(entity.getName(), entity.getDeptId(), XCI.excludeId(created, entity.getId()))) {
+        if (roleDao.existxByName(entity.getName(), entity.getDeptId(), XCI.excludeId(created, entity.getId()))) {
             String msg = XCI.format("角色名称[{}]已经存在", entity.getName());
             return RestResult.fail(msg);
         }
@@ -409,8 +275,7 @@ public class RoleService extends BaseService {
 
         roleDao.deleteById(entity.getId());
         roleCache.evict(entity.getId());//清除当前删除的角色缓存
-        deleteModuleMap(id);            //删除角色对应的模块信息
-        deleteDeptDataMap(id);          //删除角色对应的机构数据信息
+        SysService.me().permissionService().clearRolePermission(entity.getId());//删除角色对应的模块信息、自定义机构数据
         SysService.me().saveDeleteHistory(entity.getId(), entity);//保存删除历史日志
     }
 }

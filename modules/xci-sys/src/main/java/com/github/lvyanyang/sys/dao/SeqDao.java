@@ -21,7 +21,7 @@ public interface SeqDao {
      * @param id 序列主键
      * @return 如果存在返回true
      */
-    boolean existById(@Param("id") Long id);
+    boolean existxById(@Param("id") Long id);
 
     /**
      * 是否存在指定编码的序列
@@ -29,7 +29,7 @@ public interface SeqDao {
      * @param excludeId 排除的主键，如果为null则不指定排除的主键
      * @return 如果存在返回true
      */
-    boolean existByCode(@Param("code") String code, @Param("excludeId") Long excludeId);
+    boolean existxByCode(@Param("code") String code, @Param("excludeId") Long excludeId);
 
     /**
      * 新建序列

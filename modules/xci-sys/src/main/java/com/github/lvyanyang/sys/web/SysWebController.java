@@ -5,7 +5,6 @@
 package com.github.lvyanyang.sys.web;
 
 
-import com.github.lvyanyang.base.ApiController;
 import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.entity.SysUser;
 import com.github.lvyanyang.web.WebController;
@@ -20,6 +19,13 @@ public class SysWebController extends WebController {
      */
     protected SysUser getCurrentUser() {
         return SysService.me().getCurrentUser();
+    }
+
+    /**
+     * 获取当前操作用户主键
+     */
+    protected Long getCurrentUserId() {
+        return SysService.me().getCurrentUserId();
     }
 
     /**

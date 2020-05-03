@@ -4,7 +4,6 @@
 
 package com.github.lvyanyang.sys.service;
 
-
 import com.github.lvyanyang.annotation.OperateLog;
 import com.github.lvyanyang.annotation.Valid;
 import com.github.lvyanyang.core.BaseService;
@@ -13,7 +12,7 @@ import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
 import com.github.lvyanyang.exceptions.AppException;
 import com.github.lvyanyang.model.IdValue;
-import com.github.lvyanyang.sys.annotation.DataScope;
+import com.github.lvyanyang.sys.annotation.DeptScope;
 import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.dao.DeptDao;
 import com.github.lvyanyang.sys.entity.SysDept;
@@ -24,7 +23,6 @@ import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -44,11 +42,6 @@ public class DeptService extends BaseService {
     /** 机构缓存对象 */
     @Resource private Cache deptCache;
 
-    @PostConstruct
-    private void init() {
-        refresh();
-    }
-
     /**
      * 是否存在指定编码的机构
      * @param code      机构编码
@@ -56,7 +49,7 @@ public class DeptService extends BaseService {
      * @return 如果存在返回true
      */
     public boolean existByCode(@NotBlank(message = "请指定机构编码") String code, Long excludeId) {
-        return deptDao.existByCode(code, excludeId);
+        return deptDao.existxByCode(code, excludeId);
     }
 
     /**
@@ -66,9 +59,8 @@ public class DeptService extends BaseService {
      * @param excludeId 排除的主键，如果为null则不指定排除的主键
      * @return 如果存在返回true
      */
-    public boolean existByName(@NotBlank(message = "请指定机构名称") String name,
-                               @NotNull(message = "请指定机构上级主键") Long parentId, Long excludeId) {
-        return deptDao.existByName(name, parentId, excludeId);
+    public boolean existByName(@NotBlank(message = "请指定机构名称") String name, @NotNull(message = "请指定机构上级主键") Long parentId, Long excludeId) {
+        return deptDao.existxByName(name, parentId, excludeId);
     }
 
     /**
@@ -96,8 +88,7 @@ public class DeptService extends BaseService {
      */
     @OperateLog(tag = R.Module.Dept, msg = "根据主键更新机构状态")
     @Transactional(rollbackFor = Exception.class)
-    public RestResult updateStatus(@NotBlank(message = "请指定主键字符串") String ids,
-                                   @NotNull(message = "请指定机构状态") Boolean status) {
+    public RestResult updateStatus(@NotBlank(message = "请指定主键字符串") String ids, @NotNull(message = "请指定机构状态") Boolean status) {
         String[] idList = XCI.splitToArray(ids);
         for (String idStr : idList) {
             var id = Long.valueOf(idStr);
@@ -146,7 +137,7 @@ public class DeptService extends BaseService {
      * @param ids 机构主键字符串
      */
     @Transactional(rollbackFor = Exception.class)
-    public void delete(@NotBlank(message = "请指定机构主键字符串") String ids) {
+    public void deleteByIds(@NotBlank(message = "请指定机构主键字符串") String ids) {
         for (var id : XCI.splitToArray(ids)) {
             SysService.me().deptService().deleteCore(Long.valueOf(id));
         }
@@ -187,7 +178,7 @@ public class DeptService extends BaseService {
      * @param filter 过滤条件
      * @return 返回机构列表
      */
-    @DataScope
+    @DeptScope
     public List<SysDept> selectList(DeptFilter filter) {
         List<SysDept> list = deptDao.selectList(filter);
         if (XCI.isBlank(filter.getName())) {
@@ -213,13 +204,13 @@ public class DeptService extends BaseService {
     }
 
     /**
-     * 刷新机构缓存
+     * 重新加载机构缓存
      */
     public void refresh() {
         deptCache.clear();
         var list = deptDao.selectList(new DeptFilter());
         list.forEach(p -> deptCache.put(p.getId(), p));
-        log.info("刷新系统机构缓存");
+        log.info("重新加载系统机构缓存");
     }
 
     /**
@@ -257,12 +248,12 @@ public class DeptService extends BaseService {
         }
 
         //检查机构编码是否存在
-        if (deptDao.existByCode(entity.getCode(), XCI.excludeId(created, entity.getId()))) {
+        if (deptDao.existxByCode(entity.getCode(), XCI.excludeId(created, entity.getId()))) {
             return RestResult.fail(XCI.format("机构编码[{}]已经存在", entity.getCode()));
         }
 
         //检查机构名称是否存在
-        if (deptDao.existByName(entity.getName(), entity.getParentId(), XCI.excludeId(created, entity.getId()))) {
+        if (deptDao.existxByName(entity.getName(), entity.getParentId(), XCI.excludeId(created, entity.getId()))) {
             return RestResult.fail(XCI.format("机构名称[{}]已经存在", entity.getName()));
         }
 

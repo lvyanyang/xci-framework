@@ -38,21 +38,21 @@ public interface ObjectMapDao {
     List<String> selectByObject(@Param("objectName") String objectName, @Param("objectId") Long objectId,
                                 @Param("targetName") String targetName);
 
-    /**
-     * 根据目标删除
-     * @param targetName 目标名称
-     * @param targetId   目标主键
-     * @param objectName 对象名称
-     */
-    int deleteByTarget(@Param("targetName") String targetName, @Param("targetId") Long targetId,
-                       @Param("objectName") String objectName);
-
-    /**
-     * 获取对象列表
-     * @param targetName 目标名称
-     * @param targetId   目标主键
-     * @param objectName 对象名称
-     */
-    List<String> selectByTarget(@Param("targetName") String targetName, @Param("targetId") Long targetId,
-                                  @Param("objectName") String objectName);
+    // /**
+    //  * 根据目标删除
+    //  * @param targetName 目标名称
+    //  * @param targetId   目标主键
+    //  * @param objectName 对象名称
+    //  */
+    // int deleteByTarget(@Param("targetName") String targetName, @Param("targetId") Long targetId,
+    //                    @Param("objectName") String objectName);
+    //
+    // /**
+    //  * 获取对象列表
+    //  * @param targetName 目标名称
+    //  * @param targetId   目标主键
+    //  * @param objectName 对象名称
+    //  */
+    // List<String> selectByTarget(@Param("targetName") String targetName, @Param("targetId") Long targetId,
+    //                               @Param("objectName") String objectName);
 }

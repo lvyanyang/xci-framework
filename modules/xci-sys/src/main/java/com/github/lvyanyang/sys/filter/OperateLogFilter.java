@@ -49,7 +49,7 @@ public class OperateLogFilter extends BasePageFilter {
      * 应用主键
      */
     @ApiModelProperty(value = "应用主键", position = 5)
-    private String appId;
+    private Long appId;
 
     /**
      * 应用名称

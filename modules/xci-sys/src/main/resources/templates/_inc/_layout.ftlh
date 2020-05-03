@@ -15,7 +15,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <link href="${web.cdn('/jx.css')}" rel="stylesheet"/>
     <link href="${web.url('/sys/css/sys.css')}" rel="stylesheet"/>
-    <#if sys.param("SystemLargeFontMode","0")=="1" && !request.getRequestUri()?contains("/login")>
+    <#if sys.param("sys.web.largeFont","false")=="true" && !request.getRequestUri()?contains("/login")>
     <link href="${web.url('/sys/css/large.css')}" rel="stylesheet"/>
     </#if>
     <#nested/>

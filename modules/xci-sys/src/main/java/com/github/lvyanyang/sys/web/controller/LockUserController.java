@@ -4,11 +4,12 @@
 
 package com.github.lvyanyang.sys.web.controller;
 
-import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.annotation.Authorize;
-import com.github.lvyanyang.exceptions.NotFoundException;
 import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
+import com.github.lvyanyang.exceptions.NotFoundException;
+import com.github.lvyanyang.sys.component.SysService;
+import com.github.lvyanyang.sys.web.SysWebController;
 import com.github.lvyanyang.sys.web.model.JsonGrid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;

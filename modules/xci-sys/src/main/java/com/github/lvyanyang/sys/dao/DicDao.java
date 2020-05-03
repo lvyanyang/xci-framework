@@ -20,14 +20,14 @@ public interface DicDao {
      * @param id 字典主键
      * @return 如果存在返回true
      */
-    boolean existById(@Param("id") Long id);
+    boolean existxById(@Param("id") Long id);
 
     /**
      * 检查字典类型编码是否存在
      * @param categoryCode 字典类型编码
      * @return 如果存在返回true
      */
-    boolean existByCategoryCode(@Param("categoryCode") String categoryCode);
+    boolean existxByCategoryCode(@Param("categoryCode") String categoryCode);
 
     /**
      * 是否存在指定名称的字典
@@ -36,7 +36,7 @@ public interface DicDao {
      * @param excludeId 排除的主键，如果为null则不指定排除的主键
      * @return 如果存在返回true
      */
-    boolean existByName(@Param("categoryCode") String categoryCode, @Param("name") String name, @Param("excludeId") Long excludeId);
+    boolean existxByName(@Param("categoryCode") String categoryCode, @Param("name") String name, @Param("excludeId") Long excludeId);
 
     /**
      * 新建字典

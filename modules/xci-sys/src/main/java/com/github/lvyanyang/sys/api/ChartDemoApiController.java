@@ -26,7 +26,7 @@ import java.util.List;
  * @author 吕艳阳
  */
 @Api(tags = "图表测试数据接口")
-@ApiSort(100)
+@ApiSort(41)
 @RestController
 @RequestMapping(value = R.SysApiPrefix + "/chart/demo", produces = R.PROJSON)
 public class ChartDemoApiController extends SysApiController {

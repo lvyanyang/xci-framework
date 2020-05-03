@@ -54,19 +54,8 @@
                 <bind name="semail" value="'%' + filter.email + '%'"/>
                 and u.email like #{semail}
             </if>
-            <if test="filter.dataScope != null and filter.dataScope == true">
-                <include refid="com.github.lvyanyang.internal.FrameworkDao.dataScope"/>
-            </if>
+            <include refid="com.github.lvyanyang.internal.FrameworkDao.deptScope"/>
         </where>
-    </sql>
-
-    <!--查询安全List-->
-    <sql id="selectSecurity">
-        select u.id, u.name, u.spell, u.account, u.category, u.pwd, u.pwd_salt, u.pwd_must_modify, u.pwd_allow_modify,
-               u.pwd_never_expire, u.pwd_expire_time, u.allow_start_time, u.allow_end_time, u.admin, u.mobile, u.email,
-               u.post, u.login_times, u.first_visit_time, u.last_visit_time, u.ent_id, u.ent_name, u.visible, u.status, u.remark,
-               d.id dept_id,d.name dept_name
-        from sys_user u left join sys_dept d on u.dept_id = d.id
     </sql>
 
     <!--查询List-->
@@ -79,52 +68,34 @@
     <!--endregion-->
 
     <!--region 是否存在指定主键的用户-->
-    <select id="existById" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_user"/>
-            <property name="where" value="existByIdWhere"/>
-        </include>
-    </select>
-    <!--existById Where-->
-    <sql id="existByIdWhere">
+    <select id="existxById" resultType="boolean">
+        select count(1) from sys_user
         where id = #{id} and deleted = 0
-    </sql>
+    </select>
     <!--endregion-->
 
     <!--region 是否存在指定机构主键的用户-->
-    <select id="existByDeptId" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_user"/>
-            <property name="where" value="existByDeptIdWhere"/>
-        </include>
-    </select>
-    <!--existByDeptId Where-->
-    <sql id="existByDeptIdWhere">
+    <select id="existxByDeptId" resultType="boolean">
+        select count(1) from sys_user
         where dept_id = #{deptId} and deleted = 0
-    </sql>
+    </select>
     <!--endregion-->
 
     <!--region 是否存在指定角色主键的用户-->
-    <select id="existByRoleId" resultType="java.lang.Boolean">
-        select count(id) from sys_user u
-        where u.deleted=0 and u.status = 1 and exists (
-                select 1 from sys_user_role_map map where map.role_id = #{roleId} and map.user_id = u.id
+    <select id="existxByRoleId" resultType="boolean">
+        select count(1) from sys_user
+        where deleted=0 and status = 1 and exists (
+                select 1 from sys_user_role_map map where map.role_id = #{roleId} and map.user_id = sys_user.id
             )
     </select>
     <!--endregion-->
 
     <!--region 是否存在指定账号的用户-->
-    <select id="existByAccount" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_user"/>
-            <property name="where" value="existByAccountWhere"/>
-        </include>
-    </select>
-    <!--检查账号是否存在Where条件-->
-    <sql id="existByAccountWhere">
+    <select id="existxByAccount" resultType="boolean">
+        select count(1) from sys_user
         where account = #{account} and deleted = 0
         <if test="excludeId != null">and id != #{excludeId}</if>
-    </sql>
+    </select>
     <!--endregion-->
 
     <!--region 新建用户-->
@@ -224,20 +195,6 @@
     </select>
     <!--endregion-->
 
-    <!--region 根据户账号查询单个用户,包含安全信息-->
-    <select id="selectSecurityById" resultType="com.github.lvyanyang.sys.entity.SysUserSecurity">
-        <include refid="selectSecurity"/>
-        where id = #{id}
-    </select>
-    <!--endregion-->
-
-    <!--region 根据户账号查询单个用户,包含安全信息-->
-    <select id="selectSecurityByAccount" resultType="com.github.lvyanyang.sys.entity.SysUserSecurity">
-        <include refid="selectSecurity"/>
-        where account = #{account} and deleted = 0
-    </select>
-    <!--endregion-->
-
     <!--region 查询用户列表-->
     <select id="selectList" resultType="com.github.lvyanyang.sys.entity.SysUser">
         <include refid="list"/>
@@ -249,145 +206,4 @@
         <include refid="list"/>
     </select>
     <!--endregion-->
-
-    <!--region 账户 -->
-    
-    <!--region 更新用户登录状态-->
-    <update id="updateLoginStatus">
-        update sys_user
-        <set>
-            login_times = login_times + 1,
-            last_visit_time = #{lastVisitTime},
-            <if test="firstVisitTime != null">first_visit_time = #{firstVisitTime}</if>
-        </set>
-        where id = #{id}
-    </update>
-    <!--endregion -->
-
-    <!--region 修改用户密码-->
-    <update id="modifyPassword">
-        update sys_user
-        <set>
-            pwd_salt = #{salt},
-            pwd = #{pwd},
-            pwd_must_modify = 0,
-            <if test="pwdExpireTime != null">pwd_expire_time = #{pwdExpireTime}</if>
-        </set>
-        where id = #{id}
-    </update>
-    <!--endregion -->
-
-    <!--region 重置用户密码-->
-    <update id="revisePassword">
-        update sys_user
-        <set>
-            pwd_salt = #{salt},
-            pwd = #{pwd}
-        </set>
-        where id = #{id}
-    </update>
-    <!--endregion -->
-
-    <!--endregion -->
-
-    <!--region 用户角色关联 -->
-
-    <!--region 查询指定角色关联的用户主键列表-->
-    <select id="selectIdsByRoleId" resultType="string">
-        select id from sys_user u
-        where u.deleted=0 and u.status = 1 and exists (
-            select 1 from sys_user_role_map map where map.role_id = #{roleId} and map.user_id = u.id
-        )
-    </select>
-    <!--endregion-->
-
-    <!--region 查询指定角色关联的用户列表-->
-    <select id="selectListByRoleId" resultType="com.github.lvyanyang.sys.entity.SysUser">
-        <include refid="select"/>
-        where u.deleted=0 and u.status = 1 and exists (
-            select 1 from sys_user_role_map map where map.role_id = #{roleId} and map.user_id = u.id
-        )
-    </select>
-    <!--endregion-->
-
-    <!--region 查询指定角色未关联的用户主键列表-->
-    <select id="selectUnIdsByRoleId" resultType="string">
-        select id from sys_user u
-        where u.deleted=0 and u.status = 1 and not exists (
-            select 1 from sys_user_role_map map where map.role_id = #{roleId} and map.user_id = u.id
-        )
-    </select>
-    <!--endregion-->
-
-    <!--region 查询指定角色未关联的用户列表-->
-    <select id="selectUnListByRoleId" resultType="com.github.lvyanyang.sys.entity.SysUser">
-        <include refid="select"/>
-        where u.deleted=0 and u.status = 1 and not exists (
-            select 1 from sys_user_role_map map where map.role_id = #{roleId} and map.user_id = u.id
-        )
-    </select>
-    <!--endregion-->
-
-    <!--region 新建用户角色关联-->
-    <insert id="insertUserRoleMap">
-        insert into sys_user_role_map (user_id, role_id)
-        values (#{entity.userId},#{entity.roleId})
-    </insert>
-    <!--endregion-->
-
-    <!--region 根据用户主键删除用户角色关联-->
-    <delete id="deleteUserRoleMapByUserId">
-        delete from sys_user_role_map
-        where user_id = #{userId}
-    </delete>
-    <!--endregion-->
-
-    <!--endregion -->
-
-    <!--region 用户拥有的模块权限 -->
-    <select id="selectUserModuleListByUserId" resultType="com.github.lvyanyang.sys.entity.SysModule">
-        select <include refid="com.github.lvyanyang.sys.dao.ModuleDao.columns"/>
-        from (
-            select <include refid="com.github.lvyanyang.sys.dao.ModuleDao.columns"/>
-            from sys_module
-            where status=1 and publiced=1
-            union
-            select <include refid="com.github.lvyanyang.sys.dao.ModuleDao.columns"/>
-            from sys_module m inner join
-                 (
-                     select distinct target_id module_id
-                     from sys_object_map
-                     where object_name='role'
-                       and object_id in
-                           (
-                               select r.id role_id from sys_role r join sys_user_role_map urmap
-                                on r.status=1 and urmap.user_id=#{userId} and urmap.role_id=r.id
-                           )
-                       and target_name='module'
-                 ) map
-                 on m.status=1 and map.module_id=m.id
-             ) x
-        order by x.parent_id asc, x.path asc
-    </select>
-    <!--endregion -->
-
-    <!--region 用户拥有的机构权限 -->
-    <select id="selectUserDeptListByUserId" resultType="com.github.lvyanyang.sys.entity.SysDept">
-        select <include refid="com.github.lvyanyang.sys.dao.DeptDao.select"/>
-        where d.id in (
-            select distinct target_id
-            from sys_object_map
-            where object_name = 'role'
-              and object_id in
-                  (
-                      select r.id role_id
-                      from sys_role r join sys_user_role_map urmap
-                          on r.status = 1 and urmap.user_id = ${userId}
-                                 and urmap.role_id = r.id
-                  )
-              and target_name = 'dept'
-        )
-    </select>
-    <!--endregion -->
-
 </mapper>

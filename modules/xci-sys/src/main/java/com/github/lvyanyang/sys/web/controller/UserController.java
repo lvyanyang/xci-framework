@@ -13,6 +13,7 @@ import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.entity.SysUser;
 import com.github.lvyanyang.sys.entity.SysUserSave;
 import com.github.lvyanyang.sys.filter.UserFilter;
+import com.github.lvyanyang.sys.web.SysWebController;
 import com.github.lvyanyang.sys.web.component.SysWebService;
 import com.github.lvyanyang.sys.web.model.JsonGrid;
 import org.springframework.stereotype.Controller;
@@ -58,7 +59,7 @@ public class UserController extends SysWebController {
         var entity = SysService.me().userService().selectById(Long.valueOf(id));
         if (entity == null) throw new NotFoundException(id);
         var userSave = SysUserSave.from(entity);
-        userSave.setRoleIds(String.join(",", SysService.me().roleService().selectIdsByUserId(entity.getId())));
+        userSave.setRoleIds(String.join(",", SysService.me().userRoleMapService().selectMapRoleIds(entity.getId())));
         map.put("entity", userSave);
         setEditRoles(map);
         return "sys/user/edit";
@@ -76,7 +77,6 @@ public class UserController extends SysWebController {
         return "sys/user/modify-password";
     }
 
-
     /** 详情页 */
     @GetMapping("/details")
     public String details(String id, ModelMap map) {
@@ -84,9 +84,9 @@ public class UserController extends SysWebController {
         var entity = SysService.me().userService().selectById(idLong);
         if (entity == null) throw new NotFoundException(id);
         map.put("entity", entity);
-        map.put("roles", SysService.me().roleService().selectListByUserId(idLong));
-        var deptScope = SysService.me().userService().selectDeptScopeByUserId(getUser(idLong));
-        map.put("deptScopeName",XCI.getDeptScopeNameByValue(deptScope));
+        map.put("roles", SysService.me().userRoleMapService().selectMapRoleList(idLong));
+        var deptScope = SysService.me().permissionService().selectUserPermission(idLong).getDeptScopePermission().getDeptScope();
+        map.put("deptScopeName", deptScope.getName());
         return "sys/user/details";
     }
 
@@ -100,9 +100,9 @@ public class UserController extends SysWebController {
      */
     @ResponseBody
     @GetMapping("/userOwnModules")
-    public RestResult userOwnModules(String userId) {
-        var user = SysService.me().userService().selectById(Long.valueOf(userId));
-        var modules = SysService.me().userService().selectUserModuleListByUser(user);
+    public RestResult userOwnModules(Long userId) {
+        var user = SysService.me().userService().selectById(userId);
+        var modules = SysService.me().permissionService().selectUserPermission(userId).getModules();
         var nodes = SysWebService.me().toModuleNodeList(modules);
         return RestResult.ok(nodes);
     }
@@ -113,9 +113,9 @@ public class UserController extends SysWebController {
      */
     @ResponseBody
     @GetMapping("/userOwnDepts")
-    public RestResult userOwnDepts(String userId) {
-        var user = SysService.me().userService().selectById(Long.valueOf(userId));
-        var depts = SysService.me().userService().selectUserDeptDataListByUserId(user);
+    public RestResult userOwnDepts(Long userId) {
+        var user = SysService.me().userService().selectById(userId);
+        var depts = SysService.me().permissionService().selectUserPermission(userId).getDeptScopePermission().getCustoms();
         var nodes = SysWebService.me().toDeptNodeList(depts);
         return RestResult.ok(nodes);
     }
@@ -124,6 +124,7 @@ public class UserController extends SysWebController {
     @ResponseBody
     @PostMapping("/grid")
     public JsonGrid grid(UserFilter filter) {
+        filter.setEnableDeptScope(true);
         return new JsonGrid(SysService.me().userService().selectPageList(filter));
     }
 
@@ -157,14 +158,15 @@ public class UserController extends SysWebController {
     @PostMapping("/status")
     @Authorize(code = R.Permission.SysUserUpdate)
     public RestResult status(String id, Integer status) {
-        return SysService.me().userService().updateStatus(id, XCI.toBool(status));
+         SysService.me().userService().updateStatus(id, XCI.toBool(status));
+         return RestResult.ok();
     }
 
     /** 修改密码保存 */
     @ResponseBody
     @PostMapping("/modifyPasswordSave")
     public RestResult modifyPassword(String currentPassword, String newPassword) {
-        return SysService.me().userService().modifyPassword(SysService.me().getCurrentUser().getId(), currentPassword, newPassword);
+        return SysService.me().accountService().modifyPassword(SysService.me().getCurrentUser().getId(), currentPassword, newPassword);
     }
 
     /** 重置密码保存 */
@@ -172,7 +174,7 @@ public class UserController extends SysWebController {
     @PostMapping("/revisePasswordSave")
     @Authorize(code = R.Permission.SysUserRevisePassword)
     public RestResult revisePassword(String userIds, String password) {
-        return SysService.me().userService().revisePassword(userIds, password);
+        return SysService.me().accountService().revisePassword(userIds, password);
     }
 
     /** 导出 */

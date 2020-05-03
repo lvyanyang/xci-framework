@@ -28,7 +28,7 @@ import java.util.List;
  * @author 吕艳阳
  */
 @Api(tags = "系统参数接口")
-@ApiSort(7)
+@ApiSort(23)
 // @ApiEncrypt
 @Authorize
 @RestController
@@ -111,14 +111,14 @@ public class ParamApiController extends SysApiController {
     }
 
     @ApiOperation(value = "查询参数列表")
-    @ApiOperationSupport(order = 9, author = R.LYY, ignoreParameters = {R.IG_PAGE_INDEX, R.IG_PAGE_SIZE, R.IG_SORT_NAME, R.IG_SORT_DIR})
+    @ApiOperationSupport(order = 9, author = R.LYY, ignoreParameters = {R.IPI, R.IPS, R.IPSN, R.IPSD})
     @PostMapping(value = "/selectList")
     public RestResult<List<SysParam>> selectList(@RequestBody ParamFilter filter) {
         return RestResult.ok(SysService.me().paramService().selectList(filter));
     }
 
     @ApiOperation(value = "导出参数列表")
-    @ApiOperationSupport(order = 10, author = R.LYY, ignoreParameters = {R.IG_PAGE_INDEX, R.IG_PAGE_SIZE, R.IG_SORT_NAME, R.IG_SORT_DIR})
+    @ApiOperationSupport(order = 10, author = R.LYY, ignoreParameters = {R.IPI, R.IPS, R.IPSN, R.IPSD})
     @PostMapping(value = "/export", produces = {R.PROOCTET, R.PROJSON})
     public void export(@RequestBody ParamFilter filter) {
         XCI.exportExcel(SysService.me().paramService().selectList(filter), SysParam.class, "系统参数列表");

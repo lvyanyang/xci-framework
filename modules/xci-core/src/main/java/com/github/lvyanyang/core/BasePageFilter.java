@@ -7,14 +7,14 @@ package com.github.lvyanyang.core;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * 数据过滤基类
+ * 数据分页过滤条件基类
  * @author 吕艳阳
  */
 public class BasePageFilter extends BaseFilter {
     /**
-     * 页码,从1开始
+     * 分页页码从1开始
      */
-    @ApiModelProperty(value = "页码,从1开始", example = "1", position = 9001)
+    @ApiModelProperty(value = "分页页码从1开始", example = "1", position = 9001)
     private Integer pageIndex = 1;
 
     /**
@@ -24,15 +24,15 @@ public class BasePageFilter extends BaseFilter {
     private Integer pageSize = 10;
 
     /**
-     * 排序字段
+     * 排序字段名
      */
-    @ApiModelProperty(value = "排序字段", position = 9003)
+    @ApiModelProperty(value = "排序字段名", position = 9003)
     private String sortName;
 
     /**
-     * 排序方式
+     * 排序方式(asc|desc)
      */
-    @ApiModelProperty(value = "排序方式", position = 9004)
+    @ApiModelProperty(value = "排序方式(asc|desc)", position = 9004)
     private String sortDir;
 
     public Integer getPageIndex() {

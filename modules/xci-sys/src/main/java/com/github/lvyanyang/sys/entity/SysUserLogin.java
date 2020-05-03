@@ -4,13 +4,12 @@
 
 package com.github.lvyanyang.sys.entity;
 
+import com.github.lvyanyang.sys.model.UserPermission;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.beans.BeanUtils;
-
-import java.util.List;
 
 /**
  * 系统用户(登录)
@@ -27,10 +26,10 @@ public class SysUserLogin extends SysUser {
     private String token;
 
     /**
-     * 用户拥有的模块
+     * 用户权限
      */
-    @ApiModelProperty(value = "用户拥有的模块", position = 200)
-    private List<SysModule> modules;
+    @ApiModelProperty(value = "用户权限", position = 300)
+    private UserPermission permission;
 
     /**
      * 从系统用户中创建

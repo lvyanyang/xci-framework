@@ -26,7 +26,7 @@ import java.util.List;
  * @author 吕艳阳
  */
 @Api(tags = "系统字典类型接口")
-@ApiSort(3)
+@ApiSort(25)
 @Authorize
 @RestController
 @RequestMapping(value = R.SysApiPrefix + "/dicCategory", produces = R.PROJSON)

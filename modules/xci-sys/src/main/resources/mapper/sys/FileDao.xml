@@ -31,16 +31,10 @@
     <!--endregion-->
 
     <!--region 检查记录主键是否存在-->
-    <select id="existByRecordId" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_file"/>
-            <property name="where" value="existByRecordIdWhere"/>
-        </include>
-    </select>
-    <!--existByRecordId Where-->
-    <sql id="existByRecordIdWhere">
+    <select id="existxByRecordId" resultType="boolean">
+        select count(1) from sys_file
         where record_id = #{recordId}
-    </sql>
+    </select>
     <!--endregion-->
 
     <!--region 新建文件-->

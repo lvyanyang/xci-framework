@@ -12,7 +12,7 @@
     <form id="editform" class="jxform" method="post" action="${save_url}">
         <input id="roleIds" name="roleIds" type="hidden" value="${roleIds}"/>
         <input id="moduleIds" name="moduleIds" type="hidden"/>
-        <input id="deptIds" name="deptIds" type="hidden"/>
+        <input id="customDeptIds" name="customDeptIds" type="hidden"/>
 
         <div id="wizard" class="wizard" data-target="#wizard-steps" style="border-left: none; border-top: none; border-right: none;">
             <ul class="steps">
@@ -32,11 +32,10 @@
                         <li class="list-group-item">
                             <div class="input-group">
                                 <div class="icheck-inline">
-                                    <#--1-全部, 2-自定义, 3-所在部门, 4-所在部门及所有下级, 5-仅本人-->
                                     <label><input name="deptScope" class="jxcheck" type="radio" data-color="green" value="1" <@xci.isChecked value=role.deptScope==1/>/>全部</label>
                                     <label><input name="deptScope" class="jxcheck" type="radio" data-color="green" value="2" <@xci.isChecked value=role.deptScope==2/>/>自定义</label>
-                                    <label><input name="deptScope" class="jxcheck" type="radio" data-color="green" value="3" <@xci.isChecked value=role.deptScope==3/>/>所在机构</label>
-                                    <label><input name="deptScope" class="jxcheck" type="radio" data-color="green" value="4" <@xci.isChecked value=role.deptScope==4/>/>所在机构及所有下级</label>
+                                    <label><input name="deptScope" class="jxcheck" type="radio" data-color="green" value="3" <@xci.isChecked value=role.deptScope==3/>/>所在机构及所有下级</label>
+                                    <label><input name="deptScope" class="jxcheck" type="radio" data-color="green" value="4" <@xci.isChecked value=role.deptScope==4/>/>所在机构</label>
                                     <label><input name="deptScope" class="jxcheck" type="radio" data-color="green" value="5" <@xci.isChecked value=role.deptScope==5/>/>仅本人</label>
                                 </div>
                             </div>

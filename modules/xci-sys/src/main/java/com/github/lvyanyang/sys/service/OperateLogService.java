@@ -6,7 +6,7 @@ package com.github.lvyanyang.sys.service;
 
 import com.github.lvyanyang.component.AsyncService;
 import com.github.lvyanyang.model.PageList;
-import com.github.lvyanyang.sys.core.Params;
+import com.github.lvyanyang.sys.core.SysParams;
 import com.github.lvyanyang.sys.dao.OperateLogDao;
 import com.github.lvyanyang.sys.entity.SysOperateLog;
 import com.github.lvyanyang.sys.filter.OperateLogFilter;
@@ -30,7 +30,7 @@ public class OperateLogService {
      * @param entity 操作日志实体
      */
     public void insert(SysOperateLog entity) {
-        if (Params.enableOperateLog()) {
+        if (SysParams.SysLogEnableOperateLog.getBoolean()) {
             operateLogDao.insert(entity);
         }
     }
@@ -40,7 +40,7 @@ public class OperateLogService {
      * @param entity 操作日志实体
      */
     public void insertAsync(SysOperateLog entity) {
-        if (Params.enableOperateLog()) {
+        if (SysParams.SysLogEnableOperateLog.getBoolean()) {
             AsyncService.me().execute(new TimerTask() {
                 @Override
                 public void run() {

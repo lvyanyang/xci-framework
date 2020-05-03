@@ -28,7 +28,7 @@ import java.util.List;
  * @author 吕艳阳
  */
 @Api(tags = "系统应用接口")
-@ApiSort(4)
+@ApiSort(2)
 @Authorize
 @RestController
 @RequestMapping(value = R.SysApiPrefix + "/app", produces = R.PROJSON)
@@ -84,7 +84,7 @@ public class AppApiController extends SysApiController {
     }
 
     @ApiOperation(value = "查询应用列表")
-    @ApiOperationSupport(order = 7, author = R.LYY, ignoreParameters = {R.IG_PAGE_INDEX, R.IG_PAGE_SIZE, R.IG_SORT_NAME, R.IG_SORT_DIR})
+    @ApiOperationSupport(order = 7, author = R.LYY, ignoreParameters = {R.IPI, R.IPS, R.IPSN, R.IPSD})
     @PostMapping(value = "/selectList")
     public RestResult<List<SysApp>> selectList(@RequestBody AppFilter filter) {
         return RestResult.ok(SysService.me().appService().selectList(filter));

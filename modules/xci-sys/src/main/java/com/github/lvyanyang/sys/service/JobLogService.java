@@ -6,7 +6,7 @@ package com.github.lvyanyang.sys.service;
 
 import com.github.lvyanyang.component.AsyncService;
 import com.github.lvyanyang.model.PageList;
-import com.github.lvyanyang.sys.core.Params;
+import com.github.lvyanyang.sys.core.SysParams;
 import com.github.lvyanyang.sys.dao.JobLogDao;
 import com.github.lvyanyang.sys.entity.SysJobLog;
 import com.github.lvyanyang.sys.filter.JobLogFilter;
@@ -30,7 +30,7 @@ public class JobLogService {
      * @param entity 定时任务日志实体
      */
     public void insert(SysJobLog entity) {
-        if (Params.enableJobLog()) {
+        if (SysParams.SysLogEnableJobLog.getBoolean()) {
             jobLogDao.insert(entity);
         }
     }
@@ -40,7 +40,7 @@ public class JobLogService {
      * @param entity 定时任务日志实体
      */
     public void insertAsync(SysJobLog entity) {
-        if (Params.enableJobLog()) {
+        if (SysParams.SysLogEnableJobLog.getBoolean()) {
             AsyncService.me().execute(new TimerTask() {
                 @Override
                 public void run() {

@@ -27,7 +27,7 @@ import java.util.List;
  * @author 吕艳阳
  */
 @Api(tags = "系统文件接口")
-@ApiSort(12)
+@ApiSort(29)
 @Authorize
 @RestController
 @RequestMapping(value = R.SysApiPrefix + "/file", produces = R.PROJSON)
@@ -89,14 +89,14 @@ public class FileApiController extends SysApiController {
     }
 
     @ApiOperation(value = "查询文件列表")
-    @ApiOperationSupport(order = 8, author = R.LYY, ignoreParameters = {R.IG_PAGE_INDEX, R.IG_PAGE_SIZE, R.IG_SORT_NAME, R.IG_SORT_DIR})
+    @ApiOperationSupport(order = 8, author = R.LYY, ignoreParameters = {R.IPI, R.IPS, R.IPSN, R.IPSD})
     @PostMapping(value = "/selectList")
     public RestResult<List<SysFile>> selectList(@RequestBody FileFilter filter) {
         return RestResult.ok(SysService.me().fileService().selectList(filter));
     }
 
     @ApiOperation(value = "导出文件列表")
-    @ApiOperationSupport(order = 9, author = R.LYY, ignoreParameters = {R.IG_PAGE_INDEX, R.IG_PAGE_SIZE, R.IG_SORT_NAME, R.IG_SORT_DIR})
+    @ApiOperationSupport(order = 9, author = R.LYY, ignoreParameters = {R.IPI, R.IPS, R.IPSN, R.IPSD})
     @PostMapping(value = "/export", produces = {R.PROOCTET, R.PROJSON})
     public void export(@RequestBody FileFilter filter) {
         XCI.exportExcel(SysService.me().fileService().selectList(filter), SysFile.class, "系统文件列表");

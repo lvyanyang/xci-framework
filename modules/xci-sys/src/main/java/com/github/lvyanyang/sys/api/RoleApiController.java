@@ -10,17 +10,13 @@ import com.github.lvyanyang.core.R;
 import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
 import com.github.lvyanyang.model.PageList;
-import com.github.lvyanyang.model.PermissionBody;
 import com.github.lvyanyang.model.StatusBody;
+import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.core.SysApiController;
-import com.github.lvyanyang.sys.entity.SysDept;
-import com.github.lvyanyang.sys.entity.SysModule;
 import com.github.lvyanyang.sys.entity.SysParam;
 import com.github.lvyanyang.sys.entity.SysRole;
 import com.github.lvyanyang.sys.filter.RoleFilter;
-import com.github.lvyanyang.sys.component.SysService;
 import io.swagger.annotations.*;
-import lombok.Data;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +30,7 @@ import java.util.List;
  * @author 吕艳阳
  */
 @Api(tags = "系统角色接口")
-@ApiSort(4)
+@ApiSort(22)
 @Authorize
 @RestController
 @RequestMapping(value = R.SysApiPrefix + "/role", produces = R.PROJSON)
@@ -49,9 +45,13 @@ public class RoleApiController extends SysApiController {
 
     @ApiOperation(value = "是否存在指定名称的角色")
     @ApiOperationSupport(order = 2, author = R.LYY)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name", value = "角色名称"),
+            @ApiImplicitParam(name = "deptId", value = "机构主键")
+    })
     @PostMapping(value = "/existByName")
-    public RestResult existByName(@RequestBody existByNameBody body) {
-        return RestResult.ok(SysService.me().roleService().existByName(body.getName(), body.getDeptId(), null));
+    public RestResult existByName(@SingleJson String name, @SingleJson Long deptId) {
+        return RestResult.ok(SysService.me().roleService().existByName(name, deptId, null));
     }
 
     @ApiOperation(value = "新建角色")
@@ -84,7 +84,8 @@ public class RoleApiController extends SysApiController {
     @Authorize(code = R.Permission.SysRoleUpdate)
     @PostMapping(value = "/updateStatus")
     public RestResult updateStatus(@RequestBody StatusBody statusBody) {
-        return SysService.me().roleService().updateStatus(statusBody.getIds(), statusBody.getStatus());
+        SysService.me().roleService().updateStatus(statusBody.getIds(), statusBody.getStatus());
+        return RestResult.ok();
     }
 
     @ApiOperation(value = "删除角色")
@@ -113,87 +114,32 @@ public class RoleApiController extends SysApiController {
         return RestResult.ok(SysService.me().roleService().selectByCode(code));
     }
 
-    @ApiOperation(value = "根据用户主键查询角色列表")
-    @ApiOperationSupport(order = 10, author = R.LYY)
-    @ApiImplicitParam(name = "userId", value = "用户主键")
-    @PostMapping("/selectByUserId")
-    public RestResult<List<SysRole>> selectByUserId(@SingleJson Long userId) {
-        return RestResult.ok(SysService.me().roleService().selectListByUserId(userId));
-    }
-
     @ApiOperation(value = "查询角色列表")
-    @ApiOperationSupport(order = 11, author = R.LYY, ignoreParameters = {R.IG_PAGE_INDEX, R.IG_PAGE_SIZE, R.IG_SORT_NAME, R.IG_SORT_DIR})
+    @ApiOperationSupport(order = 10, author = R.LYY, ignoreParameters = {R.IPI, R.IPS, R.IPSN, R.IPSD})
     @PostMapping(value = "/selectList")
     public RestResult<List<SysRole>> selectList(@RequestBody RoleFilter filter) {
         return RestResult.ok(SysService.me().roleService().selectList(filter));
     }
 
     @ApiOperation(value = "查询角色分页列表")
-    @ApiOperationSupport(order = 12, author = R.LYY)
+    @ApiOperationSupport(order = 11, author = R.LYY)
     @PostMapping(value = "/selectPageList")
     public RestResult<PageList<SysRole>> selectPageList(@RequestBody RoleFilter filter) {
         return RestResult.ok(SysService.me().roleService().selectPageList(filter));
     }
 
     @ApiOperation(value = "导出角色列表")
-    @ApiOperationSupport(order = 13, author = R.LYY, ignoreParameters = {R.IG_PAGE_INDEX, R.IG_PAGE_SIZE, R.IG_SORT_NAME, R.IG_SORT_DIR})
+    @ApiOperationSupport(order = 12, author = R.LYY, ignoreParameters = {R.IPI, R.IPS, R.IPSN, R.IPSD})
     @PostMapping(value = "/export", produces = {R.PROOCTET, R.PROJSON})
     public void export(@RequestBody RoleFilter filter) {
         XCI.exportExcel(SysService.me().roleService().selectList(filter), SysParam.class, "系统角色列表");
     }
 
     @ApiOperation(value = "刷新角色缓存")
-    @ApiOperationSupport(order = 14, author = R.LYY)
+    @ApiOperationSupport(order = 13, author = R.LYY)
     @PostMapping(value = "/refresh")
     public RestResult refresh() {
         SysService.me().roleService().refresh();
         return RestResult.ok();
-    }
-
-    @ApiOperation(value = "保存角色权限")
-    @ApiOperationSupport(order = 15, author = R.LYY)
-    @PostMapping("/savePermission")
-    public RestResult savePermission(@RequestBody PermissionBody permissionModel) {
-        return SysService.me().roleService().savePermission(permissionModel);
-    }
-
-    @ApiOperation(value = "根据角色主键查询关联模块主键集合")
-    @ApiOperationSupport(order = 16, author = R.LYY)
-    @ApiImplicitParam(name = "roleId", value = "角色主键")
-    @PostMapping("/selectModuleMapArray")
-    public RestResult<List<String>> selectModuleMapArray(@SingleJson Long roleId) {
-        return RestResult.ok(SysService.me().roleService().selectModuleMapArray(roleId));
-    }
-
-    @ApiOperation(value = "根据角色主键查询关联模块对象列表")
-    @ApiOperationSupport(order = 17, author = R.LYY)
-    @ApiImplicitParam(name = "roleId", value = "角色主键")
-    @PostMapping("/selectModuleMapList")
-    public RestResult<List<SysModule>> selectModuleMapList(@SingleJson Long roleId) {
-        return RestResult.ok(SysService.me().roleService().selectModuleMapList(roleId));
-    }
-
-    @ApiOperation(value = "根据角色主键查询关联机构主键集合")
-    @ApiOperationSupport(order = 18, author = R.LYY)
-    @ApiImplicitParam(name = "roleId", value = "角色主键")
-    @PostMapping("/selectDeptDataMapArray")
-    public RestResult<List<String>> selectDeptDataMapArray(@SingleJson Long roleId) {
-        return RestResult.ok(SysService.me().roleService().selectDeptDataMapArray(roleId));
-    }
-
-    @ApiOperation(value = "根据角色主键查询关联机构对象列表")
-    @ApiOperationSupport(order = 19, author = R.LYY)
-    @ApiImplicitParam(name = "roleId", value = "角色主键")
-    @PostMapping("/selectDeptDataMapList")
-    public RestResult<List<SysDept>> selectDeptDataMapList(@SingleJson Long roleId) {
-        return RestResult.ok(SysService.me().roleService().selectDeptDataMapList(roleId));
-    }
-
-    @Data
-    public static class existByNameBody{
-        @ApiModelProperty(value = "机构名称",required = true)
-        private String name;
-        @ApiModelProperty(value = "机构主键",required = true)
-        private Long deptId;
     }
 }

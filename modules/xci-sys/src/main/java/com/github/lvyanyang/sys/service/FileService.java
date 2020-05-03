@@ -37,7 +37,7 @@ public class FileService extends BaseService {
      * @return 如果存在返回true
      */
     public boolean existByRecordId(@NotNull(message = "请指定记录主键") Long recordId){
-        return fileDao.existByRecordId(recordId);
+        return fileDao.existxByRecordId(recordId);
     }
 
     /**

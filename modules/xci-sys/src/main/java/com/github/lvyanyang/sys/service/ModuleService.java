@@ -41,7 +41,7 @@ public class ModuleService extends BaseService {
      * @return 如果存在返回true
      */
     public boolean existByCode(@NotBlank(message = "请指定模块编码") String code, Long excludeId) {
-        return moduleDao.existByCode(code, excludeId);
+        return moduleDao.existxByCode(code, excludeId);
     }
 
     /**
@@ -52,7 +52,7 @@ public class ModuleService extends BaseService {
      * @return 如果存在返回true
      */
     public boolean existByName(@NotBlank(message = "请指定模块名称") String name, @NotBlank(message = "请指定模块上级主键") Long parentId, Long excludeId) {
-        return moduleDao.existByName(name, parentId, excludeId);
+        return moduleDao.existxByName(name, parentId, excludeId);
     }
 
     /**
@@ -80,7 +80,7 @@ public class ModuleService extends BaseService {
     @Transactional(rollbackFor = Exception.class)
     public void batchSave(@Valid List<SysModule> entities) {
         for (SysModule module : entities) {
-            if (module.getId() == null || !moduleDao.existById(module.getId())) {
+            if (module.getId() == null || !moduleDao.existxById(module.getId())) {
                 //无主键或者主键在数据库中不存在,则新增;
                 SysService.me().moduleService().save(true, module).ifFailThrow();
             } else {
@@ -97,8 +97,7 @@ public class ModuleService extends BaseService {
      */
     @OperateLog(tag = R.Module.Dic, msg = "修改模块状态", param = true, result = true)
     @Transactional(rollbackFor = Exception.class)
-    public RestResult updateStatus(@NotBlank(message = "请指定模块主键") String ids,
-                                   @NotNull(message = "请指定模块状态") Boolean status) {
+    public RestResult updateStatus(@NotBlank(message = "请指定模块主键") String ids, @NotNull(message = "请指定模块状态") Boolean status) {
         String[] idList = XCI.splitToArray(ids);
         for (String idStr : idList) {
             var id = Long.valueOf(idStr);
@@ -145,8 +144,7 @@ public class ModuleService extends BaseService {
      */
     @OperateLog(tag = R.Module.Module, msg = "修改模块公共状态")
     @Transactional(rollbackFor = Exception.class)
-    public RestResult updatePublicStatus(@NotBlank(message = "请指定模块主键") String ids,
-                                         @NotNull(message = "请指定模块公共状态") Boolean publicStatus) {
+    public RestResult updatePublicStatus(@NotBlank(message = "请指定模块主键") String ids, @NotNull(message = "请指定模块公共状态") Boolean publicStatus) {
         String[] idList = XCI.splitToArray(ids);
         for (String idStr : idList) {
             var id = Long.valueOf(idStr);
@@ -163,8 +161,7 @@ public class ModuleService extends BaseService {
      */
     @OperateLog(tag = R.Module.Module, msg = "修改模块展开状态")
     @Transactional(rollbackFor = Exception.class)
-    public RestResult updateExpandStatus(@NotBlank(message = "请指定模块主键字符串") String ids,
-                                         @NotNull(message = "请指定模块展开状态") Boolean expandStatus) {
+    public RestResult updateExpandStatus(@NotBlank(message = "请指定模块主键字符串") String ids, @NotNull(message = "请指定模块展开状态") Boolean expandStatus) {
         String[] idList = XCI.splitToArray(ids);
         for (String idStr : idList) {
             var id = Long.valueOf(idStr);
@@ -252,12 +249,12 @@ public class ModuleService extends BaseService {
         }
 
         //检查模块编码是否存在
-        if (moduleDao.existByCode(entity.getCode(), XCI.excludeId(created, entity.getId()))) {
+        if (moduleDao.existxByCode(entity.getCode(), XCI.excludeId(created, entity.getId()))) {
             return RestResult.fail(XCI.format("模块编码[{}]已经存在", entity.getCode()));
         }
 
         //检查模块名称是否存在
-        if (moduleDao.existByName(entity.getName(), entity.getParentId(), XCI.excludeId(created, entity.getId()))) {
+        if (moduleDao.existxByName(entity.getName(), entity.getParentId(), XCI.excludeId(created, entity.getId()))) {
             return RestResult.fail(XCI.format("模块名称[{}]已经存在", entity.getName()));
         }
 

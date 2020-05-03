@@ -24,44 +24,26 @@
     <!--endregion-->
 
     <!--region 是否存在指定主键的字典类型-->
-    <select id="existById" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_dic_category"/>
-            <property name="where" value="existByIdWhere"/>
-        </include>
-    </select>
-    <!--existById Where-->
-    <sql id="existByIdWhere">
+    <select id="existxById" resultType="boolean">
+        select count(1) from sys_dic_category
         where id = #{id}
-    </sql>
+    </select>
     <!--endregion-->
 
     <!--region 是否存在指定编码的字典类型-->
-    <select id="existByCode" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_dic_category"/>
-            <property name="where" value="existByCodeWhere"/>
-        </include>
-    </select>
-    <!--existByCode Where-->
-    <sql id="existByCodeWhere">
+    <select id="existxByCode" resultType="boolean">
+        select count(1) from sys_dic_category
         where code = #{code}
         <if test="excludeId != null">and id != #{excludeId}</if>
-    </sql>
+    </select>
     <!--endregion-->
 
     <!--region 检查是否存在指定的字典类型名称-->
-    <select id="existByName" resultType="java.lang.Boolean">
-        <include refid="com.github.lvyanyang.internal.FrameworkDao.exists">
-            <property name="table" value="sys_dic_category"/>
-            <property name="where" value="existByNameWhere"/>
-        </include>
-    </select>
-    <!--existByNameWhere-->
-    <sql id="existByNameWhere">
+    <select id="existxByName" resultType="boolean">
+        select count(1) from sys_dic_category
         where name = #{name}
         <if test="excludeId != null">and id != #{excludeId}</if>
-    </sql>
+    </select>
     <!--endregion-->
 
     <!--region 新建字典类型-->

@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author 吕艳阳
  */
 @Api(tags = "系统历史日志接口")
-@ApiSort(11)
+@ApiSort(32)
 @Authorize
 @RestController
 @RequestMapping(value = R.SysApiPrefix + "/historyLog", produces = R.PROJSON)

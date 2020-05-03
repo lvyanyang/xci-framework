@@ -5,8 +5,6 @@
 package com.github.lvyanyang.sys.dao;
 
 import com.github.lvyanyang.annotation.Paging;
-import com.github.lvyanyang.sys.entity.SysDept;
-import com.github.lvyanyang.sys.entity.SysModule;
 import com.github.lvyanyang.sys.entity.SysRole;
 import com.github.lvyanyang.sys.filter.RoleFilter;
 import org.apache.ibatis.annotations.Param;
@@ -23,14 +21,14 @@ public interface RoleDao {
      * @param id 角色主键
      * @return 如果存在返回true
      */
-    boolean existById(@Param("id") Long id);
+    boolean existxById(@Param("id") Long id);
 
     /**
      * 是否存在指定机构主键的角色
      * @param deptId 机构主键
      * @return 如果存在返回true
      */
-    boolean existByDeptId(@Param("deptId") Long deptId);
+    boolean existxByDeptId(@Param("deptId") Long deptId);
 
     /**
      * 是否存在指定编码的角色
@@ -38,7 +36,7 @@ public interface RoleDao {
      * @param excludeId 排除的主键，如果为null则不指定排除的主键
      * @return 如果存在返回true
      */
-    boolean existByCode(@Param("code") String code, @Param("excludeId") Long excludeId);
+    boolean existxByCode(@Param("code") String code, @Param("excludeId") Long excludeId);
 
     /**
      * 是否存在指定名称的角色
@@ -47,7 +45,7 @@ public interface RoleDao {
      * @param excludeId 排除的主键，如果为null则不指定排除的主键
      * @return 如果存在返回true
      */
-    boolean existByName(@Param("name") String name, @Param("deptId") Long deptId, @Param("excludeId") Long excludeId);
+    boolean existxByName(@Param("name") String name, @Param("deptId") Long deptId, @Param("excludeId") Long excludeId);
 
     /**
      * 新建角色
@@ -77,7 +75,7 @@ public interface RoleDao {
      * @param deptScope 机构数据权限
      * @return 返回影响的行数
      */
-    Integer updateScope(@Param("id") Long id, @Param("deptScope") Integer deptScope);
+    Integer updateDeptScope(@Param("id") Long id, @Param("deptScope") Integer deptScope);
 
     /**
      * 根据主键删除角色
@@ -114,40 +112,4 @@ public interface RoleDao {
      */
     @Paging
     List<SysRole> selectPageList(@Param("filter") RoleFilter filter);
-
-    /**
-     * 查询指定用户关联的角色主键列表
-     * @param userId 用户主键
-     */
-    List<String> selectIdsByUserId(@Param("userId") Long userId);
-
-    /**
-     * 查询指定用户关联的角色列表
-     * @param userId 用户主键
-     */
-    List<SysRole> selectListByUserId(@Param("userId") Long userId);
-
-    /**
-     * 查询指定用户未关联的角色主键列表
-     * @param userId 用户主键
-     */
-    List<String> selectUnIdsByUserId(@Param("userId") Long userId);
-
-    /**
-     * 查询指定用户未关联的角色列表
-     * @param userId 用户主键
-     */
-    List<SysRole> selectUnListByUserId(@Param("userId") Long userId);
-
-    /**
-     * 根据角色主键查询模块对象列表
-     * @param roleId 角色主键
-     */
-    List<SysModule> selectModuleListByRoleId(@Param("roleId") Long roleId);
-
-    /**
-     * 根据角色主键查询机构数据对象列表
-     * @param roleId 角色主键
-     */
-    List<SysDept> selectDeptDataListByRoleId(@Param("roleId") Long roleId);
 }

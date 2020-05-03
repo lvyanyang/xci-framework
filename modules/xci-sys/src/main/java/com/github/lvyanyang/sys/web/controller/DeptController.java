@@ -13,6 +13,7 @@ import com.github.lvyanyang.model.TreeNodeIndex;
 import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.entity.SysDept;
 import com.github.lvyanyang.sys.filter.DeptFilter;
+import com.github.lvyanyang.sys.web.SysWebController;
 import com.github.lvyanyang.sys.web.component.SysWebService;
 import com.github.lvyanyang.sys.web.model.JsonGrid;
 import lombok.extern.slf4j.Slf4j;
@@ -109,6 +110,7 @@ public class DeptController extends SysWebController {
     @ResponseBody
     @GetMapping("/grid")
     public JsonGrid grid(DeptFilter filter) {
+        filter.setEnableDeptScope(true);
         return new JsonGrid(SysService.me().deptService().selectList(filter));
     }
 
@@ -151,7 +153,7 @@ public class DeptController extends SysWebController {
     @PostMapping("/delete")
     @Authorize(code = R.Permission.SysDeptDelete)
     public RestResult delete(String id) {
-        SysService.me().deptService().delete(id);
+        SysService.me().deptService().deleteByIds(id);
         return RestResult.ok();
     }
 

@@ -25,8 +25,7 @@ public class SysWebHelper {
      * @param code 模块编码字符串
      */
     public boolean auth(String code) {
-        var user = SysService.me().getCurrentUser();
-        return SysWebService.me().isAuthorize(user, code);
+        return SysWebService.me().isAuthModule(SysService.me().getCurrentUserId(), code);
     }
 
     /**
@@ -42,7 +41,7 @@ public class SysWebHelper {
      * @return 返回参数编码对应的参数值, 如果找不到指定的参数则返回空字符串
      */
     public String param(String code) {
-        return SysWebService.me().getParamStringValueByCode(code, R.Empty);
+        return SysWebService.me().paramService().selectValueByCode(code, R.Empty);
     }
 
     /**
@@ -52,7 +51,7 @@ public class SysWebHelper {
      * @return 返回参数编码对应的参数值
      */
     public String param(String code, String defaultValue) {
-        return SysWebService.me().getParamStringValueByCode(code, defaultValue);
+        return SysWebService.me().paramService().selectValueByCode(code, defaultValue);
     }
 
     /**

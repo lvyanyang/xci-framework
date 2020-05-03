@@ -7,6 +7,7 @@ package com.github.lvyanyang.core;
 import com.github.lvyanyang.component.ApiHandlerInterceptor;
 import com.github.lvyanyang.configuration.ApiProperties;
 import com.github.lvyanyang.internal.SingleJsonHandlerMethodArgumentResolver;
+import com.github.lvyanyang.model.NameValue;
 import com.github.lvyanyang.model.OperateLogInfo;
 import com.github.lvyanyang.web.component.WebHandlerInterceptor;
 import com.github.lvyanyang.web.configuration.WebProperties;
@@ -162,5 +163,15 @@ public class BaseApplication implements IApplication {
     @Override
     public void processOperateLog(OperateLogInfo operateLogInfo) {
         log.info(XCI.toJsonString(operateLogInfo, true));
+    }
+
+    @Override
+    public Object getParam(String code, Object defaultValue) {
+        return R.Empty;
+    }
+
+    @Override
+    public List<NameValue> getDic(String code) {
+        return null;
     }
 }
