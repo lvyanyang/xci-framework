@@ -12,6 +12,7 @@ import com.github.lvyanyang.exceptions.NotFoundException;
 import com.github.lvyanyang.model.PermissionBody;
 import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.entity.SysRole;
+import com.github.lvyanyang.sys.filter.DeptFilter;
 import com.github.lvyanyang.sys.filter.RoleFilter;
 import com.github.lvyanyang.sys.web.SysWebController;
 import com.github.lvyanyang.sys.web.component.SysWebService;
@@ -171,8 +172,8 @@ public class RoleController extends SysWebController {
     @PostMapping("/authorizeSave")
     @Authorize(code = R.Permission.SysRoleAuthorize)
     public RestResult authorizeSave(PermissionBody permissionModel) {
-         SysWebService.me().permissionService().saveRolePermission(permissionModel);
-         return RestResult.ok();
+        SysWebService.me().permissionService().saveRolePermission(permissionModel);
+        return RestResult.ok();
     }
 
     /**
@@ -202,15 +203,20 @@ public class RoleController extends SysWebController {
     @ResponseBody
     @GetMapping("/authorizeDepts")
     public RestResult authorizeDepts(Long roleId) {
-        var depts = SysService.me().permissionService().selectUserPermission(getCurrentUserId()).getDeptScopePermission().getCustoms();
+        DeptFilter filter = new DeptFilter();
+        filter.setStatus(true);
+        filter.setEnableDeptScope(true);
+        var depts = SysService.me().deptService().selectList(filter);
         Consumer<TreeNode> checkNodeCallback = null;
         if (XCI.isNotBlank(roleId)) {
             var roleDepts = SysService.me().permissionService().selectRolePermission(roleId).getDeptScopePermission().getCustoms();
-            checkNodeCallback = node -> {
-                if (roleDepts.stream().anyMatch(p -> p.getId().toString().equals(node.getId()))) {
-                    node.setChecked(true);
-                }
-            };
+            if (XCI.isNotEmpty(roleDepts)) {
+                checkNodeCallback = node -> {
+                    if (roleDepts.stream().anyMatch(p -> p.getId().toString().equals(node.getId()))) {
+                        node.setChecked(true);
+                    }
+                };
+            }
         }
 
         var nodes = SysWebService.me().toDeptNodeList(depts, checkNodeCallback);

@@ -6,15 +6,16 @@ package com.github.lvyanyang.sys.api;
 
 import com.github.lvyanyang.annotation.Authorize;
 import com.github.lvyanyang.annotation.SingleJson;
-import com.github.lvyanyang.model.IdValue;
 import com.github.lvyanyang.core.R;
 import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
-import com.github.lvyanyang.sys.entity.SysDic;
+import com.github.lvyanyang.model.Dic;
+import com.github.lvyanyang.model.IdValue;
 import com.github.lvyanyang.model.StatusBody;
-import com.github.lvyanyang.sys.filter.DicFilter;
-import com.github.lvyanyang.sys.core.SysApiController;
 import com.github.lvyanyang.sys.component.SysService;
+import com.github.lvyanyang.sys.core.SysApiController;
+import com.github.lvyanyang.sys.entity.SysDic;
+import com.github.lvyanyang.sys.filter.DicFilter;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -122,7 +123,7 @@ public class DicApiController extends SysApiController {
     @ApiOperationSupport(order = 9, author = R.LYY)
     @ApiImplicitParam(name = "categoryCode", value = "字典类型编码")
     @PostMapping("/selectListByCategoryCode")
-    public RestResult<List<SysDic>> selectListByCategoryCode(@SingleJson String categoryCode) {
+    public RestResult<List<Dic>> selectListByCategoryCode(@SingleJson String categoryCode) {
         return RestResult.ok(SysService.me().dicService().selectListByCategoryCode(categoryCode));
     }
 

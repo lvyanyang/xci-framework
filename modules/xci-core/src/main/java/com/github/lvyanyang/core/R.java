@@ -374,13 +374,6 @@ public class R {
     }
 
     /**
-     * 数据字典类型编码
-     */
-    public static class DicCategory {
-        public static final String SysParamCategory = "sys.param.category";
-    }
-
-    /**
      * 模块
      */
     public static class Module {

@@ -10,6 +10,7 @@ import com.github.lvyanyang.core.BaseService;
 import com.github.lvyanyang.core.R;
 import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
+import com.github.lvyanyang.model.Dic;
 import com.github.lvyanyang.model.IdValue;
 import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.dao.DicDao;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -219,48 +221,9 @@ public class DicService extends BaseService {
      * @param categoryCode 字典类型编码
      * @return 返回字典列表
      */
-    public List<SysDic> selectListByCategoryCode(@NotBlank(message = "请指定字典类型编码") String categoryCode) {
-        return XCI.getCacheValue(dicCache, categoryCode, () -> dicDao.selectList(DicFilter.builder().categoryCode(categoryCode).status(true).build()));
-    }
-
-    /**
-     * 根据字典名称查询对应值
-     * @param categoryCode 字典类型编码
-     * @param name         字典名称
-     * @param defaultValue 找不到指定的项值时返回的默认值
-     * @return 返回字典键值对
-     */
-    public String selectValueByName(@NotBlank(message = "请指定字典类型编码") String categoryCode, @NotBlank(message = "请指定字典名称") String name, String defaultValue) {
-        if (XCI.isBlank(categoryCode) || XCI.isBlank(name)) {
-            return defaultValue;
-        }
-        List<SysDic> dicList = selectListByCategoryCode(categoryCode);
-        for (SysDic dic : dicList) {
-            if (dic.getName().equalsIgnoreCase(name)) {
-                return dic.getValue();
-            }
-        }
-        return defaultValue;
-    }
-
-    /**
-     * 根据字典值查询对应名称
-     * @param categoryCode 字典类型编码
-     * @param value        字典值
-     * @param defaultName  找不到指定的项值时返回的默认名称
-     * @return 返回数据字典键值对
-     */
-    public String selectNameByValue(@NotBlank(message = "请指定字典类型编码") String categoryCode, @NotBlank(message = "请指定字典值") String value, String defaultName) {
-        if (XCI.isBlank(categoryCode) || XCI.isBlank(value)) {
-            return defaultName;
-        }
-        List<SysDic> dicList = selectListByCategoryCode(categoryCode);
-        for (SysDic dic : dicList) {
-            if (dic.getValue().equalsIgnoreCase(value)) {
-                return dic.getName();
-            }
-        }
-        return defaultName;
+    public List<Dic> selectListByCategoryCode(@NotBlank(message = "请指定字典类型编码") String categoryCode) {
+        return XCI.getCacheValue(dicCache, categoryCode, () ->
+                toDicItemList(dicDao.selectList(DicFilter.builder().categoryCode(categoryCode).status(true).build())));
     }
 
     /**
@@ -294,9 +257,9 @@ public class DicService extends BaseService {
         Map<String, List<SysDic>> categoryMap = dicList.stream().collect(Collectors.groupingBy(SysDic::getCategoryCode));
         for (Map.Entry<String, List<SysDic>> category : categoryMap.entrySet()) {
             String code = category.getKey();
-            List<SysDic> list = dicList.parallelStream().filter(p -> p.getCategoryCode().equals(code))
-                    .sorted(Comparator.comparing(SysDic::getPath)).collect(Collectors.toList());
-            dicCache.put(code, list);
+            List<SysDic> list = dicList.parallelStream().filter(p -> p.getCategoryCode().equals(code)).collect(Collectors.toList());
+            // .sorted(Comparator.comparing(SysDic::getPath))
+            dicCache.put(code, toDicItemList(list));
         }
         log.info("重新加载系统字典缓存");
     }
@@ -372,5 +335,13 @@ public class DicService extends BaseService {
         dicDao.deleteById(id);                          //数据库删除
         dicCache.evict(entity.getCategoryCode());       //移除缓存
         SysService.me().saveDeleteHistory(id, entity);  //保存历史日志
+    }
+
+    List<Dic> toDicItemList(List<SysDic> list) {
+        var dics = new ArrayList<Dic>(list.size());
+        for (SysDic item : list) {
+            dics.add(new Dic(item.getId(), item.getParentId(), item.getName(), item.getSpell(), item.getValue()));
+        }
+        return dics;
     }
 }

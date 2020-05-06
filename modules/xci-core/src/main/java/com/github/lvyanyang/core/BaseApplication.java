@@ -7,7 +7,7 @@ package com.github.lvyanyang.core;
 import com.github.lvyanyang.component.ApiHandlerInterceptor;
 import com.github.lvyanyang.configuration.ApiProperties;
 import com.github.lvyanyang.internal.SingleJsonHandlerMethodArgumentResolver;
-import com.github.lvyanyang.model.NameValue;
+import com.github.lvyanyang.model.Dic;
 import com.github.lvyanyang.model.OperateLogInfo;
 import com.github.lvyanyang.web.component.WebHandlerInterceptor;
 import com.github.lvyanyang.web.configuration.WebProperties;
@@ -20,6 +20,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -171,7 +172,7 @@ public class BaseApplication implements IApplication {
     }
 
     @Override
-    public List<NameValue> getDic(String code) {
-        return null;
+    public List<Dic> getDic(String code) {
+        return new ArrayList<>();
     }
 }

@@ -91,10 +91,13 @@ public class DicController extends SysWebController {
     @ResponseBody
     @GetMapping("/parentList")
     public RestResult parentList(@RequestParam String id, String categoryCode, @RequestParam String created) {
-        List<SysDic> list = SysWebService.me().selectEnabledDicList(categoryCode);
+        var filter = new DicFilter();
+        filter.setCategoryCode(categoryCode);
+        filter.setStatus(true);
+        List<SysDic> list = SysWebService.me().dicService().selectList(filter);
         //如果是修改时移除当前记录以及所有下级
         XCI.ifTrueAction(XCI.isBlank(created), () -> XCI.removeTreeChildren(list, Long.valueOf(id), true));
-        return RestResult.ok(SysWebService.me().toDicNodeList(list));
+        return RestResult.ok(SysWebService.me().toSysDicNodeList(list));
     }
 
     /**

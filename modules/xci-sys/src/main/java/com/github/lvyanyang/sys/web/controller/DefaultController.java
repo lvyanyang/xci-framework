@@ -11,9 +11,9 @@ import com.github.lvyanyang.core.GMap;
 import com.github.lvyanyang.core.R;
 import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
+import com.github.lvyanyang.model.Dic;
 import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.core.SysParams;
-import com.github.lvyanyang.sys.entity.SysDic;
 import com.github.lvyanyang.sys.entity.SysModule;
 import com.github.lvyanyang.sys.filter.HistoryLogFilter;
 import com.github.lvyanyang.sys.service.UserService;
@@ -51,7 +51,7 @@ public class DefaultController extends SysWebController {
         if (!XCI.checkBrowserCompatibility()) {
             return redirect("/compatibility");
         }
-        boolean loginResult = SysService.me().checkAndAutoLogin();
+        boolean loginResult = SysWebService.me().checkAndAutoLogin();
         if (loginResult) {
             return redirect(webProperties.getDefaultUrl());
         }
@@ -70,6 +70,7 @@ public class DefaultController extends SysWebController {
         map.put("copyright", SysParams.SysWebCopyright);
         map.put("versionTitle", SysParams.SysWebVersionTitle);
         map.put("versionTitleColor", SysParams.SysWebVersionTitleColor);
+        map.put("homeUrl", webProperties.getHomeUrl());
         return "sys/default/index";
     }
 
@@ -151,7 +152,7 @@ public class DefaultController extends SysWebController {
         }
 
         var entity = result.getData();
-        RestResult result1 = SysService.me().onLoginSuccess(entity);
+        RestResult result1 = SysWebService.me().onLoginSuccess(entity);
         if (result1.isFail()) {
             return result1;
         }
@@ -215,7 +216,7 @@ public class DefaultController extends SysWebController {
     @GetMapping("/dicTree")
     public Object dicTree(String categoryCode) {
         XCI.ifBlankThrow(categoryCode, () -> RestResult.fail("请指定字典编码"));
-        List<SysDic> list = SysService.me().selectEnabledDicList(categoryCode);
+        List<Dic> list = SysService.me().dicService().selectListByCategoryCode(categoryCode);
         return RestResult.ok(SysWebService.me().toDicNodeList(list));
     }
 

@@ -9,7 +9,7 @@
 
     <!--公共查询列-->
     <sql id="columns">
-        id,category,account,user_agent,status,msg,app_id,app_name,ip,operate_date_time
+        id,category,account,user_agent,status,msg,app_id,app_name,ip,ip_location,browser,os,operate_date_time
     </sql>
 
     <!--公共Where查询条件-->
@@ -67,6 +67,9 @@
         #{entity.appId},
         #{entity.appName},
         #{entity.ip},
+        #{entity.ipLocation},
+        #{entity.browser},
+        #{entity.os},
         #{entity.operateDateTime}
         )
     </insert>

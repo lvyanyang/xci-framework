@@ -9,10 +9,14 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.lvyanyang.core.IApplication;
 import com.github.lvyanyang.core.R;
 import com.github.lvyanyang.core.XCI;
+import com.github.lvyanyang.exceptions.AppException;
 import com.github.lvyanyang.internal.ServletUtil;
+import com.github.lvyanyang.model.Dic;
 import com.github.lvyanyang.web.configuration.WebProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
@@ -21,6 +25,7 @@ import org.springframework.web.servlet.resource.ResourceUrlProvider;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 页面帮助类
@@ -28,6 +33,7 @@ import java.util.Date;
  */
 @Component
 public class WebHelper {
+    @Resource private IApplication application;
     @Resource private ResourceUrlProvider resourceUrlProvider;
     @Resource private WebProperties webProperties;
 
@@ -264,5 +270,160 @@ public class WebHelper {
      */
     public String cdnRoot() {
         return webProperties.getCdn();
+    }
+
+    /**
+     * 根据参数编码获取参数值
+     * @param code         参数编码
+     * @param defaultValue 找不到参数时返回的默认值
+     * @return 返回参数编码对应的参数值
+     */
+    public String param(String code, String defaultValue) {
+        var result = application.getParam(code, defaultValue);
+        if (!XCI.isBlank(result)) {
+            return result.toString();
+        }
+        return R.Empty;
+    }
+
+    /**
+     * 根据字典列表
+     * @param code 字典类型编码
+     */
+    public List<Dic> dic(String code) {
+        return application.getDic(code);
+    }
+
+    public String boolLabel(Object test, String trueLable, String falseLable) {
+        return iif(test, "<span class=\"label label-success\">" + trueLable + "</span>",
+                "<span class=\"label label-danger\">" + falseLable + "</span>");
+    }
+
+    public String boolLabel(Object test, String lable) {
+        return boolLabel(test, lable, lable);
+    }
+
+    public String yesnoLabel(Object test) {
+        return boolLabel(test, "是", "否");
+    }
+
+    public String statusLabel(Object test) {
+        return boolLabel(test, "启用", "禁用");
+    }
+
+    public String iif(Object test, String out) {
+        if (((test instanceof Integer) && ((Integer) test) == 1)
+                || (((test instanceof Boolean) && ((Boolean) test)))) {
+            return out;
+        }
+        return out;
+    }
+
+    public String iif(Object test, String trueOut, String falseOut) {
+        if (((test instanceof Integer) && ((Integer) test) == 1)
+                || (((test instanceof Boolean) && ((Boolean) test)))) {
+            return trueOut;
+        }
+        return falseOut;
+    }
+
+    public String isReadonly(Object test) {
+        return iif(test, "readonly", R.Empty);
+    }
+
+    public String isSelected(Object test) {
+        return iif(test, "selected", R.Empty);
+    }
+
+    public String isChecked(Object test) {
+        return iif(test, "checked", R.Empty);
+    }
+
+    public String isDisabled(Object test) {
+        return iif(test, "disabled", R.Empty);
+    }
+
+    public String isActiveClass(Object test) {
+        return iif(test, "class=\"active\"", R.Empty);
+    }
+
+    public String statusSelectOptions(String emptyLable, String enableLable,
+                                      String disableLable, String selectedValue) {
+        return XCI.format("<option value=\" \" {}>{}</option>", isSelected(selectedValue.equalsIgnoreCase(R.Empty)), emptyLable) +
+                XCI.format("<option value=\"1\" {}>{}</option>", isSelected(selectedValue.equalsIgnoreCase("1")), enableLable) +
+                XCI.format("<option value=\"0\" {}>{}</option>", isSelected(selectedValue.equalsIgnoreCase("0")), disableLable);
+    }
+
+    public String statusSelectOptions(String selectedValue) {
+        return statusSelectOptions("全部状态", "启用", "禁用", selectedValue);
+    }
+
+    public String statusSelectOptions() {
+        return statusSelectOptions(R.Empty);
+    }
+
+    public String selectOptions(List list, Object selectedValue) {
+        return selectOptions(list, selectedValue, false);
+    }
+    public String selectOptions(List list, Object selectedValue, boolean isMultiple) {
+        return selectOptions(list, selectedValue, isMultiple, "name", "id", "spell");
+    }
+
+    public String selectOptions(List list, Object selectedValue, boolean isMultiple,
+                                String nameFieldName, String valueFieldName) {
+        return selectOptions(list, selectedValue, isMultiple, nameFieldName, valueFieldName, null);
+    }
+
+    public String selectOptions(List list, Object selectedValue, boolean isMultiple,
+                                String nameFieldName, String valueFieldName, String spellFieldName) {
+        if (XCI.isBlank(nameFieldName)) throw new AppException("请指定[nameFieldName]");
+        if (XCI.isBlank(valueFieldName)) throw new AppException("请指定[valueFieldName]");
+        if (selectedValue == null) selectedValue = R.Empty;
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Object item : list) {
+            Object nameObj = ReflectUtil.getFieldValue(item, nameFieldName);
+            Object valueObj = ReflectUtil.getFieldValue(item, valueFieldName);
+            Object spellObj = null;
+            if (XCI.isNotBlank(spellFieldName)) {
+                spellObj = ReflectUtil.getFieldValue(item, spellFieldName);
+            }
+            String name = R.Empty;
+            String value = R.Empty;
+            String spell = R.Empty;
+            if (nameObj != null) name = nameObj.toString();
+            if (valueObj != null) value = valueObj.toString();
+            if (spellObj != null) spell = spellObj.toString();
+
+            var isSelected = isMultiple ? selectedValue.toString().contains(value) : selectedValue.equals(value);
+            var spellkeys = XCI.isBlank(spell) ? R.Empty : XCI.format("data-keys=\"{}\"", spell);
+            stringBuilder.append(XCI.format("<option value=\"{}\" {} {}>{}</option>", value, spellkeys, isSelected(isSelected), name));
+        }
+        return stringBuilder.toString();
+    }
+
+    public String dicSelectOptions(List<Dic> list, Object selectedValue, boolean isMultiple) {
+        if (selectedValue == null) selectedValue = R.Empty;
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Dic item : list) {
+            String name = item.getName();
+            String value = item.getValue();
+            String spell = item.getSpell();
+            var isSelected = isMultiple ? selectedValue.toString().contains(value) : selectedValue.equals(value);
+            var spellkeys = XCI.isBlank(spell) ? R.Empty : XCI.format("data-keys=\"{}\"", spell);
+            stringBuilder.append(XCI.format("<option value=\"{}\" {} {}>{}</option>", value, spellkeys, isSelected(isSelected), name));
+        }
+        return stringBuilder.toString();
+    }
+
+    public String dicSelectOptions(List<Dic> list, Object selectedValue) {
+        return dicSelectOptions(list, selectedValue, false);
+    }
+
+    public String dicSelectOptions(String code, Object selectedValue, boolean isMultiple) {
+        return dicSelectOptions(application.getDic(code), selectedValue, isMultiple);
+    }
+
+    public String dicSelectOptions(String code, Object selectedValue) {
+        return dicSelectOptions(code, selectedValue, false);
     }
 }

@@ -334,37 +334,6 @@ public class SysService {
         return RestResult.ok(userEntity);
     }
 
-    /**
-     * 检查登录状态,并自动登录
-     */
-    public boolean checkAndAutoLogin() {
-        Object user = XCI.getSession().getAttribute(R.CURRENT_USER_Session_KEY);
-        if (user != null) {
-            return true;
-        }
-        String userToken = XCI.getCookie(R.CURRENT_USER_COOKIE_KEY);
-        if (userToken == null) {
-            return false;
-        }
-        var userResult = getUserByToken(userToken);
-        if (userResult.isOk()) {
-            RestResult sresult = onLoginSuccess(userResult.getData());
-            return sresult.isOk();
-        }
-        return false;
-    }
-
-    /**
-     * 用户登录成功函数
-     */
-    public RestResult onLoginSuccess(SysUser entity) {
-        if (!entity.getStatus()) {
-            return RestResult.fail("账号已被禁用");
-        }
-        XCI.getSession().setAttribute(R.CURRENT_USER_Session_KEY, entity);
-        return RestResult.ok();
-    }
-
     // region setUserInfo
 
     /**
@@ -483,61 +452,6 @@ public class SysService {
     }
     // endregion
 
-    //region getDic
-
-    /**
-     * 根据字典编码获取字典列表
-     * @param categoryCode 字典类型编码
-     */
-    public List<SysDic> getDicList(String categoryCode) {
-        DicService dicService = XCI.getBean(DicService.class);
-        return dicService.selectListByCategoryCode(categoryCode);
-    }
-
-    /**
-     * 查询数据字典键值对
-     * @param dicCode 字典类型编码
-     * @param value   字典项值
-     * @return 返回数据字典键值对
-     */
-    public String getDicNameByValue(String dicCode, Object value) {
-        return dicService.selectNameByValue(dicCode, value.toString(), R.Empty);
-    }
-
-    /**
-     * 查询数据字典键值对
-     * @param dicCode     字典类型编码
-     * @param value       字典项值
-     * @param defaultName 找不到指定的项值时返回的默认名称
-     * @return 返回数据字典键值对
-     */
-    public String getDicNameByValue(String dicCode, Object value, String defaultName) {
-        return dicService.selectNameByValue(dicCode, value.toString(), defaultName);
-    }
-
-    /**
-     * 查询数据字典键值对
-     * @param dicCode 字典类型编码
-     * @param name    字典名称
-     * @return 返回数据字典键值对
-     */
-    public String getDicValueByName(String dicCode, Object name) {
-        return dicService.selectValueByName(dicCode, name.toString(), R.Empty);
-    }
-
-    /**
-     * 查询数据字典键值对
-     * @param dicCode      字典类型编码
-     * @param name         字典名称
-     * @param defaultValue 找不到指定的项值时返回的默认值
-     * @return 返回数据字典键值对
-     */
-    public String getDicValueByName(String dicCode, Object name, String defaultValue) {
-        return dicService.selectValueByName(dicCode, name.toString(), defaultValue);
-    }
-
-    //endregion
-
     //region selectEnabledList
 
     /**
@@ -588,15 +502,6 @@ public class SysService {
         return moduleService().selectList(filter);
     }
 
-    /**
-     * 查询启用的字典列表
-     */
-    public List<SysDic> selectEnabledDicList(String categoryCode) {
-        var filter = new DicFilter();
-        filter.setCategoryCode(categoryCode);
-        filter.setStatus(true);
-        return dicService().selectList(filter);
-    }
 
     //endregion
 
@@ -679,9 +584,13 @@ public class SysService {
             loginLog.setAppId(app.getId().toString());
             loginLog.setAppName(app.getName());
         }
-        var browserOsInfo = XCI.getRequestBrowserOsInfo();
+
+        var browserOsInfo = XCI.getRequestBrowserOsInfo(SysParams.SysUserResolvingIpLocation.getBoolean());
         loginLog.setIp(browserOsInfo.getIp());
+        loginLog.setOs(browserOsInfo.getOs());
+        loginLog.setBrowser(browserOsInfo.getBrowser());
         loginLog.setUserAgent(browserOsInfo.getUserAgent());
+        loginLog.setIpLocation(browserOsInfo.getIpLocation());
         return loginLog;
     }
 
@@ -702,7 +611,7 @@ public class SysService {
             errorLog.setAppId(app.getId().toString());
             errorLog.setAppName(app.getName());
         }
-        var browserOsInfo = XCI.getRequestBrowserOsInfo();
+        var browserOsInfo = XCI.getRequestBrowserOsInfo(false);
         errorLog.setIp(browserOsInfo.getIp());
         setOperateUserInfo(errorLog);
         StringWriter stringWriter = new StringWriter();

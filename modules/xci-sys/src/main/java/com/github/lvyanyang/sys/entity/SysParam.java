@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.github.lvyanyang.core.BaseEntity;
 import com.github.lvyanyang.core.R;
-import com.github.lvyanyang.sys.component.SysService;
+import com.github.lvyanyang.sys.core.SysDics;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -88,7 +88,7 @@ public class SysParam extends BaseEntity {
     private String categoryName;
 
     public String getCategoryName() {
-        return SysService.me().getDicNameByValue(R.DicCategory.SysParamCategory, category);
+        return SysDics.SysParamCategory.getName(category, R.Empty);
     }
 
     /**

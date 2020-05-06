@@ -4,7 +4,7 @@
 
 package com.github.lvyanyang.core;
 
-import com.github.lvyanyang.model.NameValue;
+import com.github.lvyanyang.model.Dic;
 import com.github.lvyanyang.model.OperateLogInfo;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -65,5 +65,5 @@ public interface IApplication extends WebMvcConfigurer {
      * 根据字典编码获取字典列表
      * @param code 字典类型编码
      */
-    List<NameValue> getDic(String code);
+    List<Dic> getDic(String code);
 }

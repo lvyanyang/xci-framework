@@ -42,6 +42,11 @@ public class TreeNode {
     private String spell;
 
     /**
+     * 节点值
+     */
+    private String value;
+
+    /**
      * 节点css类
      */
     private String iconCls;

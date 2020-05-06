@@ -65,7 +65,7 @@ public class OperateLogAspect {
         }
         var request = XCI.getRequest();
         // var appId = request.getHeader(R.HEADER_APPID_KEY);
-        var browserOsInfo = XCI.getRequestBrowserOsInfo();
+        var browserOsInfo = XCI.getRequestBrowserOsInfo(false);
         builder.tag(log.tag()).status(true).costTime(usedTime).msg(log.msg())
                 .reqUrl(request.getRequestURI()).reqMethod(request.getMethod())
                 .ip(browserOsInfo.getIp()).userAgent(browserOsInfo.getUserAgent());

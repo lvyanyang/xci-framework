@@ -102,7 +102,6 @@ jx.ready(function () {
             var ids = gridInstance.getCheckedRowIds();
             $('#revise-ids').val(ids.join());
         });
-
     }
 
     //新建数据

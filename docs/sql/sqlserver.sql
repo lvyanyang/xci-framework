@@ -113,7 +113,6 @@ VALUES (1204969582125780992, '系统账户密码强度检测错误消息', 'sys.
         '不满足密码策略，密码要求必须包含数字、小写或大写字母、特殊字符、不少于6个字符。', 2, NULL);
 
 
-
 -- ----------------------------
 -- sys_user - 系统用户
 -- ----------------------------
@@ -165,7 +164,7 @@ EXEC sp_addextendedproperty N'MS_Description', N'系统用户', 'SCHEMA', N'dbo'
 GO
 EXEC sp_addextendedproperty N'MS_Description', N'账号', 'SCHEMA', N'dbo', 'TABLE', N'sys_user', 'COLUMN', N'account'
 GO
-EXEC sp_addextendedproperty N'MS_Description', N'是否超管 [1-是, 0-否]', 'SCHEMA', N'dbo', 'TABLE', N'sys_user', 'COLUMN', N'administrator'
+EXEC sp_addextendedproperty N'MS_Description', N'是否超管 [1-是, 0-否]', 'SCHEMA', N'dbo', 'TABLE', N'sys_user', 'COLUMN', N'admin'
 GO
 EXEC sp_addextendedproperty N'MS_Description', N'结束有效期', 'SCHEMA', N'dbo', 'TABLE', N'sys_user', 'COLUMN', N'allow_end_time'
 GO
@@ -218,7 +217,12 @@ GO
 EXEC sp_addextendedproperty N'MS_Description', N'显示状态 [1-显示, 0-不显示]', 'SCHEMA', N'dbo', 'TABLE', N'sys_user', 'COLUMN', N'visible'
 GO
 
-INSERT INTO dbo.sys_user (id, name, spell, account, category, dept_id, role_id, pwd, pwd_salt, pwd_must_modify, pwd_allow_modify, pwd_never_expire, pwd_expire_time, allow_start_time, allow_end_time, admin, mobile, email, post, login_times, first_visit_time, last_visit_time, ent_id, ent_name, visible, deleted, status, remark) VALUES (1, '管理员', 'admin', 'admin', 0, 1122462624387305472, 1194563452912406528, '785b154a41baf9977cb3d34bb2fb9558', '39b5281aa1fb30bb2d09119cf7255e37', 0, 0, 1, null, null, null, 1, null, null, '董事长', 1070, '2019-12-27 17:34:00.783', '2020-03-19 19:26:46.513', null, null, 1, 0, 1, null);
+INSERT INTO dbo.sys_user (id, name, spell, account, category, dept_id, pwd, pwd_salt, pwd_must_modify, pwd_allow_modify,
+                          pwd_never_expire, pwd_expire_time, allow_start_time, allow_end_time, admin, mobile, email, post, login_times,
+                          first_visit_time, last_visit_time, ent_id, ent_name, visible, deleted, status, remark)
+VALUES (1, '管理员', 'admin', 'admin', 0, 1122462624387305472, '785b154a41baf9977cb3d34bb2fb9558',
+        '39b5281aa1fb30bb2d09119cf7255e37', 0, 0, 1, null, null, null, 1, null, null, '董事长', 1070, '2019-12-27 17:34:00.783',
+        '2020-03-19 19:26:46.513', null, null, 1, 0, 1, null);
 
 
 -- ----------------------------
@@ -265,7 +269,8 @@ EXEC sp_addextendedproperty N'MS_Description', N'角色简拼', 'SCHEMA', N'dbo'
 GO
 EXEC sp_addextendedproperty N'MS_Description', N'机构主键 [0-全局角色]', 'SCHEMA', N'dbo', 'TABLE', N'sys_role', 'COLUMN', N'dept_id'
 GO
-EXEC sp_addextendedproperty N'MS_Description', N'机构权限 [1-全部, 2-自定义, 3-所在机构及所有下级, 4-所在机构, 5-仅本人]', 'SCHEMA', N'dbo', 'TABLE', N'sys_role','COLUMN', N'dept_scope'
+EXEC sp_addextendedproperty N'MS_Description', N'机构权限 [1-全部, 2-自定义, 3-所在机构及所有下级, 4-所在机构, 5-仅本人]', 'SCHEMA', N'dbo', 'TABLE', N'sys_role',
+     'COLUMN', N'dept_scope'
 GO
 EXEC sp_addextendedproperty N'MS_Description', N'序号', 'SCHEMA', N'dbo', 'TABLE', N'sys_role', 'COLUMN', N'path'
 GO
@@ -848,9 +853,13 @@ CREATE TABLE dbo.sys_login_log
     app_id            NVARCHAR(100) NULL,
     app_name          NVARCHAR(100) NULL,
     ip                NVARCHAR(100) NULL,
+    ip_location       NVARCHAR(100) NULL,
+    browser nvarchar(100) NULL,
+    os nvarchar(100) NULL,
     operate_date_time DATETIME      NULL
 ) ON [PRIMARY]
 GO
+
 ALTER TABLE dbo.sys_login_log
     ADD CONSTRAINT PK_sys_login_log PRIMARY KEY CLUSTERED (id) ON [PRIMARY]
 GO
@@ -871,6 +880,12 @@ GO
 EXEC sp_addextendedproperty N'MS_Description', N'主键', 'SCHEMA', N'dbo', 'TABLE', N'sys_login_log', 'COLUMN', N'id'
 GO
 EXEC sp_addextendedproperty N'MS_Description', N'IP地址', 'SCHEMA', N'dbo', 'TABLE', N'sys_login_log', 'COLUMN', N'ip'
+GO
+EXEC sp_addextendedproperty N'MS_Description', N'IP地点', 'SCHEMA', N'dbo', 'TABLE', N'sys_login_log', 'COLUMN', N'ip_location'
+GO
+EXEC sp_addextendedproperty N'MS_Description', N'浏览器', 'SCHEMA', N'dbo', 'TABLE', N'sys_login_log', 'COLUMN', N'browser'
+GO
+EXEC sp_addextendedproperty N'MS_Description', N'操作系统', 'SCHEMA', N'dbo', 'TABLE', N'sys_login_log', 'COLUMN', N'os'
 GO
 EXEC sp_addextendedproperty N'MS_Description', N'操作信息', 'SCHEMA', N'dbo', 'TABLE', N'sys_login_log', 'COLUMN', N'msg'
 GO
@@ -1065,10 +1080,10 @@ CREATE TABLE dbo.sys_module
     param       NVARCHAR(4000) NULL,
     web_setting NVARCHAR(4000) NULL,
     win_setting NVARCHAR(4000) NULL,
-    web_url     NVARCHAR(500) NULL,
-	web_cls     NVARCHAR(500) NULL,
-	win_url     NVARCHAR(500) NULL,
-	win_cls     NVARCHAR(500) NULL,
+    web_url     NVARCHAR(500)  NULL,
+    web_cls     NVARCHAR(500)  NULL,
+    win_url     NVARCHAR(500)  NULL,
+    win_cls     NVARCHAR(500)  NULL,
     menu        TINYINT        NOT NULL,
     web         TINYINT        NOT NULL,
     win         TINYINT        NOT NULL,
@@ -1132,18 +1147,43 @@ EXEC sp_addextendedproperty N'MS_Description', N'Win图标', 'SCHEMA', N'dbo', '
 GO
 
 
-INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu, web, win, expand, publiced, path, status, remark) VALUES (1, 0, N'系统管理', N'sys', N'xtgl', null, null, null, null, N'fa fa-cogs', null, null, 1, 1, 1, 1, 0, 1, 1, null);
-INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu, web, win, expand, publiced, path, status, remark) VALUES (2, 1, N'系统参数', N'sys.param', N'xtcs', null, null, null, N'/sys/param', N'icon-settings', null, null, 1, 1, 1, 1, 0, 1, 1, null);
-INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu, web, win, expand, publiced, path, status, remark) VALUES (3, 1, N'系统字典', N'sys.dic', N'xtzd', null, null, null, N'/sys/dic', N'icon-notebook', null, null, 1, 1, 1, 1, 0, 1, 1, null);
-INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu, web, win, expand, publiced, path, status, remark) VALUES (4, 1, N'在线用户', N'sys.onlineUser', N'zxyh', null, null, null, N'/sys/onlineUser', N'icon-user-following', null, null, 1, 1, 1, 1, 0, 1, 1, null);
-INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu, web, win, expand, publiced, path, status, remark) VALUES (5, 1, N'锁定用户', N'sys.lockUser', N'slyh', null, null, null, N'/sys/lockUser', N'icon-user-unfollow', null, null, 1, 1, 1, 1, 0, 1, 1, null);
-INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu, web, win, expand, publiced, path, status, remark) VALUES (6, 1, N'操作日志', N'sys.operateLog', N'czrz', null, null, null, N'/sys/operateLog', N'icon-bell', null, null, 1, 1, 1, 1, 0, 1, 1, null);
-INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu, web, win, expand, publiced, path, status, remark) VALUES (7, 1, N'历史日志', N'sys.historyLog', N'srz', null, null, null, N'/sys/historyLog', N'fa fa-history', null, null, 1, 1, 1, 1, 0, 1, 1, null);
-INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu, web, win, expand, publiced, path, status, remark) VALUES (8, 1, N'系统角色', N'sys.role', N'xtjs', null, null, null, N'/sys/role', N'icon-users', null, null, 1, 1, 1, 1, 0, 1, 1, null);
-INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu, web, win, expand, publiced, path, status, remark) VALUES (9, 1, N'系统用户', N'sys.user', N'xtyh', null, null, null, N'/sys/user', N'icon-user', null, null, 1, 1, 1, 1, 0, 1, 1, null);
-INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu, web, win, expand, publiced, path, status, remark) VALUES (10, 1, N'组织机构', N'sys.dept', N'xtjg', null, null, null, N'/sys/dept', N'fa fa-sitemap', null, null, 1, 1, 1, 1, 0, 1, 1, null);
-INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu, web, win, expand, publiced, path, status, remark) VALUES (11, 1, N'系统序列', N'sys.seq', N'xtxl', null, null, null, N'/sys/seq', N'fa fa-random', null, null, 1, 1, 1, 1, 0, 1, 1, null);
-
+INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu,
+                            web, win, expand, publiced, path, status, remark)
+VALUES (1, 0, N'系统管理', N'sys', N'xtgl', null, null, null, null, N'fa fa-cogs', null, null, 1, 1, 1, 1, 0, 1, 1, null);
+INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu,
+                            web, win, expand, publiced, path, status, remark)
+VALUES (2, 1, N'系统参数', N'sys.param', N'xtcs', null, null, null, N'/sys/param', N'icon-settings', null, null, 1, 1, 1, 1, 0, 1, 1, null);
+INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu,
+                            web, win, expand, publiced, path, status, remark)
+VALUES (3, 1, N'系统字典', N'sys.dic', N'xtzd', null, null, null, N'/sys/dic', N'icon-notebook', null, null, 1, 1, 1, 1, 0, 1, 1, null);
+INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu,
+                            web, win, expand, publiced, path, status, remark)
+VALUES (4, 1, N'在线用户', N'sys.onlineUser', N'zxyh', null, null, null, N'/sys/onlineUser', N'icon-user-following', null, null, 1, 1, 1, 1, 0,
+        1, 1, null);
+INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu,
+                            web, win, expand, publiced, path, status, remark)
+VALUES (5, 1, N'锁定用户', N'sys.lockUser', N'slyh', null, null, null, N'/sys/lockUser', N'icon-user-unfollow', null, null, 1, 1, 1, 1, 0, 1, 1,
+        null);
+INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu,
+                            web, win, expand, publiced, path, status, remark)
+VALUES (6, 1, N'操作日志', N'sys.operateLog', N'czrz', null, null, null, N'/sys/operateLog', N'icon-bell', null, null, 1, 1, 1, 1, 0, 1, 1,
+        null);
+INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu,
+                            web, win, expand, publiced, path, status, remark)
+VALUES (7, 1, N'历史日志', N'sys.historyLog', N'srz', null, null, null, N'/sys/historyLog', N'fa fa-history', null, null, 1, 1, 1, 1, 0, 1, 1,
+        null);
+INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu,
+                            web, win, expand, publiced, path, status, remark)
+VALUES (8, 1, N'系统角色', N'sys.role', N'xtjs', null, null, null, N'/sys/role', N'icon-users', null, null, 1, 1, 1, 1, 0, 1, 1, null);
+INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu,
+                            web, win, expand, publiced, path, status, remark)
+VALUES (9, 1, N'系统用户', N'sys.user', N'xtyh', null, null, null, N'/sys/user', N'icon-user', null, null, 1, 1, 1, 1, 0, 1, 1, null);
+INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu,
+                            web, win, expand, publiced, path, status, remark)
+VALUES (10, 1, N'组织机构', N'sys.dept', N'xtjg', null, null, null, N'/sys/dept', N'fa fa-sitemap', null, null, 1, 1, 1, 1, 0, 1, 1, null);
+INSERT INTO dbo.sys_module (id, parent_id, name, code, spell, param, web_setting, win_setting, web_url, web_cls, win_url, win_cls, menu,
+                            web, win, expand, publiced, path, status, remark)
+VALUES (11, 1, N'系统序列', N'sys.seq', N'xtxl', null, null, null, N'/sys/seq', N'fa fa-random', null, null, 1, 1, 1, 1, 0, 1, 1, null);
 
 
 -- ----------------------------

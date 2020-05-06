@@ -5,8 +5,9 @@
 package com.github.lvyanyang.sys.web;
 
 import com.github.lvyanyang.core.XCI;
-import com.github.lvyanyang.sys.core.SysApiApplication;
 import com.github.lvyanyang.sys.component.SysService;
+import com.github.lvyanyang.sys.core.SysApiApplication;
+import com.github.lvyanyang.sys.web.component.SysWebService;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -19,7 +20,7 @@ public class SysWebApplication extends SysApiApplication {
      * @return 已登录或者自动登录成功返回 true
      */
     @Override public Boolean webAutoLogin() {
-        return SysService.me().checkAndAutoLogin();
+        return SysWebService.me().checkAndAutoLogin();
     }
 
     /**

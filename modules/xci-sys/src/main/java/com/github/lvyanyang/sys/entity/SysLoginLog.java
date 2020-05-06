@@ -105,6 +105,27 @@ public class SysLoginLog extends BaseEntity {
     private String ip;
 
     /**
+     * IP地点
+     */
+    @Length(max = 100, message = "IP地点长度不能超过{max}")
+    @ApiModelProperty(value = "IP地点")
+    private String ipLocation;
+
+    /**
+	 * 浏览器
+	 */
+	@Length(max = 100, message = "浏览器长度不能超过{max}")
+	@ApiModelProperty(value = "浏览器")
+	private String browser;
+
+	/**
+	 * 操作系统
+	 */
+	@Length(max = 100, message = "操作系统长度不能超过{max}")
+	@ApiModelProperty(value = "操作系统")
+	private String os;
+
+    /**
      * 登录时间
      */
     @ApiModelProperty(value = "登录时间")

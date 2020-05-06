@@ -410,10 +410,9 @@ jx.ready(function () {
         if (!url || url === '#') return;
         if (!id) id = jx.uuid();
         if (!iconCls) iconCls = '';
-        if (!closable) closable = true;
+        if (jx.isUndefined(closable)) closable = true;
 
         url = jx.apiUrl(url);
-
         if (window.systemEnableTabPage === '1') {
             var tabCount = $tabs.tabs('tabs').length;
             var hasTab = $tabs.tabs('exists', title);
@@ -583,7 +582,7 @@ jx.ready(function () {
 
     //region 模块初始化
     window.systemEnableTabPage = '1';
-    window.systemEnableOnlineUserRefresh = '0';
+    window.systemEnableOnlineUserRefresh = '1';
     window.systemEnableMessageRefresh = '0';
 
     init();

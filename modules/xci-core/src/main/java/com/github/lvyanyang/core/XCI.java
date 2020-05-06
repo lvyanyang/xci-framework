@@ -53,6 +53,10 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Whitelist;
+import org.lionsoul.ip2region.DataBlock;
+import org.lionsoul.ip2region.DbConfig;
+import org.lionsoul.ip2region.DbMakerConfigException;
+import org.lionsoul.ip2region.DbSearcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
@@ -64,9 +68,12 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.cache.Cache;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -102,6 +109,8 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Key;
 import java.sql.SQLException;
 import java.text.MessageFormat;
@@ -124,6 +133,8 @@ public class XCI {
     private static final SecretKeySpec secretKey = new SecretKeySpec(R.AES_SECRET_KEY.getBytes(StandardCharsets.UTF_8), R.AES_METHOD);
     private static final IvParameterSpec ivSpec = new IvParameterSpec(R.AES_Padding_IV.getBytes(StandardCharsets.UTF_8));
     private static final Document.OutputSettings outputSettings = new Document.OutputSettings().prettyPrint(false);
+    private static final String IPDBPATH = "/ip2region.db";
+    private static byte[] IPDBData;
     private static final String RE_HTML_MARK = "(<[^<]*?>)|(<[\\s]*?/[^<]*?>)|(<[^<]*?/[\\s]*?>)";
     private static char[][] HTML_CHARS;
     private static ObjectMapper objectMapper;
@@ -2376,41 +2387,64 @@ public class XCI {
         return ServletUtil.getClientIP(getRequest());
     }
 
-    // /**
-    //  * 解析ip地址地理位置
-    //  * @param ip ip地址
-    //  */
-    // public static String resolvingIpLocation(String ip) {
-    //     String address = "";
-    //     if (isBlank(ip)) {
-    //         return address;
-    //     }
-    //     // if (!setting.getApi().isResolvingIpLocation()) {
-    //     //     return address;
-    //     // }
-    //     // 内网不查询
-    //     if (isInternalIP(ip)) {
-    //         return "内网IP";
-    //     }
-    //
-    //     var url = "?ip=" + ip;
-    //     String rspStr = HttpUtil.get(url, 3000);
-    //     if (StringUtils.isEmpty(rspStr)) {
-    //         return address;
-    //     }
-    //     try {
-    //         JSONObject obj = JSONUtil.parseObj(rspStr);
-    //         JSONObject data = obj.get("data", JSONObject.class);
-    //         String country = data.getStr("country");
-    //         String region = data.getStr("region");
-    //         String city = data.getStr("city");
-    //         String isp = data.getStr("isp");
-    //         address = format("{} {}{} {}", country, region, city, isp);
-    //     } catch (Exception e) {
-    //         log.error("解析ip出现错误,请求字符串:{},返回的字符串:{}", url, rspStr);
-    //     }
-    //     return address;
-    // }
+    /**
+     * 根据ip地址解析IP地址地理位置
+     * @param ipv4 ip4地址
+     * @return 返回对应的地理位置
+     */
+    public static IpInfo getIPLocation(String ipv4) {
+        if (isBlank(ipv4)) {
+            return new IpInfo();
+        }
+        if (isInternalIP(ipv4)) {
+            var info = new IpInfo();
+            info.setProvince("内网IP");
+            info.setCity(R.Empty);
+            return info;
+        }
+
+        if (IPDBData == null) {
+            try {
+                var classPathResource = new ClassPathResource(IPDBPATH);
+                if (classPathResource.exists()) {
+                    InputStream inputStream = new ClassPathResource(IPDBPATH).getInputStream();
+                    IPDBData = FileCopyUtils.copyToByteArray(inputStream);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                try {
+                    String filePath = ResourceUtils.getURL("classpath:").getPath() + IPDBPATH;
+                    filePath = filePath.substring(1);
+                    Path path = Paths.get(filePath);
+                    IPDBData = Files.readAllBytes(path);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+
+        if (IPDBData == null) {
+            log.error("IP数据库文件不存在,文件:" + IPDBPATH);
+            return new IpInfo();
+        }
+        try {
+            DbConfig config = new DbConfig();
+            DbSearcher searcher = new DbSearcher(config, IPDBData);
+            DataBlock block = searcher.memorySearch(ipv4);
+            //打印位置信息（格式：国家|大区|省份|城市|运营商）
+            String[] split = block.getRegion().split("\\|");
+            IpInfo info = new IpInfo();
+            info.setCountry(split[0]);
+            info.setArea(split[1]);
+            info.setProvince(split[2]);
+            info.setCity(split[3]);
+            info.setIsp(split[4]);
+            return info;
+        } catch (DbMakerConfigException | IOException e) {
+            log.error("解析IP地址出错:" + ipv4, e);
+        }
+        return new IpInfo();
+    }
 
     /**
      * 是否内网 ip
@@ -3573,14 +3607,22 @@ public class XCI {
 
     /**
      * 获取当前请求浏览器操作系统IP地址信息
+     * @param isResolvingIpLocation 是否解析ip地址地理位置
      */
-    public static BrowserOsIpInfo getRequestBrowserOsInfo() {
+    public static BrowserOsIpInfo getRequestBrowserOsInfo(boolean isResolvingIpLocation) {
         BrowserOsIpInfo info = new BrowserOsIpInfo();
         HttpServletRequest request = getRequest();
         String ip = ServletUtil.getClientIP(request);
         info.setIp(ip);
         // 解析ip地址地理位置
-        // info.setIpLocation(resolvingIpLocation(ip));
+        if (isResolvingIpLocation) {
+            var localInfo = XCI.getIPLocation(ip);
+            if (isBlank(localInfo.getProvince()) && isBlank(localInfo.getCity())) {
+                info.setIpLocation(R.Empty);
+            } else {
+                info.setIpLocation(XCI.format("{} {}", localInfo.getProvince(), localInfo.getCity()));
+            }
+        }
         var userAgent = request.getHeader("User-Agent");
         info.setUserAgent(userAgent);
         if (userAgent != null) {
@@ -3760,18 +3802,14 @@ public class XCI {
      */
     public static String getDeptAndLowerSqlStatement(String databaseId, String deptIdParamName) {
         if (databaseId.equals("sqlserver")) {
-            return "select id from fnGetDeptLower(#{"+deptIdParamName+"},1)";
+            return "select id from fnGetDeptLower(#{" + deptIdParamName + "},1)";
         } else if (databaseId.equals("oracle")) {
-            return XCI.format("select id from sys_dept start with id=#{"+deptIdParamName+"} connect by prior id=parent_id");
+            return XCI.format("select id from sys_dept start with id=#{" + deptIdParamName + "} connect by prior id=parent_id");
         } else if (databaseId.equals("mysql")) {
-            return XCI.format("select id from sys_dept where find_in_set(id, fnGetDeptLower('#{"+deptIdParamName+"}',1))");
+            return XCI.format("select id from sys_dept where find_in_set(id, fnGetDeptLower('#{" + deptIdParamName + "}',1))");
         }
         return R.Empty;
     }
-
-
-
-
 
     // endregion
 }

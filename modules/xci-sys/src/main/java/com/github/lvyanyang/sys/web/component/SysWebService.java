@@ -4,12 +4,12 @@
 
 package com.github.lvyanyang.sys.web.component;
 
+import com.github.lvyanyang.core.R;
+import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
+import com.github.lvyanyang.model.Dic;
 import com.github.lvyanyang.sys.component.SysService;
-import com.github.lvyanyang.sys.entity.SysDept;
-import com.github.lvyanyang.sys.entity.SysDic;
-import com.github.lvyanyang.sys.entity.SysDicCategory;
-import com.github.lvyanyang.sys.entity.SysModule;
+import com.github.lvyanyang.sys.entity.*;
 import com.github.lvyanyang.sys.web.model.TreeNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -32,6 +32,37 @@ public class SysWebService extends SysService {
 
     public static SysWebService me() {
         return me;
+    }
+
+    /**
+     * 检查登录状态,并自动登录
+     */
+    public boolean checkAndAutoLogin() {
+        Object user = XCI.getSession().getAttribute(R.CURRENT_USER_Session_KEY);
+        if (user != null) {
+            return true;
+        }
+        String userToken = XCI.getCookie(R.CURRENT_USER_COOKIE_KEY);
+        if (userToken == null) {
+            return false;
+        }
+        var userResult = getUserByToken(userToken);
+        if (userResult.isOk()) {
+            RestResult sresult = onLoginSuccess(userResult.getData());
+            return sresult.isOk();
+        }
+        return false;
+    }
+
+    /**
+     * 用户登录成功函数
+     */
+    public RestResult onLoginSuccess(SysUser entity) {
+        if (!entity.getStatus()) {
+            return RestResult.fail("账号已被禁用");
+        }
+        XCI.getSession().setAttribute(R.CURRENT_USER_Session_KEY, entity);
+        return RestResult.ok();
     }
 
     /**
@@ -113,7 +144,7 @@ public class SysWebService extends SysService {
      * 字典列表转为树节点列表
      * @param dicList 字典列表
      */
-    public List<TreeNode> toDicNodeList(List<SysDic> dicList) {
+    public List<TreeNode> toSysDicNodeList(List<SysDic> dicList) {
         List<TreeNode> nodes = new ArrayList<>();
         if (ObjectUtils.isEmpty(dicList)) return nodes;
 
@@ -123,6 +154,28 @@ public class SysWebService extends SysService {
             node.setId(item.getId().toString());
             node.setPid(item.getParentId().toString());
             node.setCode(item.getCategoryCode());
+            node.setText(item.getName());
+            node.setSpell(item.getSpell());
+            node.setLeaf(hasChild ? 0 : 1);
+            nodes.add(node);
+        }
+        return nodes;
+    }
+
+    /**
+     * 字典列表转为树节点列表
+     * @param dicList 字典列表
+     */
+    public List<TreeNode> toDicNodeList(List<Dic> dicList) {
+        List<TreeNode> nodes = new ArrayList<>();
+        if (ObjectUtils.isEmpty(dicList)) return nodes;
+
+        for (var item : dicList) {
+            boolean hasChild = dicList.stream().anyMatch(p -> p.getParentId().equals(item.getId()));
+            TreeNode node = new TreeNode();
+            node.setId(item.getId().toString());
+            node.setPid(item.getParentId().toString());
+            node.setValue(item.getValue());
             node.setText(item.getName());
             node.setSpell(item.getSpell());
             node.setLeaf(hasChild ? 0 : 1);
@@ -152,6 +205,5 @@ public class SysWebService extends SysService {
         }
         return nodes;
     }
-
 
 }

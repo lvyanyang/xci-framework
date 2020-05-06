@@ -5,7 +5,7 @@
 /*-----------------------------------------------------
  * 系统操作日志模块
  * ---------------------------------------------------*/
-jx.sys.OperateLog = function (ops) {
+jx.ready(function () {
     //region 私有变量
 
     var api = {
@@ -143,4 +143,4 @@ jx.sys.OperateLog = function (ops) {
     //region 模块初始化
     init();
     //endregion
-}
+})

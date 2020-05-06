@@ -8,7 +8,7 @@ import com.github.lvyanyang.core.BaseApplication;
 import com.github.lvyanyang.core.R;
 import com.github.lvyanyang.core.RestResult;
 import com.github.lvyanyang.core.XCI;
-import com.github.lvyanyang.model.NameValue;
+import com.github.lvyanyang.model.Dic;
 import com.github.lvyanyang.model.OperateLogInfo;
 import com.github.lvyanyang.sys.component.SysService;
 import com.github.lvyanyang.sys.entity.SysApp;
@@ -71,7 +71,7 @@ public class SysApiApplication extends BaseApplication {
     }
 
     @Override
-    public List<NameValue> getDic(String code) {
-        return super.getDic(code);
+    public List<Dic> getDic(String code) {
+        return SysService.me().dicService().selectListByCategoryCode(code);
     }
 }

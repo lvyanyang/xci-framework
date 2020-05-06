@@ -19,40 +19,67 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
-        <xci.version>2.0.1</xci.version>
+        <oracle.version>11.1.0.7.0</oracle.version>
+        <xci.version>2.0.1-SNAPSHOT</xci.version>
     </properties>
 
     <dependencies>
-        <!--lombok-->
+        <!--自动生成getset方法-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+        <!-- 单元测试 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
 
         <!--region 数据库-->
+        <!--sqlserver数据库-->
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <!--<dependency>-->
-        <!--    <groupId>mysql</groupId>-->
-        <!--    <artifactId>mysql-connector-java</artifactId>-->
-        <!--    <scope>runtime</scope>-->
-        <!--</dependency>-->
+        <!--mysql数据库-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!--oracle数据库-->
+        <dependency>
+            <groupId>jdbc.driver.oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>${oracle.version}</version>
+        </dependency>
         <!--endregion-->
 
+        <!--web开发-->
         <dependency>
             <groupId>com.github.lvyanyang</groupId>
             <artifactId>xci-web-spring-boot-starter</artifactId>
             <version>${xci.version}</version>
         </dependency>
+
+        <!--文件上传组件-->
         <dependency>
             <groupId>com.github.lvyanyang</groupId>
             <artifactId>xci-upload-spring-boot-starter</artifactId>
             <version>${xci.version}</version>
         </dependency>
+
+        <!--系统权限组件-->
         <dependency>
             <groupId>com.github.lvyanyang</groupId>
             <artifactId>xci-sys-spring-boot-starter</artifactId>
@@ -85,8 +112,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-
-
             <!--这个assembly插件，可以根据需要生成相关的发布目录，并进行压缩打包处理。使用此插件后，-->
             <!--可以在命令行运行mvn package就会自动进行打包处理-->
             <plugin>

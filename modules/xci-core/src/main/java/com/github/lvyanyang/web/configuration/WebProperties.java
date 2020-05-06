@@ -17,32 +17,32 @@ public class WebProperties {
     /**
      * 默认主页地址
      */
-    private String defaultUrl = "/";
+    private String defaultUrl = "/sys";
 
     /**
      * 登录地址
      */
-    private String loginUrl = "/login";
+    private String loginUrl = "/sys/login";
 
     /**
      * 主页面地址
      */
-    private String homeUrl = "/home";
+    private String homeUrl = "/sys/home";
 
     /**
      * 404错误页地址
      */
-    private String error404Url = "/error404";
+    private String error404Url = "/sys/error404";
 
     /**
      * 500错误页地址
      */
-    private String error500Url = "/error500";
+    private String error500Url = "/sys/error500";
 
     /**
      * 未授权地址
      */
-    private String unAuthorizedUrl = "/unauthorized";
+    private String unAuthorizedUrl = "/sys/unauthorized";
 
     /**
      * 错误404 Ajax消息
