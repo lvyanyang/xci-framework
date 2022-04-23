@@ -28,7 +28,7 @@
         <junit.version>4.13</junit.version>
         <lombok.version>1.18.12</lombok.version>
         <spring-boot.version>2.2.6.RELEASE</spring-boot.version>
-        <spring.version>5.2.5.RELEASE</spring.version>
+        <spring.version>5.3.19</spring.version>
         <slf4j.version>1.7.30</slf4j.version>
         <pagehelper-spring-boot.version>1.2.13</pagehelper-spring-boot.version>
         <guava.version>20.0</guava.version>
